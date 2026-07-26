@@ -11,6 +11,7 @@ import { Knurling } from './components/Knurling/Knurling';
 import { ThreadingChangeGears } from './components/ThreadingChangeGears/ThreadingChangeGears';
 import { SheetMetalBending } from './components/SheetMetalBending/SheetMetalBending';
 import { GortonP12 } from './components/GortonP12/GortonP12';
+import { useUnit } from './context/UnitContext';
 
 type TabType = 
   | 'calculator' 
@@ -29,6 +30,7 @@ type TabType =
 
 export function App() {
   const [activeTab, setActiveTab] = useState<TabType>('machinist_hub');
+  const { unit, setUnit } = useUnit();
 
   const isMachinistTool = [
     'machinist_hub',
@@ -337,6 +339,48 @@ export function App() {
               </div>
             </div>
           </div>
+
+          {/* Global Measurement Unit Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>UNITS:</span>
+            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)' }}>
+              <button
+                onClick={() => setUnit('imperial')}
+                style={{
+                  padding: '6px 14px',
+                  border: 'none',
+                  borderRadius: '6px',
+                  background: unit === 'imperial' ? '#f59e0b' : 'transparent',
+                  color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: unit === 'imperial' ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none'
+                }}
+              >
+                Imperial (Inches)
+              </button>
+              <button
+                onClick={() => setUnit('metric')}
+                style={{
+                  padding: '6px 14px',
+                  border: 'none',
+                  borderRadius: '6px',
+                  background: unit === 'metric' ? '#f59e0b' : 'transparent',
+                  color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: unit === 'metric' ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none'
+                }}
+              >
+                Metric (mm)
+              </button>
+            </div>
+          </div>
+
         </div>
       </header>
 

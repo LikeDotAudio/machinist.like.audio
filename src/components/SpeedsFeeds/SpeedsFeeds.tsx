@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface MaterialPreset {
   name: string;
@@ -26,7 +27,8 @@ const MATERIALS: MaterialPreset[] = [
 ];
 
 export const SpeedsFeeds: React.FC = () => {
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [activeTab, setActiveTab] = useState<'speeds_feeds' | 'chip_thinning' | 'formulas'>('speeds_feeds');
   const [selectedMat, setSelectedMat] = useState<number>(0);
 
@@ -81,7 +83,11 @@ export const SpeedsFeeds: React.FC = () => {
     }
   };
 
-  const handleUnitToggle = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
     const diaVal = parseFloat(toolDia) || 0;
     const wocVal = parseFloat(widthOfCut) || 0;
     const docVal = parseFloat(depthOfCut) || 0;
@@ -89,7 +95,7 @@ export const SpeedsFeeds: React.FC = () => {
     const radVal = parseFloat(cornerRad) || 0;
     const cptVal = parseFloat(targetCpt) || 0;
 
-    if (newUnit === 'metric' && unit === 'imperial') {
+    if (unit === 'metric' && oldUnit === 'imperial') {
       setToolDia((diaVal * 25.4).toFixed(2));
       setWidthOfCut((wocVal * 25.4).toFixed(2));
       setDepthOfCut((docVal * 25.4).toFixed(2));
@@ -99,7 +105,7 @@ export const SpeedsFeeds: React.FC = () => {
       const mat = MATERIALS[selectedMat];
       setCustomSpeed(mat.vc.toString());
       setCustomFeed(mat.fz.toString());
-    } else if (newUnit === 'imperial' && unit === 'metric') {
+    } else if (unit === 'imperial' && oldUnit === 'metric') {
       setToolDia((diaVal / 25.4).toFixed(3));
       setWidthOfCut((wocVal / 25.4).toFixed(3));
       setDepthOfCut((docVal / 25.4).toFixed(3));
@@ -110,9 +116,8 @@ export const SpeedsFeeds: React.FC = () => {
       setCustomSpeed(mat.sfm.toString());
       setCustomFeed(mat.ipt.toString());
     }
-    setUnit(newUnit);
     setIsCustom(false);
-  };
+  }, [unit]);
 
   // Basic Calculations
   const dia = Math.max(0.001, parseFloat(toolDia) || 0.001);
@@ -332,44 +337,6 @@ export const SpeedsFeeds: React.FC = () => {
             <span>📐 Formulas Reference</span>
           </button>
         </div>
-
-        {/* Unit Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Measurement System:</span>
-          <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-            <button
-              onClick={() => handleUnitToggle('imperial')}
-              style={{
-                padding: '6px 14px',
-                border: 'none',
-                borderRadius: '4px',
-                background: unit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer'
-              }}
-            >
-              Imperial (Inches / SFM)
-            </button>
-            <button
-              onClick={() => handleUnitToggle('metric')}
-              style={{
-                padding: '6px 14px',
-                border: 'none',
-                borderRadius: '4px',
-                background: unit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer'
-              }}
-            >
-              Metric (mm / M/Min)
-            </button>
-          </div>
-        </div>
-
       </div>
 
       {/* Main Content Grid */}
@@ -547,8 +514,8 @@ export const SpeedsFeeds: React.FC = () => {
 
           </div>
 
-          {/* Right Column: Dynamic Results Dashboard & SVG Visualizer */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+          {/* Right Column (Ordered Left): Dynamic Results Dashboard & SVG Visualizer */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', order: -1 }}>
             
             {/* RESULTS DASHBOARD */}
             <div className="glass-panel" style={{ padding: '30px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%)', borderTop: activeTab === 'chip_thinning' ? '3px solid #a855f7' : '3px solid var(--accent-cyan)' }}>
@@ -768,8 +735,8 @@ export const SpeedsFeeds: React.FC = () => {
 
             </div>
 
-            {/* LIVE KINEMATIC CUTTER ENGAGEMENT VISUALIZER (SVG) */}
-            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
+            {/* LIVE KINEMATIC CUTTER ENGAGEMENT VISUALIZER (TOP-LEFT PRIORITY) */}
+            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(0, 240, 255, 0.2)', order: -1 }}>
               
               <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                 <div>

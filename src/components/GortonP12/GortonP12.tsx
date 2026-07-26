@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 // Standard Factory Reduction Table data from Gorton P1-2 Manual (Pages 31-33)
 interface TableRow {
@@ -102,7 +103,7 @@ const SPEED_MATRIX = [
 export const GortonP12: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'calculator' | 'roll_sync' | 'speeds_materials' | 'table' | 'guide'>('calculator');
   const [rangeMode, setRangeMode] = useState<'standard' | 'low_ratio'>('standard');
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
 
   // Calculator inputs
   const [ratioVal, setRatioVal] = useState<string>('5.0');
@@ -395,44 +396,6 @@ export const GortonP12: React.FC = () => {
             <span>📖 Manual Guide</span>
           </button>
         </div>
-
-        {/* Measurement Unit Selector */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Units:</span>
-          <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-            <button
-              onClick={() => setUnit('imperial')}
-              style={{
-                padding: '6px 14px',
-                border: 'none',
-                borderRadius: '4px',
-                background: unit === 'imperial' ? '#f59e0b' : 'transparent',
-                color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.82rem',
-                cursor: 'pointer'
-              }}
-            >
-              Imperial (Inches)
-            </button>
-            <button
-              onClick={() => setUnit('metric')}
-              style={{
-                padding: '6px 14px',
-                border: 'none',
-                borderRadius: '4px',
-                background: unit === 'metric' ? '#f59e0b' : 'transparent',
-                color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.82rem',
-                cursor: 'pointer'
-              }}
-            >
-              Metric (mm)
-            </button>
-          </div>
-        </div>
-
       </div>
 
       {/* MAIN VIEW 1: BAR SETTING CALCULATOR */}
@@ -637,8 +600,8 @@ export const GortonP12: React.FC = () => {
 
           </div>
 
-          {/* Right Column: Exact Bar Setting Results & Kinematic Visualizer */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+          {/* Right Column (Ordered Left): Exact Bar Setting Results & Kinematic Visualizer */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', order: -1 }}>
             
             {/* EXACT BAR SETTING DASHBOARD */}
             <div className="glass-panel" style={{ padding: '30px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.75) 100%)', borderTop: '3px solid #00f0ff' }}>
@@ -727,8 +690,8 @@ export const GortonP12: React.FC = () => {
 
             </div>
 
-            {/* KINEMATIC PANTOGRAPH LINKAGE VISUALIZER */}
-            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {/* KINEMATIC PANTOGRAPH LINKAGE VISUALIZER (TOP-LEFT PRIORITY) */}
+            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%)', border: '1px solid rgba(255,255,255,0.08)', order: -1 }}>
               <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                 <div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
