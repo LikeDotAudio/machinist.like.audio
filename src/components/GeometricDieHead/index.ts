@@ -1,0 +1,1 @@
+export { GeometricDieHead } from './GeometricDieHead';
