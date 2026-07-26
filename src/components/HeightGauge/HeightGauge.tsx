@@ -192,7 +192,7 @@ export const HeightGauge: React.FC<HeightGaugeProps> = ({ initialTargetValue }) 
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{ 
           display: 'inline-block', 
-          background: 'rgba(0, 240, 255, 0.1)', 
+          background: 'rgba(244, 144, 44, 0.1)', 
           color: 'var(--accent-cyan)', 
           padding: '4px 14px', 
           borderRadius: '20px', 
@@ -201,7 +201,7 @@ export const HeightGauge: React.FC<HeightGaugeProps> = ({ initialTargetValue }) 
           letterSpacing: '1px', 
           textTransform: 'uppercase', 
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Side-By-Side Precision Metrology
         </div>
@@ -255,7 +255,7 @@ export const HeightGauge: React.FC<HeightGaugeProps> = ({ initialTargetValue }) 
               key={preset}
               onClick={() => setTargetValue(preset)}
               style={{
-                background: targetValue === preset ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
+                background: targetValue === preset ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                 border: `1px solid ${targetValue === preset ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                 color: targetValue === preset ? 'var(--accent-cyan)' : 'var(--text-primary)',
                 padding: '5px 10px',

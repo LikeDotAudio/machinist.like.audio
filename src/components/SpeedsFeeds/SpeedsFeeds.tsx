@@ -245,7 +245,7 @@ export const SpeedsFeeds: React.FC = () => {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '5px 16px',
           borderRadius: '20px',
@@ -254,7 +254,7 @@ export const SpeedsFeeds: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           <span>⚡ High-Velocity Toolroom Suite</span>
           <span style={{ color: '#fff', opacity: 0.6 }}>|</span>
@@ -546,14 +546,14 @@ export const SpeedsFeeds: React.FC = () => {
                   background: 'var(--bg-primary)',
                   padding: '18px 14px',
                   borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(0, 240, 255, 0.3)',
+                  border: '1px solid rgba(244, 144, 44, 0.3)',
                   textAlign: 'center',
-                  boxShadow: '0 10px 25px -5px rgba(0, 240, 255, 0.1)'
+                  boxShadow: '0 10px 25px -5px rgba(244, 144, 44, 0.1)'
                 }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '6px', fontWeight: 700 }}>
                     SPINDLE SPEED (RPM)
                   </span>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.1rem', fontWeight: 700, color: '#00f0ff', textShadow: '0 0 15px rgba(0, 240, 255, 0.4)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.1rem', fontWeight: 700, color: '#f4902c', textShadow: '0 0 15px rgba(244, 144, 44, 0.4)' }}>
                     {Math.round(rpm).toLocaleString()}
                   </div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px' }}>
@@ -736,7 +736,7 @@ export const SpeedsFeeds: React.FC = () => {
             </div>
 
             {/* LIVE KINEMATIC CUTTER ENGAGEMENT VISUALIZER (TOP-LEFT PRIORITY) */}
-            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(0, 240, 255, 0.2)', order: -1 }}>
+            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(244, 144, 44, 0.2)', order: -1 }}>
               
               <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                 <div>
@@ -778,8 +778,8 @@ export const SpeedsFeeds: React.FC = () => {
                       <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.04)" strokeWidth="1" />
                     </pattern>
                     <radialGradient id="cutterGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="rgba(0, 240, 255, 0.2)" />
-                      <stop offset="100%" stopColor="rgba(0, 240, 255, 0)" />
+                      <stop offset="0%" stopColor="rgba(244, 144, 44, 0.2)" />
+                      <stop offset="100%" stopColor="rgba(244, 144, 44, 0)" />
                     </radialGradient>
                     <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#334155" />
@@ -818,9 +818,9 @@ export const SpeedsFeeds: React.FC = () => {
 
                   {/* Cutter Glow & Outer Diameter Circle */}
                   <circle cx={center} cy={center} r={maxRadiusPx + 10} fill="url(#cutterGlow)" />
-                  <circle cx={center} cy={center} r={maxRadiusPx} fill="rgba(15, 23, 42, 0.8)" stroke="#00f0ff" strokeWidth="2.5" />
+                  <circle cx={center} cy={center} r={maxRadiusPx} fill="rgba(15, 23, 42, 0.8)" stroke="#f4902c" strokeWidth="2.5" />
                   <circle cx={center} cy={center} r={maxRadiusPx * 0.4} fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
-                  <circle cx={center} cy={center} r={5} fill="#00f0ff" />
+                  <circle cx={center} cy={center} r={5} fill="#f4902c" />
 
                   {/* Rotating Flutes */}
                   <g transform={`rotate(${rotation}, ${center}, ${center})`}>
@@ -841,8 +841,8 @@ export const SpeedsFeeds: React.FC = () => {
                         <g key={i}>
                           <path
                             d={`M ${xInner} ${yInner} L ${x2} ${y2} Q ${xTip} ${yTip} ${xInner} ${yInner}`}
-                            fill="rgba(0, 240, 255, 0.3)"
-                            stroke="#00f0ff"
+                            fill="rgba(244, 144, 44, 0.3)"
+                            stroke="#f4902c"
                             strokeWidth="1.5"
                           />
                           <circle cx={x2} cy={y2} r="3" fill="#fff" />
@@ -861,7 +861,7 @@ export const SpeedsFeeds: React.FC = () => {
 
                 {/* Telemetry Badges overlaid on corners */}
                 <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
-                  <span>Spindle: </span><strong style={{ color: '#00f0ff' }}>{Math.round(rpm)} RPM</strong>
+                  <span>Spindle: </span><strong style={{ color: '#f4902c' }}>{Math.round(rpm)} RPM</strong>
                 </div>
 
                 <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
@@ -873,7 +873,7 @@ export const SpeedsFeeds: React.FC = () => {
               {/* Visualizer Legend */}
               <div style={{ display: 'flex', gap: '20px', marginTop: '15px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#00f0ff', display: 'inline-block' }}></span>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f4902c', display: 'inline-block' }}></span>
                   <span>Cutter Flutes ({flutes})</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -895,7 +895,7 @@ export const SpeedsFeeds: React.FC = () => {
         /* FORMULAS REFERENCE TAB (Inspired by Garr Tool's Formulas Page) */
         <div className="glass-panel" style={{ padding: '40px', background: 'var(--bg-primary)' }}>
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '10px', borderBottom: '2px solid rgba(0, 240, 255, 0.3)', paddingBottom: '12px' }}>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '10px', borderBottom: '2px solid rgba(244, 144, 44, 0.3)', paddingBottom: '12px' }}>
               📐 Essential Machining & Metrology Formulas
             </h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', fontSize: '1.05rem', lineHeight: 1.6 }}>
@@ -906,7 +906,7 @@ export const SpeedsFeeds: React.FC = () => {
               
               {/* Box 1: RPM & Cutting Speed */}
               <div style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                <h3 style={{ fontSize: '1.15rem', color: '#00f0ff', marginBottom: '12px', fontWeight: 700 }}>
+                <h3 style={{ fontSize: '1.15rem', color: '#f4902c', marginBottom: '12px', fontWeight: 700 }}>
                   ⚡ Spindle Speed & Surface Velocity
                 </h3>
                 <div style={{ fontFamily: 'var(--font-mono)', background: 'var(--bg-tertiary)', padding: '12px', borderRadius: '6px', fontSize: '0.9rem', color: '#fff', marginBottom: '12px', lineHeight: 1.8 }}>
@@ -973,7 +973,7 @@ export const SpeedsFeeds: React.FC = () => {
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', fontFamily: 'var(--font-mono)', background: 'var(--bg-tertiary)', padding: '16px', borderRadius: '6px', fontSize: '0.9rem', color: '#fff', marginBottom: '12px', lineHeight: 1.8 }}>
                   <div>
-                    <div style={{ color: '#00f0ff', fontWeight: 700, marginBottom: '4px' }}>Spindle Power (HP & kW):</div>
+                    <div style={{ color: '#f4902c', fontWeight: 700, marginBottom: '4px' }}>Spindle Power (HP & kW):</div>
                     <div><strong>HP:</strong> (MRR [in³/min] × K-Factor) ÷ Efficiency (0.80)</div>
                     <div><strong>kW:</strong> HP × 0.7457</div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>*K-Factor is unit power constant (e.g. 0.25 for Al, 0.70 for Steel, 1.10 for Ti).</div>
@@ -1012,7 +1012,7 @@ export const SpeedsFeeds: React.FC = () => {
                   fontWeight: 700,
                   fontSize: '1rem',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(0, 240, 255, 0.3)',
+                  boxShadow: '0 4px 15px rgba(244, 144, 44, 0.3)',
                   transition: 'all 0.2s ease'
                 }}
               >

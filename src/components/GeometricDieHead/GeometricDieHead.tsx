@@ -187,7 +187,7 @@ type FilterType = 'ALL' | ChaserType;
 const TYPE_COLORS: Record<ChaserType, { fg: string; bg: string; border: string }> = {
   STANDARD: { fg: '#fbbf24', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)' },
   SPECIAL: { fg: '#c084fc', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' },
-  METRIC: { fg: '#00f0ff', bg: 'rgba(0, 240, 255, 0.12)', border: 'rgba(0, 240, 255, 0.35)' },
+  METRIC: { fg: '#f4902c', bg: 'rgba(244, 144, 44, 0.12)', border: 'rgba(244, 144, 44, 0.35)' },
   REFERENCE: { fg: '#94a3b8', bg: 'rgba(148, 163, 184, 0.12)', border: 'rgba(148, 163, 184, 0.35)' },
 };
 
@@ -436,7 +436,7 @@ export const GeometricDieHead: React.FC = () => {
               {/* Centerline */}
               <line x1={g.x0 - 20} y1={g.cy} x2={g.x1 + 20} y2={g.cy} stroke="rgba(255,255,255,0.35)" strokeWidth="1" strokeDasharray="14 4 3 4" />
               {/* Pitch line (upper) */}
-              <line x1={g.x0} y1={g.pdTopY} x2={g.x1} y2={g.pdTopY} stroke="rgba(0,240,255,0.45)" strokeWidth="1" strokeDasharray="5 4" />
+              <line x1={g.x0} y1={g.pdTopY} x2={g.x1} y2={g.pdTopY} stroke="rgba(244,144,44,0.45)" strokeWidth="1" strokeDasharray="5 4" />
 
               {/* PITCH callout */}
               <line x1={pc0} y1={g.majorTopY - 4} x2={pc0} y2={g.majorTopY - 26} stroke="#fff" strokeWidth="0.8" />
@@ -469,12 +469,12 @@ export const GeometricDieHead: React.FC = () => {
               <text x={g.x1 + 50} y={g.cy - 5} fill="#c084fc" fontSize="9" style={dimText}>{dual(minorDisp)}</text>
 
               {/* PITCH DIA dim */}
-              <line x1={g.x1 + 92} y1={g.pdTopY} x2={g.x1 + 92} y2={g.pdBotY} stroke="#00f0ff" strokeWidth="0.9" />
-              <line x1={g.x1 - 2} y1={g.pdTopY} x2={g.x1 + 96} y2={g.pdTopY} stroke="rgba(0,240,255,0.35)" strokeWidth="0.6" />
-              <line x1={g.x1 - 2} y1={g.pdBotY} x2={g.x1 + 96} y2={g.pdBotY} stroke="rgba(0,240,255,0.35)" strokeWidth="0.6" />
-              <text x={g.x1 + 98} y={g.cy + 12} fill="#00f0ff" fontSize="9" style={dimText}>PITCH</text>
-              <text x={g.x1 + 98} y={g.cy + 22} fill="#00f0ff" fontSize="9" style={dimText}>DIA.</text>
-              <text x={g.x1 + 98} y={g.cy + 33} fill="#00f0ff" fontSize="9" style={dimText}>{dual(pdDisp)}</text>
+              <line x1={g.x1 + 92} y1={g.pdTopY} x2={g.x1 + 92} y2={g.pdBotY} stroke="#f4902c" strokeWidth="0.9" />
+              <line x1={g.x1 - 2} y1={g.pdTopY} x2={g.x1 + 96} y2={g.pdTopY} stroke="rgba(244,144,44,0.35)" strokeWidth="0.6" />
+              <line x1={g.x1 - 2} y1={g.pdBotY} x2={g.x1 + 96} y2={g.pdBotY} stroke="rgba(244,144,44,0.35)" strokeWidth="0.6" />
+              <text x={g.x1 + 98} y={g.cy + 12} fill="#f4902c" fontSize="9" style={dimText}>PITCH</text>
+              <text x={g.x1 + 98} y={g.cy + 22} fill="#f4902c" fontSize="9" style={dimText}>DIA.</text>
+              <text x={g.x1 + 98} y={g.cy + 33} fill="#f4902c" fontSize="9" style={dimText}>{dual(pdDisp)}</text>
 
               {/* MAJOR DIA dim */}
               <line x1={g.x1 + 140} y1={g.majorTopY} x2={g.x1 + 140} y2={g.majorBotY} stroke={typeColor.fg} strokeWidth="0.9" />
@@ -503,18 +503,18 @@ export const GeometricDieHead: React.FC = () => {
             {lim && specRow('Major Ø Max / Min', undefined)}
             {lim && specRow('· Max', lim.majorMax)}
             {lim && specRow('· Min', lim.majorMin)}
-            {specRow('Pitch Ø Max', lim ? lim.pdMax : pdBasic, { accent: '#00f0ff', calc: !lim })}
+            {specRow('Pitch Ø Max', lim ? lim.pdMax : pdBasic, { accent: '#f4902c', calc: !lim })}
             {lim ? specRow('Pitch Ø Min', lim.pdMin) : specRow('Minor Ø Basic', minorBasic, { calc: true })}
             {lim && specRow('Minor Ø Max', lim.minorMax)}
             {specRow(isMetric ? 'Pitch (P)' : `Pitch (1/${sel.tpiOrPitch} TPI)`, pitch)}
           </div>
 
           {/* 3-Wire Measurement */}
-          <div style={{ background: 'rgba(0, 240, 255, 0.05)', border: '1px solid rgba(0, 240, 255, 0.2)', padding: '12px 16px', borderRadius: '8px' }}>
+          <div style={{ background: 'rgba(244, 144, 44, 0.05)', border: '1px solid rgba(244, 144, 44, 0.2)', padding: '12px 16px', borderRadius: '8px' }}>
             <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
               3-WIRE PITCH Ø CHECK
             </div>
-            {specRow('Best Wire Size (0.57735·P)', bestWire, { accent: '#00f0ff' })}
+            {specRow('Best Wire Size (0.57735·P)', bestWire, { accent: '#f4902c' })}
             {specRow('Measure Over Wires Max', mowMax, { calc: !lim })}
             {mowMin !== undefined && specRow('Measure Over Wires Min', mowMin)}
             <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', margin: '8px 0 0', lineHeight: 1.5 }}>

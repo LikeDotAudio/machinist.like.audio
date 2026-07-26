@@ -85,7 +85,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -94,7 +94,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Machinist Calculator #4
         </div>
@@ -185,7 +185,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
                   type="button"
                   onClick={() => setBarLength(p)}
                   style={{
-                    background: barLength === p ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
+                    background: barLength === p ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                     border: `1px solid ${barLength === p ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                     color: barLength === p ? 'var(--accent-cyan)' : 'var(--text-primary)',
                     padding: '4px 10px',
@@ -286,12 +286,12 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
             borderRadius: 'var(--radius-md)',
             border: '2px solid var(--accent-cyan)',
             textAlign: 'center',
-            boxShadow: '0 15px 35px -10px rgba(0, 240, 255, 0.2)'
+            boxShadow: '0 15px 35px -10px rgba(244, 144, 44, 0.2)'
           }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '10px', fontWeight: 600 }}>
               {calcMode === 'findHeight' ? 'GAGE BLOCK STACK HEIGHT (H)' : 'INCLINATION ANGLE (θ)'}
             </span>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 800, color: '#00f0ff', textShadow: '0 0 20px rgba(0, 240, 255, 0.5)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 800, color: '#f4902c', textShadow: '0 0 20px rgba(244, 144, 44, 0.5)' }}>
               {calcMode === 'findHeight' ? calculatedHeight.toFixed(decPlaces) : activeAngleDeg.toFixed(4) + '°'}
             </div>
             <span style={{ fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 600, display: 'block', marginTop: '4px' }}>
@@ -310,7 +310,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
                   gap: '8px',
                   fontSize: '0.95rem',
                   fontWeight: 700,
-                  background: 'linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(0, 128, 255, 0.2))',
+                  background: 'linear-gradient(90deg, rgba(244, 144, 44, 0.2), rgba(0, 128, 255, 0.2))',
                   border: '1px solid var(--accent-cyan)',
                   color: '#fff',
                   cursor: 'pointer',
@@ -370,7 +370,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
                       width="32"
                       height={Math.max(2, 110 - blockTopY)}
                       fill="url(#blockGrad)"
-                      stroke="#00f0ff"
+                      stroke="#f4902c"
                       strokeWidth="1.5"
                       rx="1"
                     />
@@ -380,7 +380,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
                         <stop offset="100%" stopColor="#0369a1" />
                       </linearGradient>
                     </defs>
-                    <text x={rightX + 24} y={(blockTopY + 110) / 2 + 4} fill="#00f0ff" fontSize="11" fontWeight="700" fontFamily="var(--font-mono)">
+                    <text x={rightX + 24} y={(blockTopY + 110) / 2 + 4} fill="#f4902c" fontSize="11" fontWeight="700" fontFamily="var(--font-mono)">
                       H={calculatedHeight.toFixed(decPlaces)}
                     </text>
 

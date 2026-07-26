@@ -127,7 +127,7 @@ export const TapDrillDie: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -136,7 +136,7 @@ export const TapDrillDie: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Machinist Calculator #5
         </div>
@@ -229,7 +229,7 @@ export const TapDrillDie: React.FC = () => {
                           onClick={() => handleSelectThread(idx)}
                           style={{
                             borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                            background: isSel ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
+                            background: isSel ? 'rgba(244, 144, 44, 0.15)' : 'transparent',
                             cursor: 'pointer',
                             transition: 'background 0.15s ease'
                           }}
@@ -306,7 +306,7 @@ export const TapDrillDie: React.FC = () => {
               {theoreticalDrillDia.toFixed(decPlaces)} <span style={{ fontSize: '1.2rem' }}>{unitStr}</span>
             </div>
             {!isCustom && activeThread && (
-              <span style={{ display: 'inline-block', background: 'rgba(0, 240, 255, 0.15)', color: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600, marginTop: '10px' }}>
+              <span style={{ display: 'inline-block', background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600, marginTop: '10px' }}>
                 Standard Toolroom Tap Drill: {activeThread.standardDrill}
               </span>
             )}

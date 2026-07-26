@@ -111,7 +111,7 @@ export const Knurling: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -120,7 +120,7 @@ export const Knurling: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Machinist Calculator #6
         </div>
@@ -246,15 +246,15 @@ export const Knurling: React.FC = () => {
               borderRadius: 'var(--radius-md)',
               border: '2px solid var(--accent-cyan)',
               textAlign: 'center',
-              boxShadow: '0 15px 35px -10px rgba(0, 240, 255, 0.2)'
+              boxShadow: '0 15px 35px -10px rgba(244, 144, 44, 0.2)'
             }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>
                 OPTIMAL BLANK DIAMETER ({bestCandidate.teeth} EXACT TEETH)
               </span>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 800, color: '#00f0ff', textShadow: '0 0 20px rgba(0, 240, 255, 0.5)' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 800, color: '#f4902c', textShadow: '0 0 20px rgba(244, 144, 44, 0.5)' }}>
                 {bestCandidate.diameter.toFixed(decPlaces)} <span style={{ fontSize: '1.2rem' }}>{unitStr}</span>
               </div>
-              <span style={{ display: 'inline-block', background: 'rgba(0, 240, 255, 0.15)', color: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600, marginTop: '10px' }}>
+              <span style={{ display: 'inline-block', background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600, marginTop: '10px' }}>
                 {bestCandidate.diffFromTarget >= 0 ? `+${bestCandidate.diffFromTarget.toFixed(decPlaces)}` : bestCandidate.diffFromTarget.toFixed(decPlaces)} {unitStr} from your entered target
               </span>
             </div>

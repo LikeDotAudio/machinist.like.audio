@@ -156,7 +156,7 @@ export const ThreadingChangeGears: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -165,7 +165,7 @@ export const ThreadingChangeGears: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Machinist Calculator #7
         </div>
@@ -217,7 +217,7 @@ export const ThreadingChangeGears: React.FC = () => {
             </div>
 
             {/* Target Thread */}
-            <div style={{ background: 'var(--bg-primary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.4)' }}>
+            <div style={{ background: 'var(--bg-primary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(244, 144, 44, 0.4)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <label style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                   Target Thread Pitch
@@ -268,7 +268,7 @@ export const ThreadingChangeGears: React.FC = () => {
                   onClick={() => handleToggleGear(g)}
                   title="Click to remove gear"
                   style={{
-                    background: g === 127 ? 'rgba(0, 255, 128, 0.2)' : 'rgba(0, 240, 255, 0.15)',
+                    background: g === 127 ? 'rgba(0, 255, 128, 0.2)' : 'rgba(244, 144, 44, 0.15)',
                     border: `1px solid ${g === 127 ? '#00ff80' : 'var(--accent-cyan)'}`,
                     color: g === 127 ? '#00ff80' : 'var(--accent-cyan)',
                     padding: '4px 10px',
@@ -339,7 +339,7 @@ export const ThreadingChangeGears: React.FC = () => {
                       key={idx}
                       style={{
                         borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                        background: r.errorPercent === 0 ? 'rgba(0, 255, 128, 0.12)' : r.errorPercent < 0.1 ? 'rgba(0, 240, 255, 0.08)' : 'transparent',
+                        background: r.errorPercent === 0 ? 'rgba(0, 255, 128, 0.12)' : r.errorPercent < 0.1 ? 'rgba(244, 144, 44, 0.08)' : 'transparent',
                         fontWeight: r.errorPercent === 0 ? 700 : 400
                       }}
                     >

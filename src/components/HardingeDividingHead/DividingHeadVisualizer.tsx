@@ -8,6 +8,7 @@ interface DividingHeadVisualizerProps {
   remainingHoles: number;        // e.g. 3
   totalHoles: number;            // e.g. 21
   ratio: number;                 // e.g. 4
+  divisions: number;             // e.g. 24 — full cycle animates every division
 }
 
 export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
@@ -17,10 +18,11 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
   fullTurns,
   remainingHoles,
   totalHoles,
-  ratio
+  ratio,
+  divisions
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [animProgress, setAnimProgress] = useState<number>(1); // 0 to 1
+  const [animProgress, setAnimProgress] = useState<number>(1); // 0 to 1 across the FULL cycle (all divisions)
   const [animSpeed, setAnimSpeed] = useState<number>(1); // 0.5, 1, 2
   const [showSectors, setShowSectors] = useState<boolean>(true);
   const [manualMode, setManualMode] = useState<boolean>(false);
@@ -28,46 +30,62 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
   const animRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
-  // Total rotation angle needed for this indexing step in degrees
+  // Rotation angle for ONE indexing step in degrees
   const sectorAngleDeg = (360 * remainingHoles) / selectedCircleHoles;
-  const totalRotationDeg = fullTurns * 360 + sectorAngleDeg;
+  const stepRotationDeg = fullTurns * 360 + sectorAngleDeg;
 
-  // Calculate current crank angle based on progress (starting at -90 deg / 12 o'clock)
-  const currentRotationDeg = animProgress * totalRotationDeg;
+  // Full cycle = one indexing step per division (crank ends at ratio × 360°, work back at 0°)
+  const D = Math.max(1, divisions);
+  const stepFloat = Math.min(animProgress, 1) * D;
+  const stepIndex = Math.min(D - 1, Math.floor(stepFloat + 1e-9));
+  const stepFrac = animProgress >= 1 ? 1 : stepFloat - stepIndex;
+  // Within each step: ease-out cubic into the hole, then a short dwell while the pin is engaged
+  const DWELL = 0.22;
+  const moveFrac = stepFrac >= 1 - DWELL ? 1 : 1 - Math.pow(1 - stepFrac / (1 - DWELL), 3);
+  const pinEngaged = stepFrac >= 1 - DWELL || animProgress >= 1;
+
+  // Crank angle accumulated across completed steps + current step (starting at -90 deg / 12 o'clock)
+  const currentRotationDeg = (stepIndex + moveFrac) * stepRotationDeg;
+  const stepLocalRotationDeg = moveFrac * stepRotationDeg;
   const handleAngleDeg = -90 + currentRotationDeg;
   const handleAngleRad = (handleAngleDeg * Math.PI) / 180;
+  // Work spindle angle (crank reduced through the worm)
+  const spindleAngleDeg = currentRotationDeg / ratio;
 
-  // Calculate current full turns completed during animation
-  const currentTurnCount = Math.floor(currentRotationDeg / 360 + 1e-5);
-  // Calculate current hole reached on the selected circle
-  const currentHoleCount = Math.round(((currentRotationDeg % 360) / 360) * selectedCircleHoles);
+  // Full turns / holes progress within the CURRENT step
+  const currentTurnCount = Math.floor(stepLocalRotationDeg / 360 + 1e-5);
+  const currentHoleCount = Math.round(((stepLocalRotationDeg % 360) / 360) * selectedCircleHoles);
+
+  // Sector arms advance with each completed index step
+  const armBaseAngleDeg = (stepIndex * sectorAngleDeg) % 360;
 
   // Restart animation when plate or match selection changes
   useEffect(() => {
     setIsPlaying(false);
     setAnimProgress(1);
     setManualMode(false);
-  }, [plateName, selectedCircleHoles, fullTurns, remainingHoles]);
+  }, [plateName, selectedCircleHoles, fullTurns, remainingHoles, divisions]);
 
-  // Animation loop
+  // Animation loop — runs the full cycle through all divisions
   useEffect(() => {
     if (!isPlaying) {
       if (animRef.current) cancelAnimationFrame(animRef.current);
       return;
     }
 
-    // Total duration in ms: approx 1500ms per full turn + 1000ms for sector, adjusted by speed
-    const baseDuration = Math.max(1500, (fullTurns * 1200 + (remainingHoles > 0 ? 800 : 0)));
-    const duration = baseDuration / animSpeed;
+    // Per-step duration ≈ 1000ms per full turn + 700ms sector + dwell; full cycle capped at ~36s at 1x
+    const perStep = Math.max(1100, fullTurns * 1000 + (remainingHoles > 0 ? 700 : 0));
+    const duration = Math.min(perStep * D, 36000) / animSpeed;
 
     const animate = (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      if (!startTimeRef.current) {
+        // Resume from a paused position instead of restarting
+        startTimeRef.current = timestamp - animProgress * duration;
+      }
       const elapsed = timestamp - startTimeRef.current;
       const progress = Math.min(1, elapsed / duration);
 
-      // Ease out cubic for realistic mechanical deceleration into the hole
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      setAnimProgress(easedProgress);
+      setAnimProgress(progress);
 
       if (progress < 1) {
         animRef.current = requestAnimationFrame(animate);
@@ -83,7 +101,8 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, [isPlaying, animSpeed, fullTurns, remainingHoles]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, animSpeed, fullTurns, remainingHoles, D]);
 
   const handlePlayPause = () => {
     if (isPlaying) {
@@ -169,7 +188,7 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
               background: isPlaying ? 'linear-gradient(135deg, #ff4d4d, #c0392b)' : undefined
             }}
           >
-            <span>{isPlaying ? '⏸ Pause' : animProgress >= 1 ? '🔄 Replay Indexing' : '▶ Animate Indexing'}</span>
+            <span>{isPlaying ? '⏸ Pause' : animProgress >= 1 ? `🔄 Replay All ${D} Divisions` : '▶ Animate Indexing'}</span>
           </button>
 
           <button
@@ -246,6 +265,9 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
                 Septer Span: {remainingHoles} Holes ({sectorAngleDeg.toFixed(1)}°)
               </div>
             )}
+            <div style={{ color: 'var(--accent-cyan)', fontWeight: 700, fontSize: '0.75rem', marginTop: '2px' }}>
+              Division {Math.min(stepIndex + 1, D)} / {D}
+            </div>
           </div>
 
           <svg viewBox="-240 -240 480 480" style={{ width: '100%', maxWidth: '420px', height: 'auto', overflow: 'visible' }}>
@@ -269,15 +291,17 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
             <circle cx="0" cy="0" r="225" fill="url(#metallicPlate)" stroke="#475569" strokeWidth="4" />
             <circle cx="0" cy="0" r="220" fill="none" stroke="#64748b" strokeWidth="1" strokeDasharray="6 3" opacity="0.4" />
 
-            {/* Shaded Septers (Sector Arms Span) */}
+            {/* Shaded Septers (Sector Arms Span) — advances with each completed division */}
             {getSectorArcPath() && (
-              <path
-                d={getSectorArcPath()!}
-                fill="url(#brassSector)"
-                stroke="var(--accent-gold)"
-                strokeWidth="2"
-                strokeDasharray="5 3"
-              />
+              <g transform={`rotate(${armBaseAngleDeg})`}>
+                <path
+                  d={getSectorArcPath()!}
+                  fill="url(#brassSector)"
+                  stroke="var(--accent-gold)"
+                  strokeWidth="2"
+                  strokeDasharray="5 3"
+                />
+              </g>
             )}
 
             {/* Concentric Hole Circles */}
@@ -291,10 +315,13 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
                 const hx = r * Math.cos(angleRad);
                 const hy = r * Math.sin(angleRad);
 
+                // Start/target holes advance around the circle as divisions complete
+                const startHoleIdx = (stepIndex * remainingHoles) % circleHoleCount;
+                const targetHoleIdx = ((stepIndex + 1) * remainingHoles) % circleHoleCount;
                 // Is this specific hole the target hole at the end of the sector arm?
-                const isTargetHole = isSelected && i === remainingHoles;
-                // Is this specific hole the zero/start hole?
-                const isStartHole = isSelected && i === 0;
+                const isTargetHole = isSelected && remainingHoles > 0 && i === targetHoleIdx;
+                // Is this specific hole the current start hole?
+                const isStartHole = isSelected && i === startHoleIdx;
 
                 holes.push(
                   <circle
@@ -305,7 +332,7 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
                     fill={
                       isTargetHole ? '#00ff80' :
                       isStartHole ? '#ffaa00' :
-                      isSelected ? '#00f0ff' : '#475569'
+                      isSelected ? '#f4902c' : '#475569'
                     }
                     stroke={isTargetHole ? '#fff' : isSelected ? '#00a8ff' : 'none'}
                     strokeWidth={isTargetHole ? 2 : 1}
@@ -345,29 +372,34 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
               );
             })}
 
-            {/* Brass Sector Arm A (Zero Angle / Start Arm) */}
+            {/* Brass Sector Arm A (Start Arm — follows completed divisions) */}
             {showSectors && remainingHoles > 0 && (
-              <g>
+              <g transform={`rotate(${armBaseAngleDeg})`}>
                 <line x1="0" y1="0" x2="0" y2="-215" stroke="var(--accent-gold)" strokeWidth="4" strokeLinecap="round" />
                 <polygon points="-6,-180 6,-180 0,-215" fill="var(--accent-gold)" />
                 <circle cx="0" cy="-215" r="5" fill="#fff" stroke="var(--accent-gold)" strokeWidth="2" />
                 <text x="12" y="-195" fill="var(--accent-gold)" fontSize="10px" fontWeight="700" fontFamily="var(--font-mono)">
-                  Arm A (Hole 0)
+                  Arm A
                 </text>
               </g>
             )}
 
             {/* Brass Sector Arm B (Target Angle / End Arm) */}
             {showSectors && remainingHoles > 0 && (
-              <g transform={`rotate(${sectorAngleDeg})`}>
+              <g transform={`rotate(${armBaseAngleDeg + sectorAngleDeg})`}>
                 <line x1="0" y1="0" x2="0" y2="-215" stroke="var(--accent-gold)" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 2" />
                 <polygon points="-6,-180 6,-180 0,-215" fill="var(--accent-gold)" />
                 <circle cx="0" cy="-215" r="6" fill="#00ff80" stroke="#fff" strokeWidth="2" filter="url(#glowCyan)" />
                 <text x="-12" y="-195" textAnchor="end" fill="#00ff80" fontSize="10px" fontWeight="700" fontFamily="var(--font-mono)">
-                  Arm B (Hole {remainingHoles})
+                  Arm B (+{remainingHoles})
                 </text>
               </g>
             )}
+
+            {/* Work Spindle Rotation Marker (crank ÷ worm ratio) */}
+            <g transform={`rotate(${spindleAngleDeg})`}>
+              <line x1="0" y1="-8" x2="0" y2="-30" stroke="#00ff80" strokeWidth="3" strokeLinecap="round" />
+            </g>
 
             {/* Rotating Crank Handle & Plunger Pin Assembly */}
             <g>
@@ -405,7 +437,7 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
                 cx={handleX}
                 cy={handleY}
                 r="6"
-                fill={animProgress >= 1 ? '#00ff80' : 'var(--accent-cyan)'}
+                fill={pinEngaged ? '#00ff80' : 'var(--accent-cyan)'}
                 filter="url(#glowCyan)"
               />
             </g>
@@ -430,23 +462,31 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontFamily: 'var(--font-mono)' }}>
               <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Full Spindle Turns:</div>
-                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff' }}>{currentTurnCount} / {fullTurns}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Division:</div>
+                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>{Math.min(stepIndex + 1, D)} / {D}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Work Rotation:</div>
+                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#00ff80' }}>{spindleAngleDeg.toFixed(1)}°</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Crank Turns (this step):</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>{currentTurnCount} / {fullTurns}</div>
               </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Hole on Circle:</div>
-                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#00ff80' }}>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00ff80' }}>
                   {currentHoleCount} <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>/ {remainingHoles}</span>
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Current Crank Angle:</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Total Crank Angle:</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>{currentRotationDeg.toFixed(1)}°</div>
               </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Plunger Status:</div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: animProgress >= 1 ? '#00ff80' : '#ffaa00' }}>
-                  {animProgress >= 1 ? '🟢 ENGAGED' : '🟡 ROTATING...'}
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: pinEngaged ? '#00ff80' : '#ffaa00' }}>
+                  {pinEngaged ? '🟢 ENGAGED' : '🟡 ROTATING...'}
                 </div>
               </div>
               <div>
@@ -486,8 +526,8 @@ export const DividingHeadVisualizer: React.FC<DividingHeadVisualizerProps> = ({
             />
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '6px' }}>
-              <span>Start (0 Turns, Hole 0)</span>
-              <span>Target ({fullTurns}T + {remainingHoles}H)</span>
+              <span>Start (Division 1)</span>
+              <span>Full Cycle ({D} × [{fullTurns}T + {remainingHoles}H])</span>
             </div>
           </div>
 

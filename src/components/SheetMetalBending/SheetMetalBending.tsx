@@ -250,7 +250,7 @@ export const SheetMetalBending: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '25px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -259,7 +259,7 @@ export const SheetMetalBending: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '10px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Sheet Metal & Plastic Forming // SendCutSend Standard
         </div>
@@ -433,7 +433,7 @@ export const SheetMetalBending: React.FC = () => {
             )}
 
             {/* Active Spec Mini Dashboard */}
-            <div style={{ background: 'rgba(0, 240, 255, 0.05)', border: '1px solid rgba(0, 240, 255, 0.2)', borderRadius: '8px', padding: '12px 16px', marginBottom: '25px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center' }}>
+            <div style={{ background: 'rgba(244, 144, 44, 0.05)', border: '1px solid rgba(244, 144, 44, 0.2)', borderRadius: '8px', padding: '12px 16px', marginBottom: '25px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', textAlign: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>K-Factor</div>
                 <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}>
@@ -581,7 +581,7 @@ export const SheetMetalBending: React.FC = () => {
 
               {/* HERO RESULT: TOTAL FLAT PATTERN LENGTH */}
               <div style={{ 
-                background: 'linear-gradient(135deg, rgba(0, 255, 128, 0.12), rgba(0, 240, 255, 0.08))', 
+                background: 'linear-gradient(135deg, rgba(0, 255, 128, 0.12), rgba(244, 144, 44, 0.08))', 
                 border: '2px solid rgba(0, 255, 128, 0.5)', 
                 borderRadius: '12px', 
                 padding: '24px', 
@@ -614,7 +614,7 @@ export const SheetMetalBending: React.FC = () => {
                   border: 'none',
                   cursor: 'pointer',
                   marginBottom: '25px',
-                  boxShadow: '0 4px 15px rgba(0, 240, 255, 0.3)',
+                  boxShadow: '0 4px 15px rgba(244, 144, 44, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -650,7 +650,7 @@ export const SheetMetalBending: React.FC = () => {
 
               {/* BEND LINE LOCATIONS FROM OUTER EDGES */}
               {calculations.numBends > 0 && (
-                <div style={{ background: 'rgba(0, 240, 255, 0.04)', borderRadius: '8px', border: '1px solid rgba(0, 240, 255, 0.3)', padding: '16px', marginBottom: '20px' }}>
+                <div style={{ background: 'rgba(244, 144, 44, 0.04)', borderRadius: '8px', border: '1px solid rgba(244, 144, 44, 0.3)', padding: '16px', marginBottom: '20px' }}>
                   <h4 style={{ fontSize: '0.85rem', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>📍</span> Press Brake Bend Line Layout (From Outer Edge)
                   </h4>
@@ -738,7 +738,7 @@ export const SheetMetalBending: React.FC = () => {
               1. Flat Pattern Layout (Top View Blank) — Total Cut Length: {calculations.flatLength.toFixed(3)} {unitLabel}
             </h4>
 
-            <svg viewBox="0 0 800 180" style={{ width: '100%', height: 'auto', background: '#0a0e17', borderRadius: '8px', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
+            <svg viewBox="0 0 800 180" style={{ width: '100%', height: 'auto', background: '#0a0e17', borderRadius: '8px', border: '1px solid rgba(244, 144, 44, 0.2)' }}>
               <defs>
                 <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
                   <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="1" />
@@ -761,7 +761,7 @@ export const SheetMetalBending: React.FC = () => {
                 return (
                   <g>
                     {/* Blank outline */}
-                    <rect x={margin} y={y0} width={availableW} height={h} fill="rgba(0, 240, 255, 0.15)" stroke="var(--accent-cyan)" strokeWidth="2" rx="2" />
+                    <rect x={margin} y={y0} width={availableW} height={h} fill="rgba(244, 144, 44, 0.15)" stroke="var(--accent-cyan)" strokeWidth="2" rx="2" />
 
                     {/* Overall dimension bar */}
                     <line x1={margin} y1={25} x2={margin + availableW} y2={25} stroke="#fff" strokeWidth="1.5" />
@@ -821,7 +821,7 @@ export const SheetMetalBending: React.FC = () => {
               2. Formed Profile Preview (Side Elevation View @ {bendAngle}° Bends)
             </h4>
 
-            <svg viewBox="0 0 800 220" style={{ width: '100%', height: 'auto', background: '#0a0e17', borderRadius: '8px', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
+            <svg viewBox="0 0 800 220" style={{ width: '100%', height: 'auto', background: '#0a0e17', borderRadius: '8px', border: '1px solid rgba(244, 144, 44, 0.2)' }}>
               <rect width="800" height="220" fill="url(#grid)" />
 
               {/* Render 2D U-channel or L-bracket representation */}
@@ -942,7 +942,7 @@ export const SheetMetalBending: React.FC = () => {
                       background: idx % 2 === 0 ? 'rgba(255, 255, 255, 0.01)' : 'transparent',
                       transition: 'background 0.15s ease'
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(0, 240, 255, 0.08)')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(244, 144, 44, 0.08)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = idx % 2 === 0 ? 'rgba(255, 255, 255, 0.01)' : 'transparent')}
                   >
                     <td style={{ padding: '10px 14px', fontWeight: 700, color: '#fff', fontFamily: 'var(--font-sans)' }}>{spec.material}</td>
@@ -977,9 +977,9 @@ export const SheetMetalBending: React.FC = () => {
                           setActiveTab('calculator');
                         }}
                         style={{
-                          background: 'rgba(0, 240, 255, 0.15)',
+                          background: 'rgba(244, 144, 44, 0.15)',
                           color: 'var(--accent-cyan)',
-                          border: '1px solid rgba(0, 240, 255, 0.4)',
+                          border: '1px solid rgba(244, 144, 44, 0.4)',
                           padding: '4px 10px',
                           borderRadius: '4px',
                           fontSize: '0.72rem',

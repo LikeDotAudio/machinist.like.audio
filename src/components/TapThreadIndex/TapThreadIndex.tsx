@@ -233,7 +233,7 @@ export const TapThreadIndex: React.FC = () => {
                       alignItems: 'center',
                       padding: '12px 14px',
                       borderRadius: '6px',
-                      background: isSelected ? 'linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(0, 128, 255, 0.1))' : 'transparent',
+                      background: isSelected ? 'linear-gradient(90deg, rgba(244, 144, 44, 0.2), rgba(0, 128, 255, 0.1))' : 'transparent',
                       border: '1px solid',
                       borderColor: isSelected ? 'var(--accent-cyan)' : 'transparent',
                       cursor: 'pointer',
@@ -246,7 +246,7 @@ export const TapThreadIndex: React.FC = () => {
                     </div>
                     <div style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>TAP DRILL</span>
-                      <strong style={{ color: '#00f0ff', fontSize: '1rem' }}>{thr.drillMm} mm</strong>
+                      <strong style={{ color: '#f4902c', fontSize: '1rem' }}>{thr.drillMm} mm</strong>
                     </div>
                   </div>
                 );
@@ -347,8 +347,8 @@ export const TapThreadIndex: React.FC = () => {
               {/* Dimension callouts */}
               {activeTab === 'metric' && (
                 <>
-                  <line x1="140" y1="20" x2="240" y2="20" stroke="#00f0ff" strokeWidth="1" />
-                  <text x="190" y="16" fill="#00f0ff" fontSize="9" fontWeight="700" textAnchor="middle" fontFamily="var(--font-mono)">
+                  <line x1="140" y1="20" x2="240" y2="20" stroke="#f4902c" strokeWidth="1" />
+                  <text x="190" y="16" fill="#f4902c" fontSize="9" fontWeight="700" textAnchor="middle" fontFamily="var(--font-mono)">
                     Pitch (P) = {selMetric.pitch} mm
                   </text>
                   <text x="150" y="80" fill="#fff" fontSize="8" fontWeight="700" fontFamily="var(--font-mono)">

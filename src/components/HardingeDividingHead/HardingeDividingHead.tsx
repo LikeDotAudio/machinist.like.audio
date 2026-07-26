@@ -180,29 +180,11 @@ export const HardingeDividingHead: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 0' }} className="animate-fade-in">
-      {/* Header Banner */}
-      <div style={{ textAlign: 'center', marginBottom: '35px' }}>
-        <div style={{ 
-          display: 'inline-block', 
-          background: 'rgba(0, 240, 255, 0.1)', 
-          color: 'var(--accent-cyan)', 
-          padding: '4px 14px', 
-          borderRadius: '20px', 
-          fontSize: '0.75rem', 
-          fontWeight: 700, 
-          letterSpacing: '1.5px', 
-          textTransform: 'uppercase', 
-          border: '1px solid rgba(0, 240, 255, 0.3)',
-          marginBottom: '10px'
-        }}>
-          Precision Indexing Lab
-        </div>
-        <h2 style={{ fontSize: '2.4rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px' }}>
-          HARDINGE <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// DIVIDING HEAD</span>
+      {/* Compact Title Bar */}
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px', margin: 0 }}>
+          ⚙️ HARDINGE <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// DIVIDING HEAD</span>
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '700px', margin: '10px auto 0 auto' }}>
-          Instant lookup and calculation engine for Hardinge dividing head index plates, hole circles, and crank handle turns required for cutting metric spur gears and precise angular divisions.
-        </p>
       </div>
 
       {/* Top Layout Grid: Visualizer Top-Left Priority */}
@@ -264,7 +246,7 @@ export const HardingeDividingHead: React.FC = () => {
                       key={val}
                       onClick={() => setDivisionsStr(val.toString())}
                       style={{
-                        background: isActive ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255, 255, 255, 0.04)',
+                        background: isActive ? 'rgba(244, 144, 44, 0.2)' : 'rgba(255, 255, 255, 0.04)',
                         border: `1px solid ${isActive ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                         color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
                         padding: '5px 10px',
@@ -356,7 +338,7 @@ export const HardingeDividingHead: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '10px',
-                    background: isChecked ? 'rgba(0, 240, 255, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                    background: isChecked ? 'rgba(244, 144, 44, 0.08)' : 'rgba(255, 255, 255, 0.02)',
                     border: `1px solid ${isChecked ? (isCustom ? 'var(--accent-gold)' : 'var(--accent-cyan)') : 'rgba(255, 255, 255, 0.08)'}`,
                     padding: '10px 14px',
                     borderRadius: 'var(--radius-sm)',
@@ -432,6 +414,7 @@ export const HardingeDividingHead: React.FC = () => {
               remainingHoles={activeVizMatch.remainingHoles}
               totalHoles={activeVizMatch.totalHoles}
               ratio={ratio}
+              divisions={D}
             />
           ) : (
             <DividingHeadVisualizer
@@ -442,6 +425,7 @@ export const HardingeDividingHead: React.FC = () => {
               remainingHoles={0}
               totalHoles={40}
               ratio={ratio}
+              divisions={D}
             />
           )}
         </div>
@@ -554,9 +538,9 @@ export const HardingeDividingHead: React.FC = () => {
                         window.scrollTo({ top: 350, behavior: 'smooth' });
                       }}
                       style={{
-                        background: activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? 'var(--accent-cyan)' : 'rgba(0, 240, 255, 0.15)',
+                        background: activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? 'var(--accent-cyan)' : 'rgba(244, 144, 44, 0.15)',
                         color: activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? '#000' : 'var(--accent-cyan)',
-                        border: '1px solid rgba(0, 240, 255, 0.4)',
+                        border: '1px solid rgba(244, 144, 44, 0.4)',
                         padding: '6px 12px',
                         borderRadius: '6px',
                         fontWeight: 700,
@@ -633,9 +617,9 @@ export const HardingeDividingHead: React.FC = () => {
                                 window.scrollTo({ top: 350, behavior: 'smooth' });
                               }}
                               style={{
-                                background: activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? 'var(--accent-cyan)' : 'rgba(0, 240, 255, 0.15)',
+                                background: activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? 'var(--accent-cyan)' : 'rgba(244, 144, 44, 0.15)',
                                 color: activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? '#000' : 'var(--accent-cyan)',
-                                border: '1px solid rgba(0, 240, 255, 0.4)',
+                                border: '1px solid rgba(244, 144, 44, 0.4)',
                                 padding: '4px 10px',
                                 borderRadius: '4px',
                                 fontWeight: 700,
@@ -709,6 +693,16 @@ export const HardingeDividingHead: React.FC = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Footer: tool description (kept out of the header per site convention) */}
+      <div className="glass-panel" style={{ marginTop: '30px', padding: '16px 22px' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
+          Precision Indexing Lab
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
+          Instant lookup and calculation engine for Hardinge dividing head index plates, hole circles, and crank handle turns required for cutting metric spur gears and precise angular divisions.
+        </p>
       </div>
     </div>
   );

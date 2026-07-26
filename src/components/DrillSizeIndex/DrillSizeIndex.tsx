@@ -503,7 +503,7 @@ export const DrillSizeIndex: React.FC = () => {
                     borderRadius: '20px',
                     border: '1px solid',
                     borderColor: selectedCategory === cat ? 'var(--accent-cyan)' : 'var(--border-color)',
-                    background: selectedCategory === cat ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-primary)',
+                    background: selectedCategory === cat ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-primary)',
                     color: selectedCategory === cat ? 'var(--accent-cyan)' : 'var(--text-secondary)',
                     fontWeight: 600,
                     fontSize: '0.82rem',
@@ -566,7 +566,7 @@ export const DrillSizeIndex: React.FC = () => {
                       alignItems: 'center',
                       padding: '10px 14px',
                       borderRadius: '6px',
-                      background: isSelected ? 'linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(0, 128, 255, 0.1))' : 'transparent',
+                      background: isSelected ? 'linear-gradient(90deg, rgba(244, 144, 44, 0.2), rgba(0, 128, 255, 0.1))' : 'transparent',
                       border: '1px solid',
                       borderColor: isSelected ? 'var(--accent-cyan)' : 'transparent',
                       cursor: 'pointer',
@@ -639,7 +639,7 @@ export const DrillSizeIndex: React.FC = () => {
             justifyContent: 'center',
             position: 'relative',
             minHeight: '260px',
-            boxShadow: '0 10px 30px rgba(0, 240, 255, 0.15)'
+            boxShadow: '0 10px 30px rgba(244, 144, 44, 0.15)'
           }}>
             <div style={{ position: 'absolute', top: '10px', left: '15px', fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
               118° STANDARD POINT TWIST DRILL PREVIEW

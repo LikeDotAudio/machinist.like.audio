@@ -13,6 +13,8 @@ import { SheetMetalBending } from './components/SheetMetalBending/SheetMetalBend
 import { GortonP12 } from './components/GortonP12/GortonP12';
 import { DrillSizeIndex } from './components/DrillSizeIndex/DrillSizeIndex';
 import { TapThreadIndex } from './components/TapThreadIndex/TapThreadIndex';
+import { GeometricDieHead } from './components/GeometricDieHead';
+import { MetricSpurGears } from './components/MetricSpurGears';
 import { useUnit } from './context/UnitContext';
 
 type TabType = 
@@ -30,6 +32,8 @@ type TabType =
   | 'gorton_p12'
   | 'drill_size_index'
   | 'tap_thread_index'
+  | 'geometric_die_head'
+  | 'spur_gears'
   | 'about';
 
 export function App() {
@@ -51,7 +55,9 @@ export function App() {
     'sheet_metal_bending',
     'gorton_p12',
     'drill_size_index',
-    'tap_thread_index'
+    'tap_thread_index',
+    'geometric_die_head',
+    'spur_gears'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -59,7 +65,7 @@ export function App() {
       <div style={{ textAlign: 'center', marginBottom: '25px' }}>
         <div style={{ 
           display: 'inline-block', 
-          background: 'rgba(0, 240, 255, 0.1)', 
+          background: 'rgba(244, 144, 44, 0.1)', 
           color: 'var(--accent-cyan)', 
           padding: '4px 14px', 
           borderRadius: '20px', 
@@ -68,7 +74,7 @@ export function App() {
           letterSpacing: '1px', 
           textTransform: 'uppercase', 
           marginBottom: '10px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Precision Engineering Suite
         </div>
@@ -144,7 +150,7 @@ export function App() {
         <div 
           onClick={() => setActiveTab('speeds_feeds')}
           className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00f0ff' }}
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f4902c' }}
           onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
         >
@@ -296,7 +302,7 @@ export function App() {
         <div 
           onClick={() => setActiveTab('drill_size_index')}
           className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00f0ff', background: 'linear-gradient(145deg, rgba(0, 240, 255, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f4902c', background: 'linear-gradient(145deg, rgba(244, 144, 44, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
           onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
         >
@@ -327,6 +333,44 @@ export function App() {
           </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
             Comprehensive ISO 724 Metric and USA screw tables with interactive SVG tooth profiles and recommended tap drill sizes.
+          </p>
+        </div>
+
+        {/* Card 14: NEW Geometric Die Head Chaser Selector */}
+        <div
+          onClick={() => setActiveTab('geometric_die_head')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #c084fc', background: 'linear-gradient(145deg, rgba(168, 85, 247, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔩</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
+              Geometric Die Head Chasers
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Chaser index for 5/16" Geometric die heads (D, DS, DSA, DJ) with live thread section SVG, Class 2A/3A limits, 3-wire checks, and blank diameters.
+          </p>
+        </div>
+
+        {/* Card 15: NEW Spur Gear Cutting (Metric & Imperial) */}
+        <div
+          onClick={() => setActiveTab('spur_gears')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80', background: 'linear-gradient(145deg, rgba(0, 255, 128, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚙️</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
+              Spur Gear Calculator
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Metric module & imperial spur gear dimensions with Hardinge pre-cut gear part numbers (M1–M6) and cutting depth data.
           </p>
         </div>
 
@@ -361,7 +405,7 @@ export function App() {
               fontWeight: 800,
               color: '#000',
               fontSize: '1.2rem',
-              boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)'
+              boxShadow: '0 0 15px rgba(244, 144, 44, 0.3)'
             }}>
               M
             </div>
@@ -479,6 +523,10 @@ export function App() {
           <DrillSizeIndex />
         ) : activeTab === 'tap_thread_index' ? (
           <TapThreadIndex />
+        ) : activeTab === 'geometric_die_head' ? (
+          <GeometricDieHead />
+        ) : activeTab === 'spur_gears' ? (
+          <MetricSpurGears />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>

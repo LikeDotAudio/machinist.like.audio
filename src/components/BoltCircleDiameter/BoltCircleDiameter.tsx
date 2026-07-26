@@ -82,28 +82,10 @@ export const BoltCircleDiameter: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1150px', margin: '0 auto', padding: '20px 0' }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
-        }}>
-          Machinist Calculator #3
-        </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Bolt Circle Diameter (BCD) Finder
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto', fontSize: '1.05rem' }}>
-          Reverse-engineer the exact Bolt Circle Diameter (PCD) of existing parts using standard calipers or center distances.
-        </p>
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          📏 Bolt Circle Diameter <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// BCD Finder</span>
+        </h2>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px', alignItems: 'start' }}>
@@ -187,7 +169,7 @@ export const BoltCircleDiameter: React.FC = () => {
                     onClick={() => setCaliperMode('outer')}
                     style={{
                       padding: '10px',
-                      background: caliperMode === 'outer' ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
+                      background: caliperMode === 'outer' ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                       border: `1px solid ${caliperMode === 'outer' ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                       color: caliperMode === 'outer' ? 'var(--accent-cyan)' : 'var(--text-primary)',
                       borderRadius: 'var(--radius-sm)',
@@ -202,7 +184,7 @@ export const BoltCircleDiameter: React.FC = () => {
                     onClick={() => setCaliperMode('inner')}
                     style={{
                       padding: '10px',
-                      background: caliperMode === 'inner' ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
+                      background: caliperMode === 'inner' ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                       border: `1px solid ${caliperMode === 'inner' ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                       color: caliperMode === 'inner' ? 'var(--accent-cyan)' : 'var(--text-primary)',
                       borderRadius: 'var(--radius-sm)',
@@ -282,13 +264,13 @@ export const BoltCircleDiameter: React.FC = () => {
             borderRadius: 'var(--radius-md)',
             border: '2px solid var(--accent-cyan)',
             textAlign: 'center',
-            boxShadow: '0 15px 35px -10px rgba(0, 240, 255, 0.2)',
+            boxShadow: '0 15px 35px -10px rgba(244, 144, 44, 0.2)',
             position: 'relative'
           }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '10px', fontWeight: 600 }}>
               EXACT BOLT CIRCLE DIAMETER (BCD)
             </span>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '3rem', fontWeight: 800, color: '#00f0ff', textShadow: '0 0 20px rgba(0, 240, 255, 0.5)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '3rem', fontWeight: 800, color: '#f4902c', textShadow: '0 0 20px rgba(244, 144, 44, 0.5)' }}>
               {bcd > 0 ? bcd.toFixed(decPlaces) : '---'}
             </div>
             <span style={{ fontSize: '1.1rem', color: 'var(--text-primary)', fontWeight: 600 }}>
@@ -340,6 +322,16 @@ export const BoltCircleDiameter: React.FC = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Footer: tool description (kept out of the header per site convention) */}
+      <div className="glass-panel" style={{ marginTop: '30px', padding: '16px 22px' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
+          Machinist Calculator #3
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
+          Reverse-engineer the exact Bolt Circle Diameter (PCD) of existing parts using standard calipers or center distances.
+        </p>
       </div>
     </div>
   );

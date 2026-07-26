@@ -156,7 +156,7 @@ export const MetricSpurGears: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{ 
           display: 'inline-block', 
-          background: 'rgba(0, 240, 255, 0.1)', 
+          background: 'rgba(244, 144, 44, 0.1)', 
           color: 'var(--accent-cyan)', 
           padding: '4px 14px', 
           borderRadius: '20px', 
@@ -165,7 +165,7 @@ export const MetricSpurGears: React.FC = () => {
           letterSpacing: '1px', 
           textTransform: 'uppercase', 
           marginBottom: '10px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Hardinge & DIN 13 T1 Metrology
         </div>
@@ -212,7 +212,7 @@ export const MetricSpurGears: React.FC = () => {
             <svg viewBox="-150 -150 300 300" style={{ width: '100%', height: '320px', overflow: 'visible' }}>
               <defs>
                 <radialGradient id="gearGrad1" cx="30%" cy="30%" r="70%">
-                  <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.3" />
+                  <stop offset="0%" stopColor="#f4902c" stopOpacity="0.3" />
                   <stop offset="100%" stopColor="#0080ff" stopOpacity="0.05" />
                 </radialGradient>
                 <radialGradient id="gearGrad2" cx="30%" cy="30%" r="70%">
@@ -464,14 +464,14 @@ export const MetricSpurGears: React.FC = () => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       padding: '10px 14px',
-                      background: row.highlight ? 'rgba(0, 240, 255, 0.08)' : 'var(--bg-primary)',
+                      background: row.highlight ? 'rgba(244, 144, 44, 0.08)' : 'var(--bg-primary)',
                       borderRadius: '6px',
-                      border: row.highlight ? '1px solid rgba(0, 240, 255, 0.3)' : '1px solid var(--border-color)',
+                      border: row.highlight ? '1px solid rgba(244, 144, 44, 0.3)' : '1px solid var(--border-color)',
                       cursor: 'pointer',
                       transition: 'background 0.15s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 240, 255, 0.15)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = row.highlight ? 'rgba(0, 240, 255, 0.08)' : 'var(--bg-primary)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(244, 144, 44, 0.15)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = row.highlight ? 'rgba(244, 144, 44, 0.08)' : 'var(--bg-primary)'}
                   >
                     <div>
                       <span style={{ fontSize: '0.88rem', fontWeight: row.highlight ? 700 : 600, color: 'var(--text-primary)' }}>{row.label}</span>

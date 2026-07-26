@@ -268,33 +268,11 @@ export const GortonP12: React.FC = () => {
   return (
     <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '20px 0' }}>
       
-      {/* Header Banner */}
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'rgba(245, 158, 11, 0.12)',
-          color: '#f59e0b',
-          padding: '5px 16px',
-          borderRadius: '20px',
-          fontSize: '0.82rem',
-          fontWeight: 700,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '12px',
-          border: '1px solid rgba(245, 158, 11, 0.3)'
-        }}>
-          <span>📜 Gorton Manual 2701-A Verified</span>
-          <span style={{ color: '#fff', opacity: 0.6 }}>|</span>
-          <span style={{ color: 'var(--text-secondary)' }}>Model P1-2 / P1-2 Heavy Duty</span>
-        </div>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Gorton P1-2 Pantomill Reduction & Setup Suite
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '780px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.6 }}>
-          Precision pantograph bar setting calculator, tracing stylus grinding rules, special reduction alignments, official material cutting speeds (RPM/SFM), and Model 727 roll attachment math.
-        </p>
+      {/* Compact Title Bar */}
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          📜 Gorton P1-2 Pantomill <span style={{ color: '#f59e0b', fontWeight: 400 }}>// Reduction & Setup Suite</span>
+        </h2>
       </div>
 
       {/* Mode Navigation & Unit Toggle */}
@@ -489,7 +467,7 @@ export const GortonP12: React.FC = () => {
               <div>
                 <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: calcTarget === 'ratio' ? 'var(--accent-cyan)' : 'var(--text-secondary)', textTransform: 'uppercase' }}>
                   <span>Reduction Ratio (e.g. 5 for 5:1)</span>
-                  {calcTarget === 'ratio' && <span style={{ color: '#00f0ff', fontWeight: 800 }}>[ CALCULATED ]</span>}
+                  {calcTarget === 'ratio' && <span style={{ color: '#f4902c', fontWeight: 800 }}>[ CALCULATED ]</span>}
                 </label>
                 <input
                   type="number"
@@ -503,9 +481,9 @@ export const GortonP12: React.FC = () => {
                   style={{ 
                     fontWeight: 700, 
                     fontSize: '1.2rem', 
-                    color: calcTarget === 'ratio' ? '#00f0ff' : '#fff',
-                    background: calcTarget === 'ratio' ? 'rgba(0, 240, 255, 0.08)' : 'var(--bg-tertiary)',
-                    borderColor: calcTarget === 'ratio' ? '#00f0ff' : 'var(--border-color)'
+                    color: calcTarget === 'ratio' ? '#f4902c' : '#fff',
+                    background: calcTarget === 'ratio' ? 'rgba(244, 144, 44, 0.08)' : 'var(--bg-tertiary)',
+                    borderColor: calcTarget === 'ratio' ? '#f4902c' : 'var(--border-color)'
                   }}
                 />
               </div>
@@ -515,7 +493,7 @@ export const GortonP12: React.FC = () => {
                 <div>
                   <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontWeight: 600, fontSize: '0.8rem', color: calcTarget === 'copy' ? 'var(--accent-cyan)' : 'var(--text-secondary)', textTransform: 'uppercase' }}>
                     <span>Master Copy Length</span>
-                    {calcTarget === 'copy' && <span style={{ color: '#00f0ff', fontWeight: 800 }}>[ CALC ]</span>}
+                    {calcTarget === 'copy' && <span style={{ color: '#f4902c', fontWeight: 800 }}>[ CALC ]</span>}
                   </label>
                   <input
                     type="number"
@@ -526,8 +504,8 @@ export const GortonP12: React.FC = () => {
                     className="input-precision"
                     style={{ 
                       fontWeight: 700, 
-                      color: calcTarget === 'copy' ? '#00f0ff' : '#fff',
-                      background: calcTarget === 'copy' ? 'rgba(0, 240, 255, 0.08)' : 'var(--bg-tertiary)'
+                      color: calcTarget === 'copy' ? '#f4902c' : '#fff',
+                      background: calcTarget === 'copy' ? 'rgba(244, 144, 44, 0.08)' : 'var(--bg-tertiary)'
                     }}
                   />
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
@@ -539,7 +517,7 @@ export const GortonP12: React.FC = () => {
                 <div>
                   <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontWeight: 600, fontSize: '0.8rem', color: calcTarget === 'work' ? 'var(--accent-cyan)' : 'var(--text-secondary)', textTransform: 'uppercase' }}>
                     <span>Finished Work Size</span>
-                    {calcTarget === 'work' && <span style={{ color: '#00f0ff', fontWeight: 800 }}>[ CALC ]</span>}
+                    {calcTarget === 'work' && <span style={{ color: '#f4902c', fontWeight: 800 }}>[ CALC ]</span>}
                   </label>
                   <input
                     type="number"
@@ -550,8 +528,8 @@ export const GortonP12: React.FC = () => {
                     className="input-precision"
                     style={{ 
                       fontWeight: 700, 
-                      color: calcTarget === 'work' ? '#00f0ff' : '#fff',
-                      background: calcTarget === 'work' ? 'rgba(0, 240, 255, 0.08)' : 'var(--bg-tertiary)'
+                      color: calcTarget === 'work' ? '#f4902c' : '#fff',
+                      background: calcTarget === 'work' ? 'rgba(244, 144, 44, 0.08)' : 'var(--bg-tertiary)'
                     }}
                   />
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
@@ -604,14 +582,14 @@ export const GortonP12: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', order: -1 }}>
             
             {/* EXACT BAR SETTING DASHBOARD */}
-            <div className="glass-panel" style={{ padding: '30px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.75) 100%)', borderTop: '3px solid #00f0ff' }}>
+            <div className="glass-panel" style={{ padding: '30px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.75) 100%)', borderTop: '3px solid #f4902c' }}>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px', marginBottom: '22px' }}>
                 <div>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
                     OFFICIAL GORTON FACTORY CALIBRATION
                   </span>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#00f0ff', marginTop: '4px' }}>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f4902c', marginTop: '4px' }}>
                     {ratio.toFixed(2)} : 1 Reduction Ratio Settings
                   </h3>
                 </div>
@@ -632,17 +610,17 @@ export const GortonP12: React.FC = () => {
                   background: 'var(--bg-primary)',
                   padding: '20px',
                   borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(0, 240, 255, 0.4)',
-                  boxShadow: '0 10px 25px -5px rgba(0, 240, 255, 0.15)',
+                  border: '1px solid rgba(244, 144, 44, 0.4)',
+                  boxShadow: '0 10px 25px -5px rgba(244, 144, 44, 0.15)',
                   position: 'relative'
                 }}>
-                  <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff', fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>
+                  <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(244, 144, 44, 0.2)', color: '#f4902c', fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>
                     LOWER BAR
                   </span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '6px', fontWeight: 700 }}>
                     SETTING DISTANCE
                   </span>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.2rem', fontWeight: 700, color: '#00f0ff', textShadow: '0 0 15px rgba(0, 240, 255, 0.4)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.2rem', fontWeight: 700, color: '#f4902c', textShadow: '0 0 15px rgba(244, 144, 44, 0.4)' }}>
                     {unit === 'imperial' ? lowerBarSettingInches.toFixed(3) : lowerBarSettingMm.toFixed(2)}
                   </div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginTop: '6px', lineHeight: 1.4 }}>
@@ -722,8 +700,8 @@ export const GortonP12: React.FC = () => {
                   <text x={stylusX} y={stylusY + 55} fill="#64748b" fontSize="10" textAnchor="middle" fontWeight="bold">COPY / MASTER TABLE</text>
 
                   {/* Work Table Outline (Left Side under Spindle) */}
-                  <rect x={spindleX - 45} y={spindleY - 35} width="90" height="70" fill="rgba(0, 240, 255, 0.04)" stroke="#00f0ff" strokeDasharray="4 2" rx="4" />
-                  <text x={spindleX} y={spindleY + 50} fill="#00f0ff" fontSize="10" textAnchor="middle" fontWeight="bold">WORK TABLE (ENGRAVING)</text>
+                  <rect x={spindleX - 45} y={spindleY - 35} width="90" height="70" fill="rgba(244, 144, 44, 0.04)" stroke="#f4902c" strokeDasharray="4 2" rx="4" />
+                  <text x={spindleX} y={spindleY + 50} fill="#f4902c" fontSize="10" textAnchor="middle" fontWeight="bold">WORK TABLE (ENGRAVING)</text>
 
                   {/* LINKAGE BARS */}
                   {/* 1. Tracer Arm (Long Arm from Pivot to Stylus) */}
@@ -731,7 +709,7 @@ export const GortonP12: React.FC = () => {
                   <line x1={anchorX} y1={anchorY} x2={stylusX} y2={stylusY} stroke="#cbd5e1" strokeWidth="4" strokeLinecap="round" />
 
                   {/* 2. Lower Slider Bar (From Lower Block to Spindle Link) */}
-                  <line x1={lowerBlockX} y1={lowerBlockY} x2={spindleX} y2={spindleY} stroke="#00f0ff" strokeWidth="7" strokeLinecap="round" />
+                  <line x1={lowerBlockX} y1={lowerBlockY} x2={spindleX} y2={spindleY} stroke="#f4902c" strokeWidth="7" strokeLinecap="round" />
                   <line x1={lowerBlockX} y1={lowerBlockY} x2={spindleX} y2={spindleY} stroke="#7dd3fc" strokeWidth="3" strokeLinecap="round" />
 
                   {/* 3. Upper Slider Bar (Parallel support) */}
@@ -747,8 +725,8 @@ export const GortonP12: React.FC = () => {
                   <text x={anchorX - 15} y={anchorY - 12} fill="#cbd5e1" fontSize="11" fontWeight="bold">Column Pivot</text>
 
                   {/* Lower Slider Block (Graduation setting point!) */}
-                  <rect x={lowerBlockX - 12} y={lowerBlockY - 12} width="24" height="24" fill="#00f0ff" stroke="#000" strokeWidth="2" rx="4" />
-                  <text x={lowerBlockX + 18} y={lowerBlockY + 4} fill="#00f0ff" fontSize="11" fontWeight="bold">Lower Block ("F")</text>
+                  <rect x={lowerBlockX - 12} y={lowerBlockY - 12} width="24" height="24" fill="#f4902c" stroke="#000" strokeWidth="2" rx="4" />
+                  <text x={lowerBlockX + 18} y={lowerBlockY + 4} fill="#f4902c" fontSize="11" fontWeight="bold">Lower Block ("F")</text>
 
                   {/* Upper Slider Block */}
                   <rect x={upperBlockX - 10} y={upperBlockY - 10} width="20" height="20" fill="#f59e0b" stroke="#000" strokeWidth="2" rx="4" />
@@ -767,7 +745,7 @@ export const GortonP12: React.FC = () => {
 
                 {/* Telemetry Footer Overlay */}
                 <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(15, 23, 42, 0.9)', padding: '6px 12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
-                  <span>Ratio: </span><strong style={{ color: '#00f0ff' }}>{ratio.toFixed(2)} : 1</strong>
+                  <span>Ratio: </span><strong style={{ color: '#f4902c' }}>{ratio.toFixed(2)} : 1</strong>
                 </div>
                 <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(15, 23, 42, 0.9)', padding: '6px 12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
                   <span>Scale Notch: </span><strong style={{ color: '#f59e0b' }}>Fig "{Math.round(ratio)}"</strong>
@@ -776,7 +754,7 @@ export const GortonP12: React.FC = () => {
 
               <div style={{ display: 'flex', gap: '25px', marginTop: '14px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '10px', height: '10px', background: '#00f0ff', borderRadius: '2px', display: 'inline-block' }}></span>
+                  <span style={{ width: '10px', height: '10px', background: '#f4902c', borderRadius: '2px', display: 'inline-block' }}></span>
                   <span>Lower Bar ("E" / "F")</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -851,7 +829,7 @@ export const GortonP12: React.FC = () => {
                   disabled={syncTarget === 'cutter'}
                   onChange={(e) => setCutterDia(e.target.value)}
                   className="input-precision"
-                  style={{ fontWeight: 700, color: syncTarget === 'cutter' ? '#00f0ff' : '#fff' }}
+                  style={{ fontWeight: 700, color: syncTarget === 'cutter' ? '#f4902c' : '#fff' }}
                 />
               </div>
 
@@ -918,7 +896,7 @@ export const GortonP12: React.FC = () => {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #00f0ff' }}>
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #f4902c' }}>
                 <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>1. Master Circumference Scaling Rule:</strong>
                 Flat master length = Cylinder Circumference (π × D) × Reduction Ratio (R). Example: 2" cylinder at 2:1 ratio requires 6.2832 × 2 = 12.5664" master template length.
               </div>
@@ -936,8 +914,8 @@ export const GortonP12: React.FC = () => {
           </div>
 
           {/* Card 4: Special Reductions & Corrective Screw "X" (Pages 15, 28-30) */}
-          <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #00f0ff', background: 'var(--bg-primary)' }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#00f0ff', marginBottom: '12px' }}>
+          <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #f4902c', background: 'var(--bg-primary)' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f4902c', marginBottom: '12px' }}>
               🎯 Special Reductions & Screw "X" (P. 15, 28)
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '20px', lineHeight: 1.6 }}>
@@ -945,7 +923,7 @@ export const GortonP12: React.FC = () => {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #00f0ff' }}>
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #f4902c' }}>
                 <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>1. Magnifying Glass Alignment Rule (Page 15):</strong>
                 To obtain true reproduction through the pantograph bars, settings must be made with a magnifying glass so index lines on slider blocks align perfectly with bar calibrations.
               </div>
@@ -1084,9 +1062,9 @@ export const GortonP12: React.FC = () => {
                       style={{
                         padding: '10px 6px',
                         borderRadius: '6px',
-                        border: speedCutterDia === btn.val ? '2px solid #00f0ff' : '1px solid var(--border-color)',
-                        background: speedCutterDia === btn.val ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
-                        color: speedCutterDia === btn.val ? '#00f0ff' : 'var(--text-secondary)',
+                        border: speedCutterDia === btn.val ? '2px solid #f4902c' : '1px solid var(--border-color)',
+                        background: speedCutterDia === btn.val ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
+                        color: speedCutterDia === btn.val ? '#f4902c' : 'var(--text-secondary)',
                         fontWeight: 700,
                         fontSize: '0.85rem',
                         cursor: 'pointer'
@@ -1107,7 +1085,7 @@ export const GortonP12: React.FC = () => {
                     step="0.01"
                     onChange={(e) => setSpeedCutterDia(e.target.value)}
                     className="input-precision"
-                    style={{ fontWeight: 700, fontSize: '1.1rem', color: '#00f0ff' }}
+                    style={{ fontWeight: 700, fontSize: '1.1rem', color: '#f4902c' }}
                   />
                 </div>
               </div>
@@ -1192,12 +1170,12 @@ export const GortonP12: React.FC = () => {
                         <td style={{ padding: '11px', fontWeight: 800, color: isCurrent ? '#10b981' : '#fff', background: isCurrent ? 'rgba(16, 185, 129, 0.2)' : 'transparent' }}>
                           {row.sfm} SFM
                         </td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.0625' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.0625' && isCurrent ? 800 : 400 }}>{row.d16.toLocaleString()}</td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.125' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.125' && isCurrent ? 800 : 400 }}>{row.d8.toLocaleString()}</td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.1875' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.1875' && isCurrent ? 800 : 400 }}>{row.d316.toLocaleString()}</td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.250' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.250' && isCurrent ? 800 : 400 }}>{row.d4.toLocaleString()}</td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.3125' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.3125' && isCurrent ? 800 : 400 }}>{row.d516.toLocaleString()}</td>
-                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.375' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.375' && isCurrent ? 800 : 400 }}>{row.d38.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.0625' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.0625' && isCurrent ? 800 : 400 }}>{row.d16.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.125' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.125' && isCurrent ? 800 : 400 }}>{row.d8.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.1875' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.1875' && isCurrent ? 800 : 400 }}>{row.d316.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.250' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.250' && isCurrent ? 800 : 400 }}>{row.d4.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.3125' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.3125' && isCurrent ? 800 : 400 }}>{row.d516.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.375' && isCurrent ? '#f4902c' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.375' && isCurrent ? 800 : 400 }}>{row.d38.toLocaleString()}</td>
                       </tr>
                     );
                   })}
@@ -1221,7 +1199,7 @@ export const GortonP12: React.FC = () => {
                 Standard calibration distances from Graduation "2" for Lower Bar and Upper Bar. Click any row to load settings into calculator!
               </p>
             </div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--accent-cyan)', fontWeight: 700, background: 'rgba(0, 240, 255, 0.1)', padding: '6px 14px', borderRadius: '20px' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--accent-cyan)', fontWeight: 700, background: 'rgba(244, 144, 44, 0.1)', padding: '6px 14px', borderRadius: '20px' }}>
               22 Standard Factory Ratios
             </div>
           </div>
@@ -1246,14 +1224,14 @@ export const GortonP12: React.FC = () => {
                     <tr 
                       key={row.ratio}
                       style={{ 
-                        background: isCurrent ? 'rgba(0, 240, 255, 0.12)' : idx % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-tertiary)',
+                        background: isCurrent ? 'rgba(244, 144, 44, 0.12)' : idx % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-tertiary)',
                         borderBottom: '1px solid rgba(255,255,255,0.05)',
                         transition: 'background 0.2s ease',
                         cursor: 'pointer'
                       }}
                       onClick={() => { setRatioVal(numVal.toString()); setActiveTab('calculator'); }}
                     >
-                      <td style={{ padding: '12px', fontWeight: 700, color: isCurrent ? '#00f0ff' : '#fff' }}>{row.ratio}</td>
+                      <td style={{ padding: '12px', fontWeight: 700, color: isCurrent ? '#f4902c' : '#fff' }}>{row.ratio}</td>
                       <td style={{ padding: '12px', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>{row.lowerInches.toFixed(3)}"</td>
                       <td style={{ padding: '12px', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>{row.upperInches.toFixed(3)}"</td>
                       <td style={{ padding: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{row.lowerMm.toFixed(2)} mm</td>
@@ -1287,7 +1265,7 @@ export const GortonP12: React.FC = () => {
               
               {/* Box 1: Installing Pantograph Bars */}
               <div style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                <h3 style={{ fontSize: '1.15rem', color: '#00f0ff', marginBottom: '12px', fontWeight: 700 }}>
+                <h3 style={{ fontSize: '1.15rem', color: '#f4902c', marginBottom: '12px', fontWeight: 700 }}>
                   🛠️ Setting & Installing Pantograph Bars (Page 12)
                 </h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0 }}>
@@ -1357,6 +1335,16 @@ export const GortonP12: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Footer: tool description (kept out of the header per site convention) */}
+      <div className="glass-panel" style={{ marginTop: '30px', padding: '16px 22px' }}>
+        <div style={{ fontSize: '0.72rem', color: '#f59e0b', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
+          📜 Gorton Manual 2701-A Verified | Model P1-2 / P1-2 Heavy Duty
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
+          Precision pantograph bar setting calculator, tracing stylus grinding rules, special reduction alignments, official material cutting speeds (RPM/SFM), and Model 727 roll attachment math.
+        </p>
+      </div>
 
     </div>
   );

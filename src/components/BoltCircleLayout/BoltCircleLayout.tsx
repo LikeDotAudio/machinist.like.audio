@@ -80,7 +80,7 @@ export const BoltCircleLayout: React.FC = () => {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <div style={{
           display: 'inline-block',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'rgba(244, 144, 44, 0.1)',
           color: 'var(--accent-cyan)',
           padding: '4px 14px',
           borderRadius: '20px',
@@ -89,7 +89,7 @@ export const BoltCircleLayout: React.FC = () => {
           letterSpacing: '1px',
           textTransform: 'uppercase',
           marginBottom: '12px',
-          border: '1px solid rgba(0, 240, 255, 0.3)'
+          border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
           Machinist Calculator #2
         </div>
