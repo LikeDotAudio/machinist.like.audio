@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import './index.css';
 import { JoBlockCalculator } from './components/JoBlockCalculator';
+import { HardingeDividingHead } from './components/HardingeDividingHead';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'calculator' | 'about'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'dividing_head' | 'about'>('calculator');
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -67,6 +68,24 @@ export function App() {
             </button>
 
             <button
+              onClick={() => setActiveTab('dividing_head')}
+              style={{
+                background: activeTab === 'dividing_head' ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
+                color: activeTab === 'dividing_head' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                border: `1px solid ${activeTab === 'dividing_head' ? 'rgba(0, 240, 255, 0.4)' : 'transparent'}`,
+                padding: '8px 16px',
+                borderRadius: 'var(--radius-sm)',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: 'var(--font-sans)'
+              }}
+            >
+              ⚙️ Dividing Head Lab
+            </button>
+
+            <button
               onClick={() => setActiveTab('about')}
               style={{
                 background: activeTab === 'about' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
@@ -117,6 +136,8 @@ export function App() {
       <main style={{ flex: 1, padding: '40px 20px' }}>
         {activeTab === 'calculator' ? (
           <JoBlockCalculator />
+        ) : activeTab === 'dividing_head' ? (
+          <HardingeDividingHead />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>
@@ -174,9 +195,12 @@ export function App() {
           <div>
             © {new Date().getFullYear()} <strong style={{ color: 'var(--text-primary)' }}>Like.Audio</strong> // Engineered for Precision.
           </div>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <a href="https://machinist.like.audio/Site/HeightGauge/BlockCalculator.htm" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
-              📄 Legacy HTML Calculator
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <a href="https://machinist.like.audio/Site/Index.htm" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
+              📁 Static Tool Directory
+            </a>
+            <a href="https://machinist.like.audio/Site/HardingeDivigingHead/DividingHeadCalculator.htm" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
+              ⚙️ Legacy HTML Indexer
             </a>
             <a href="https://github.com/LikeDotAudio/machinist.like.audio" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
               ⚡ GitHub CI/CD
