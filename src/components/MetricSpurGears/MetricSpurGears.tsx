@@ -656,6 +656,18 @@ export const MetricSpurGears: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Footer: tool description (kept out of the header per site convention) */}
+      <div className="glass-panel" style={{ marginTop: '25px', padding: '16px 22px' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
+          Hardinge & DIN 13 T1 Metrology // AGMA 20° Diametral Pitch
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
+          Calculate exact tooth profiles, blank outside diameters, and center distances in <strong style={{ color: 'var(--accent-cyan)' }}>metric module</strong> (tooth
+          size grows with MOD) or <strong style={{ color: '#f59e0b' }}>imperial diametral pitch</strong> (teeth per inch of pitch diameter — tooth size shrinks as DP grows;
+          DP = 25.4 / MOD), or browse 2,800+ Hardinge pre-cut gear part numbers (Modules 1 to 6).
+        </p>
+      </div>
     </div>
   );
 };
