@@ -9,6 +9,7 @@ import { SineBarVise } from './components/SineBarVise/SineBarVise';
 import { TapDrillDie } from './components/TapDrillDie/TapDrillDie';
 import { Knurling } from './components/Knurling/Knurling';
 import { ThreadingChangeGears } from './components/ThreadingChangeGears/ThreadingChangeGears';
+import { SheetMetalBending } from './components/SheetMetalBending/SheetMetalBending';
 
 type TabType = 
   | 'calculator' 
@@ -21,6 +22,7 @@ type TabType =
   | 'tap_drill_die' 
   | 'knurling' 
   | 'threading_change_gears' 
+  | 'sheet_metal_bending'
   | 'about';
 
 export function App() {
@@ -34,7 +36,8 @@ export function App() {
     'sine_bar_vise',
     'tap_drill_die',
     'knurling',
-    'threading_change_gears'
+    'threading_change_gears',
+    'sheet_metal_bending'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -205,6 +208,26 @@ export function App() {
           </div>
         </div>
 
+        {/* Card 8 */}
+        <div 
+          onClick={() => setActiveTab('sheet_metal_bending')}
+          className="glass-panel" 
+          style={{ padding: '30px', cursor: 'pointer', transition: 'all 0.25s ease', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '3px solid #ec4899' }}
+        >
+          <div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>📐</div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+              Sheet Metal Bending
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '20px' }}>
+              Find flat pattern cut lengths, bend allowances, deductions, and press brake bend line locations (SendCutSend Specs).
+            </p>
+          </div>
+          <div style={{ color: '#f472b6', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>Launch Tool</span> ➔
+          </div>
+        </div>
+
       </div>
     </div>
   );
@@ -303,7 +326,7 @@ export function App() {
                 fontFamily: 'var(--font-sans)'
               }}
             >
-              🧰 Machinist Calculators (7)
+              🧰 Machinist Calculators (8)
             </button>
 
             <button
@@ -402,6 +425,8 @@ export function App() {
           <Knurling />
         ) : activeTab === 'threading_change_gears' ? (
           <ThreadingChangeGears />
+        ) : activeTab === 'sheet_metal_bending' ? (
+          <SheetMetalBending />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>
@@ -413,14 +438,14 @@ export function App() {
               </p>
 
               <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '25px' }}>
-                <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px', fontSize: '1rem' }}>🔒 Secure CI/CD Deployment Pipeline</h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '10px' }}>
-                  The application uses GitHub Actions for continuous deployment over encrypted FTPS (Explicit TLS, Port 21). All credentials are stored in GitHub Repository Secrets:
+                <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px', fontSize: '1rem' }}>⚙️ Technical Stack & Capabilities</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '12px' }}>
+                  Designed for high-precision metrology and industrial audio applications, the suite leverages modern web standards for instantaneous client-side computation:
                 </p>
-                <ul style={{ color: 'var(--text-primary)', fontSize: '0.85rem', paddingLeft: '20px', fontFamily: 'var(--font-mono)' }}>
-                  <li>FTP_SERVER: machinist.like.audio</li>
-                  <li>FTP_USERNAME: machinist@like.audio</li>
-                  <li>FTP_PASSWORD: *** (Secret Vault)</li>
+                <ul style={{ color: 'var(--text-primary)', fontSize: '0.88rem', paddingLeft: '20px', lineHeight: '1.7' }}>
+                  <li><strong>Core Engine:</strong> React 18 with TypeScript for type-safe metrology math and zero server latency.</li>
+                  <li><strong>Visualization:</strong> Scaled interactive vector graphics (SVG) for real-time bolt patterns, gear trains, and press brake profiles.</li>
+                  <li><strong>Standards Compliance:</strong> Formulas calibrated to industrial handbook standards (SendCutSend, ASME, Machinery's Handbook).</li>
                 </ul>
               </div>
 
