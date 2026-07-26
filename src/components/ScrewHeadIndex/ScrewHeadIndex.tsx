@@ -6,7 +6,7 @@ import React, { useState, useMemo } from 'react';
 // (side profile) and full fastener types, plus socket-cap hex key sizes.
 // ---------------------------------------------------------------------------
 
-type Group = 'drive' | 'head' | 'screw';
+type Group = 'drive' | 'head' | 'screw' | 'nut';
 
 interface FastenerItem {
   id: string;
@@ -82,6 +82,22 @@ const Side = ({ children, tall = false }: { children: React.ReactNode; tall?: bo
     {children}
   </svg>
 );
+
+// Hex nut body, side view (facet lines imply the hexagon)
+const NutBody = ({ y, h, w = 84, facets = true }: { y: number; h: number; w?: number; facets?: boolean }) => {
+  const x = (120 - w) / 2;
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="3" />
+      {facets && (
+        <>
+          <line x1={x + w * 0.32} y1={y} x2={x + w * 0.32} y2={y + h} stroke={STEEL_DK} strokeWidth="2" />
+          <line x1={x + w * 0.68} y1={y} x2={x + w * 0.68} y2={y + h} stroke={STEEL_DK} strokeWidth="2" />
+        </>
+      )}
+    </g>
+  );
+};
 
 const slotTop = (y: number, x0 = 52, x1 = 68) => (
   <rect x={x0} y={y} width={x1 - x0} height={5} fill={RECESS} rx={1} />

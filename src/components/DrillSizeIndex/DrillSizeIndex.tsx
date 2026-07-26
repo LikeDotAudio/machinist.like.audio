@@ -509,9 +509,10 @@ export const DrillSizeIndex: React.FC = () => {
           }}
         >
           {lineupDrills.map((d) => {
-            const frac = Math.sqrt(d.diameterIn / lineupMaxIn); // sqrt keeps tiny bits visible
-            const w = Math.max(3, Math.round(3 + frac * 15));
-            const h = Math.max(16, Math.round(14 + frac * 78));
+            // True proportional scaling — width and length track real diameter
+            const frac = d.diameterIn / lineupMaxIn;
+            const w = Math.max(2.5, frac * 26);
+            const h = Math.max(12, frac * 118);
             const color = CAT_COLORS[d.category];
             const isSel = d.id === selectedDrillId;
             const isHov = d.id === hoveredDrillId;
@@ -525,12 +526,14 @@ export const DrillSizeIndex: React.FC = () => {
                   width: `${w}px`,
                   height: `${h}px`,
                   cursor: 'pointer',
-                  background: `linear-gradient(90deg, ${color} 0%, #e2e8f0 45%, ${color} 100%)`,
-                  clipPath: 'polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%)',
-                  opacity: isSel || isHov ? 1 : 0.72,
+                  backgroundColor: color,
+                  // Helical flute twist rendered as diagonal stripes
+                  backgroundImage: `repeating-linear-gradient(-56deg, rgba(15, 20, 30, 0.55) 0px, rgba(15, 20, 30, 0.55) ${Math.max(1, w * 0.14)}px, transparent ${Math.max(1, w * 0.14)}px, transparent ${Math.max(3, w * 0.42)}px), linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.5) 45%, rgba(0,0,0,0.35) 100%)`,
+                  clipPath: 'polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%)',
+                  opacity: isSel || isHov ? 1 : 0.8,
                   outline: isSel ? '2px solid #fff' : isHov ? `2px solid ${color}` : 'none',
                   outlineOffset: '1px',
-                  transform: isSel || isHov ? 'scaleY(1.08)' : 'none',
+                  transform: isSel || isHov ? 'scaleY(1.06)' : 'none',
                   transformOrigin: 'bottom',
                   transition: 'opacity 0.12s ease, transform 0.12s ease',
                   flexShrink: 0
