@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useUnit } from '../../context/UnitContext';
+import { FormulaSheet } from '../common/FormulaSheet';
 
 // ---------------------------------------------------------------------------
 // Geometric-style 5/16" Die Head (D, DS, DSA, DJ) Chaser Database
@@ -674,6 +675,67 @@ export const GeometricDieHead: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Illustrated formula lesson — live numbers so results can be validated against the chart */}
+      <FormulaSheet
+        title={`60° Thread Geometry — worked with your ${sel.nominal} selection`}
+        intro={`Every dimension of a 60° V-thread (Unified and ISO metric alike) derives from just two numbers: the basic major diameter D and the pitch P. The key constant is the height of the "fundamental triangle" — a sharp 60° V of pitch P has height H = P·cos(30°) = 0.86603·P. Standard threads are truncated flats of that triangle, which is where every coefficient below comes from. Work each step and compare with the recorded chart limits above.`}
+        reference={'Basic-form formulas per ASME B1.1 / ISO 68-1. The Max/Min limit values shown in the tool come from the supplied Machinery\'s Handbook Class 2A/3A tables — the calculated basic values here should land between those limits.'}
+        items={[
+          {
+            name: 'Pitch (P)',
+            formula: isMetric ? 'P is specified directly (mm)' : 'P = 1 ÷ TPI',
+            explanation: isMetric
+              ? 'Metric threads state the pitch directly: the axial distance from one crest to the next in millimetres.'
+              : 'Inch threads are specified in threads per inch (TPI), so the pitch — crest-to-crest distance — is its reciprocal.',
+            worked: isMetric
+              ? `P = ${pitch} mm`
+              : `P = 1 ÷ ${sel.tpiOrPitch} = ${pitch.toFixed(4)} in`,
+          },
+          {
+            name: 'Fundamental Triangle Height (H)',
+            formula: 'H = 0.86603 × P',
+            explanation: 'A sharp 60° V-groove of pitch P forms an equilateral triangle whose height is P·cos(30°) = P·(√3/2) ≈ 0.86603·P. Every other thread dimension is a fraction of this triangle.',
+            worked: `H = 0.86603 × ${isMetric ? pitch : pitch.toFixed(4)} = ${(0.866025 * pitch).toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'Basic Pitch Diameter (E)',
+            formula: 'E = D − 0.6495 × P',
+            explanation: 'The pitch diameter sits where thread and groove are equally wide — 3/8·H below the crest on each side. Twice 3/8·H is 3/4·H = 0.75 × 0.86603·P = 0.6495·P.',
+            worked: `E = ${sel.majorBasic} − 0.6495 × ${isMetric ? pitch : pitch.toFixed(4)} = ${pdBasic.toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'External Thread Depth (h)',
+            formula: 'h = 0.61343 × P',
+            explanation: 'A UN external thread is truncated H/8 at the crest and H/4 at the root, leaving 17/24·H ≈ 0.61343·P of actual thread depth from crest to root.',
+            worked: `h = 0.61343 × ${isMetric ? pitch : pitch.toFixed(4)} = ${threadDepth.toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'Basic Minor Diameter',
+            formula: 'd₃ = D − 1.2269 × P',
+            explanation: 'Remove one thread depth (0.61343·P) from each side of the major diameter: D − 2 × 0.61343·P = D − 1.2269·P.',
+            worked: `d₃ = ${sel.majorBasic} − 1.2269 × ${isMetric ? pitch : pitch.toFixed(4)} = ${minorBasic.toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'Best Wire Size (W)',
+            formula: 'W = 0.57735 × P',
+            explanation: 'The "best" measuring wire touches the flanks exactly at the pitch line. For a 60° flank angle that wire diameter is P/√3 = 0.57735·P — errors in flank angle then cancel out of the measurement.',
+            worked: `W = 0.57735 × ${isMetric ? pitch : pitch.toFixed(4)} = ${bestWire.toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'Measurement Over Wires (M)',
+            formula: 'M = E + 3W − 0.86603 × P',
+            explanation: 'With three best wires in the grooves, a micrometer reads the pitch diameter plus the wire stand-off. Geometry of the 60° V gives M = E + 3W − 0.86603·P — so measuring M lets you verify E, the dimension that actually controls thread fit.',
+            worked: `M = ${(lim?.pdMax ?? pdBasic).toFixed(4)} + 3 × ${bestWire.toFixed(4)} − 0.86603 × ${isMetric ? pitch : pitch.toFixed(4)} = ${mowMax.toFixed(4)} ${isMetric ? 'mm' : 'in'}`,
+          },
+          {
+            name: 'Helix (Lead) Angle (λ)',
+            formula: 'tan λ = P ÷ (π × E)',
+            explanation: 'Unwrap one turn of the thread at the pitch diameter: it forms a right triangle with base π·E (the circumference) and rise P (the lead). The chaser cutting faces are ground to suit this angle.',
+            worked: `λ = atan(${isMetric ? pitch : pitch.toFixed(4)} ÷ (π × ${pdDisp.toFixed(4)})) = ${helixDeg.toFixed(2)}°`,
+          },
+        ]}
+      />
 
       {/* Footer: tool description & legend (kept out of the header per site convention) */}
       <div className="glass-panel" style={{ marginTop: '25px', padding: '16px 22px' }}>

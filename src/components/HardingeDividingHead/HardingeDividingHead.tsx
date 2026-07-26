@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DividingHeadVisualizer } from './DividingHeadVisualizer';
+import { FormulaSheet } from '../common/FormulaSheet';
 
 interface Plate {
   id: string;
@@ -694,6 +695,57 @@ export const HardingeDividingHead: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Illustrated formula lesson — live numbers so results can be validated against the chart */}
+      <FormulaSheet
+        title={`Indexing Arithmetic — worked for ${D} divisions on a ${ratio}:1 head`}
+        intro={`A dividing head turns the crank through a worm gear: ${ratio} crank turns rotate the work exactly once (${ratio}:1). To cut D equal divisions, each index step must rotate the work 1/D of a revolution — so the crank moves ${ratio}/D of a turn. When that fraction isn't a whole number of turns, the index plate's hole circles provide the exact fractional turn. Follow each step below to verify the recommendation table.`}
+        reference={'Standard dividing head indexing method (T = R/D), validated against the Hardinge index plate charts — every "exact" plate/circle recommendation above satisfies R × H ÷ D = whole number of holes.'}
+        items={[
+          {
+            name: 'Rotation Per Division (work side)',
+            formula: 'θ = 360° ÷ D',
+            explanation: 'D equal divisions around a full circle means each step advances the workpiece by the same angle.',
+            worked: `θ = 360 ÷ ${D} = ${(360 / D).toFixed(4)}° per division`,
+          },
+          {
+            name: 'Crank Turns Per Division',
+            formula: 'T = R ÷ D',
+            explanation: `The worm reduction means the crank must turn R times as far as the work. T is usually a mixed number — a whole number of turns plus a fraction that the index plate must provide.`,
+            worked: `T = ${ratio} ÷ ${D} = ${(ratio / D).toFixed(4)} crank turns per division`,
+          },
+          {
+            name: 'Exact Plate Test',
+            formula: 'Holes moved = (R × H) ÷ D  — must be a whole number',
+            explanation: 'On a circle with H holes, one hole equals 1/H of a crank turn. A hole circle indexes D divisions exactly only if the total pin travel per division works out to a whole number of holes — this is the test the recommendation table runs against every checked plate.',
+            worked: activeVizMatch
+              ? `(${ratio} × ${activeVizMatch.circleHoles}) ÷ ${D} = ${activeVizMatch.totalHoles} holes on the ${activeVizMatch.circleHoles}-hole circle ✓ whole number`
+              : 'Select an exact match above to see this worked.',
+          },
+          {
+            name: 'Full Turns + Remaining Holes',
+            formula: 'Full turns = ⌊holes ÷ H⌋ ,  remainder = holes mod H',
+            explanation: 'Split the total pin travel into complete crank revolutions plus leftover holes — this is exactly what you dial with the sector arms.',
+            worked: activeVizMatch
+              ? `${activeVizMatch.totalHoles} ÷ ${activeVizMatch.circleHoles} → ${activeVizMatch.fullTurns} full turn${activeVizMatch.fullTurns !== 1 ? 's' : ''} + ${activeVizMatch.remainingHoles} holes`
+              : 'Select an exact match above to see this worked.',
+          },
+          {
+            name: 'Sector Arm ("Septer") Span',
+            formula: 'Span angle = 360° × holes ÷ H',
+            explanation: 'The sector arms are set to bracket the remaining holes so you never count holes mid-cut. Count hole SPACES — do not count the hole the pin starts in.',
+            worked: activeVizMatch && activeVizMatch.remainingHoles > 0
+              ? `360 × ${activeVizMatch.remainingHoles} ÷ ${activeVizMatch.circleHoles} = ${((360 * activeVizMatch.remainingHoles) / activeVizMatch.circleHoles).toFixed(1)}° between Arm A and Arm B`
+              : 'No fractional holes for this selection — whole crank turns only.',
+          },
+          {
+            name: 'Sanity Check — Full Cycle',
+            formula: 'D × T = R  (crank turns for one full work revolution)',
+            explanation: 'After indexing all D divisions the work must be back at its start, having made exactly one revolution — so the crank must have made exactly R total turns. If this doesn\'t come out to R, a step was miscounted.',
+            worked: `${D} × ${(ratio / D).toFixed(4)} = ${ratio} crank turns total ✓`,
+          },
+        ]}
+      />
 
       {/* Footer: tool description (kept out of the header per site convention) */}
       <div className="glass-panel" style={{ marginTop: '30px', padding: '16px 22px' }}>

@@ -16,6 +16,16 @@ import { TapThreadIndex } from './components/TapThreadIndex/TapThreadIndex';
 import { GeometricDieHead } from './components/GeometricDieHead';
 import { MetricSpurGears } from './components/MetricSpurGears';
 import { ScrewHeadIndex } from './components/ScrewHeadIndex';
+import { DrillPointLength } from './components/DrillPointLength';
+import { ThreadMilling } from './components/ThreadMilling';
+import { TrigSolver } from './components/TrigSolver';
+import { PolarRectangular } from './components/PolarRectangular';
+import { TaperAngle } from './components/TaperAngle';
+import { TruePosition } from './components/TruePosition';
+import { FitsTolerances } from './components/FitsTolerances';
+import { SurfaceFinish } from './components/SurfaceFinish';
+import { HardnessConversion } from './components/HardnessConversion';
+import { MaterialWeight } from './components/MaterialWeight';
 import { useUnit } from './context/UnitContext';
 
 type TabType = 
@@ -36,6 +46,16 @@ type TabType =
   | 'geometric_die_head'
   | 'spur_gears'
   | 'screw_head_index'
+  | 'drill_point_length'
+  | 'thread_milling'
+  | 'trig_solver'
+  | 'polar_rectangular'
+  | 'taper_angle'
+  | 'true_position'
+  | 'fits_tolerances'
+  | 'surface_finish'
+  | 'hardness_conversion'
+  | 'material_weight'
   | 'about';
 
 export function App() {
@@ -60,7 +80,17 @@ export function App() {
     'tap_thread_index',
     'geometric_die_head',
     'spur_gears',
-    'screw_head_index'
+    'screw_head_index',
+    'drill_point_length',
+    'thread_milling',
+    'trig_solver',
+    'polar_rectangular',
+    'taper_angle',
+    'true_position',
+    'fits_tolerances',
+    'surface_finish',
+    'hardness_conversion',
+    'material_weight'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -396,6 +426,196 @@ export function App() {
           </p>
         </div>
 
+        {/* Card 17: Drill Point Length */}
+        <div
+          onClick={() => setActiveTab('drill_point_length')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔻</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Drill Point Length
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Find the extra depth added by a 118°/135° drill tip for full breakthrough or full-diameter blind hole depths.
+          </p>
+        </div>
+
+        {/* Card 18: Thread Milling */}
+        <div
+          onClick={() => setActiveTab('thread_milling')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #c084fc' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🌀</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Thread Milling
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Helical interpolation paths, centerline feed-rate corrections, and ready-to-paste G-code for CNC thread mills.
+          </p>
+        </div>
+
+        {/* Card 19: Right Triangle / Trig Solver */}
+        <div
+          onClick={() => setActiveTab('trig_solver')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📐</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Right Triangle / Trig Solver
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Solve any right triangle from two knowns — daily trig for chamfer depths, edge breaks, and hole offsets.
+          </p>
+        </div>
+
+        {/* Card 20: Polar ⇄ Rectangular */}
+        <div
+          onClick={() => setActiveTab('polar_rectangular')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #3b82f6' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🧭</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Polar ⇄ Rectangular
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Convert angles and radii to X/Y machine coordinates (and back) with a live four-quadrant plot.
+          </p>
+        </div>
+
+        {/* Card 21: Taper Angle */}
+        <div
+          onClick={() => setActiveTab('taper_angle')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f59e0b' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📏</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Taper Angle
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Convert between taper dimensions, taper-per-foot, ratios, and compound-rest angles with standard taper tables.
+          </p>
+        </div>
+
+        {/* Card 22: True Position (GD&T) */}
+        <div
+          onClick={() => setActiveTab('true_position')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ef4444' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🎯</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              True Position (GD&T)
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Positional deviation from X/Y measurements with MMC bonus tolerance and instant PASS/FAIL verdicts.
+          </p>
+        </div>
+
+        {/* Card 23: Fits & Tolerances */}
+        <div
+          onClick={() => setActiveTab('fits_tolerances')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #a855f7' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔧</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Fits & Tolerances
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            ISO 286 hole-basis shaft and hole limits for running, sliding, transition, press, and shrink fits.
+          </p>
+        </div>
+
+        {/* Card 24: Surface Finish */}
+        <div
+          onClick={() => setActiveTab('surface_finish')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ec4899' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>✨</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Surface Finish Conversion
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Convert Ra, RMS, Rz, CLA, and ISO N grades with process capability charts and a visual roughness comparator.
+          </p>
+        </div>
+
+        {/* Card 25: Hardness Conversion */}
+        <div
+          onClick={() => setActiveTab('hardness_conversion')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>💎</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Hardness Conversion
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Translate HRC, HRB, Brinell, Vickers, and approximate tensile strength per ASTM E140 steel correlations.
+          </p>
+        </div>
+
+        {/* Card 26: Material Weight */}
+        <div
+          onClick={() => setActiveTab('material_weight')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚖️</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              Material Weight
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            Estimate bar, plate, hex, and tube stock weight from material density for quoting, shipping, and hoist limits.
+          </p>
+        </div>
+
       </div>
     </div>
   );
@@ -551,6 +771,26 @@ export function App() {
           <MetricSpurGears />
         ) : activeTab === 'screw_head_index' ? (
           <ScrewHeadIndex />
+        ) : activeTab === 'drill_point_length' ? (
+          <DrillPointLength />
+        ) : activeTab === 'thread_milling' ? (
+          <ThreadMilling />
+        ) : activeTab === 'trig_solver' ? (
+          <TrigSolver />
+        ) : activeTab === 'polar_rectangular' ? (
+          <PolarRectangular />
+        ) : activeTab === 'taper_angle' ? (
+          <TaperAngle />
+        ) : activeTab === 'true_position' ? (
+          <TruePosition />
+        ) : activeTab === 'fits_tolerances' ? (
+          <FitsTolerances />
+        ) : activeTab === 'surface_finish' ? (
+          <SurfaceFinish />
+        ) : activeTab === 'hardness_conversion' ? (
+          <HardnessConversion />
+        ) : activeTab === 'material_weight' ? (
+          <MaterialWeight />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>

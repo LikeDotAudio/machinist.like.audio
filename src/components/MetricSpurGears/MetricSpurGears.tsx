@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useUnit } from '../../context/UnitContext';
+import { FormulaSheet } from '../common/FormulaSheet';
 
 // Hardinge Pre-Cut Gear Part Number Rule Generator
 // Encapsulates the exact table rules for B-Type and A-Type part numbers across modules 1 to 6
@@ -656,6 +657,110 @@ export const MetricSpurGears: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Illustrated formula lesson — live numbers so results can be validated against the chart */}
+      <FormulaSheet
+        title={isDP ? `Imperial Diametral Pitch Gearing — worked with your ${dpVal} DP, ${teethVal}T gear` : `Metric Module Gearing — worked with your MOD ${modVal}, ${teethVal}T gear`}
+        intro={isDP
+          ? `Diametral Pitch (DP) is the number of teeth per inch of pitch diameter — a tooth-density measure, so a LARGER DP means a SMALLER tooth. Every dimension of a standard 20° involute gear follows from DP and the tooth count N alone. Work through each step below with a calculator to verify the results shown above.`
+          : `The module (MOD) is the metric tooth-size unit: it is simply how many millimetres of pitch diameter each tooth occupies (MOD = PCD ÷ N). A LARGER module means a BIGGER tooth. Every dimension of a standard gear follows from MOD and the tooth count N alone. Work through each step below with a calculator to verify the results shown above.`}
+        reference={isDP
+          ? 'Formulas per AGMA 20° full-depth involute standard (coarse pitch: h = 2.25/DP; fine pitch DP ≥ 20: h = 2.2/DP + 0.002"). Module equivalence DP = 25.4/MOD.'
+          : 'Formulas per DIN 780 / DIN 13 T1 module standard, validated against the Hardinge "Chart for Cutting Metric Spur Gears" (pre-cut catalog OD and PCD columns reproduce exactly from these formulas).'}
+        items={isDP ? [
+          {
+            name: 'Pitch Diameter (PD)',
+            formula: 'PD = N ÷ DP',
+            explanation: 'DP is defined as teeth per inch of pitch diameter, so dividing the tooth count by DP gives the pitch diameter — the imaginary rolling circle where two mating gears touch.',
+            worked: `PD = ${teethVal} ÷ ${dpVal} = ${(teethVal / dpVal).toFixed(4)} in`,
+          },
+          {
+            name: 'Outside Diameter (Blank OD)',
+            formula: 'OD = (N + 2) ÷ DP',
+            explanation: 'Each tooth stands one addendum (1/DP) above the pitch circle on both sides of the gear, so the blank is turned to the pitch diameter plus two addenda — equivalent to adding 2 imaginary teeth.',
+            worked: `OD = (${teethVal} + 2) ÷ ${dpVal} = ${((teethVal + 2) / dpVal).toFixed(4)} in`,
+          },
+          {
+            name: 'Addendum (a)',
+            formula: 'a = 1 ÷ DP',
+            explanation: 'The addendum is the tooth height above the pitch circle. For standard full-depth teeth it is exactly one inch divided by the diametral pitch.',
+            worked: `a = 1 ÷ ${dpVal} = ${(1 / dpVal).toFixed(4)} in`,
+          },
+          {
+            name: 'Whole Depth (h) — cutting depth',
+            formula: dpVal >= 20 ? 'h = 2.2 ÷ DP + 0.002"' : 'h = 2.25 ÷ DP',
+            explanation: 'The full tooth depth you feed the cutter: addendum plus dedendum (the dedendum includes root clearance so mating tooth tips never bottom out). Fine pitches (DP ≥ 20) use a slightly different AGMA rule with a fixed 0.002" clearance.',
+            worked: dpVal >= 20
+              ? `h = 2.2 ÷ ${dpVal} + 0.002 = ${(2.2 / dpVal + 0.002).toFixed(4)} in`
+              : `h = 2.25 ÷ ${dpVal} = ${(2.25 / dpVal).toFixed(4)} in`,
+          },
+          {
+            name: 'Circular Pitch (CP)',
+            formula: 'CP = π ÷ DP',
+            explanation: 'The arc distance from one tooth to the next measured along the pitch circle. The circumference is π·PD and there are N teeth, so CP = π·PD/N = π/DP.',
+            worked: `CP = π ÷ ${dpVal} = ${(Math.PI / dpVal).toFixed(4)} in`,
+          },
+          {
+            name: 'Center Distance (C)',
+            formula: 'C = (N₁ + N₂) ÷ (2 × DP)',
+            explanation: 'Two mating gears touch at their pitch circles, so the shaft spacing is half the sum of the two pitch diameters — computable directly from the tooth counts.',
+            worked: enableMating
+              ? `C = (${teethVal} + ${matingTeethVal}) ÷ (2 × ${dpVal}) = ${((teethVal + matingTeethVal) / (2 * dpVal)).toFixed(4)} in`
+              : 'Enable the mating gear above to see this worked.',
+          },
+          {
+            name: 'Module Equivalence',
+            formula: 'MOD = 25.4 ÷ DP',
+            explanation: 'DP and module measure the same thing in opposite directions (density vs. size). Because 1 inch = 25.4 mm, the conversion is a simple reciprocal — which is why DP and metric gears never interchange on round numbers.',
+            worked: `MOD = 25.4 ÷ ${dpVal} = ${(25.4 / dpVal).toFixed(3)} mm`,
+          },
+        ] : [
+          {
+            name: 'Pitch Circle Diameter (PCD)',
+            formula: 'PCD = N × MOD',
+            explanation: 'The module is millimetres of pitch diameter per tooth, so multiplying by the tooth count directly gives the pitch circle — the imaginary rolling circle where two mating gears touch.',
+            worked: `PCD = ${teethVal} × ${modVal} = ${(teethVal * modVal).toFixed(3)} mm`,
+          },
+          {
+            name: 'Outside Diameter (Blank OD)',
+            formula: 'OD = (N + 2) × MOD',
+            explanation: 'Each tooth stands one addendum (= MOD) above the pitch circle on both sides of the gear, so the blank is turned to PCD + 2·MOD — equivalent to adding 2 imaginary teeth. This is the diameter you turn the blank to before cutting.',
+            worked: `OD = (${teethVal} + 2) × ${modVal} = ${((teethVal + 2) * modVal).toFixed(3)} mm`,
+          },
+          {
+            name: 'Addendum (a)',
+            formula: 'a = MOD',
+            explanation: 'By definition of the module system, the tooth height above the pitch circle is exactly one module.',
+            worked: `a = ${modVal.toFixed(3)} mm`,
+          },
+          {
+            name: 'Whole Depth (h) — cutting depth',
+            formula: modVal < 1.25 ? 'h = 2.4 × MOD' : 'h = 2.25 × MOD',
+            explanation: 'The full tooth depth you feed the cutter: addendum (1·MOD) plus dedendum (1.25·MOD, which includes 0.25·MOD root clearance so mating tooth tips never bottom out). Fine modules below 1.25 use 2.4·MOD for extra clearance.',
+            worked: `h = ${modVal < 1.25 ? '2.4' : '2.25'} × ${modVal} = ${wholeDepthMm.toFixed(3)} mm`,
+          },
+          {
+            name: 'Circular Pitch (CP)',
+            formula: 'CP = π × MOD',
+            explanation: 'The arc distance from one tooth to the next along the pitch circle. The circumference is π·PCD and there are N teeth, so CP = π·PCD/N = π·MOD.',
+            worked: `CP = π × ${modVal} = ${(Math.PI * modVal).toFixed(3)} mm`,
+          },
+          {
+            name: 'Center Distance (C)',
+            formula: 'C = (PCD₁ + PCD₂) ÷ 2 = MOD × (N₁ + N₂) ÷ 2',
+            explanation: 'Two mating gears touch at their pitch circles, so the shaft spacing is half the sum of the two pitch diameters.',
+            worked: enableMating
+              ? `C = ${modVal} × (${teethVal} + ${matingTeethVal}) ÷ 2 = ${centerDistanceMm.toFixed(3)} mm`
+              : 'Enable the mating gear above to see this worked.',
+          },
+          {
+            name: 'Diametral Pitch Equivalence',
+            formula: 'DP = 25.4 ÷ MOD',
+            explanation: 'Module and DP measure the same thing in opposite directions (size vs. density). Because 1 inch = 25.4 mm, the conversion is a simple reciprocal — which is why metric and DP gears never interchange on round numbers.',
+            worked: `DP = 25.4 ÷ ${modVal} = ${(25.4 / modVal).toFixed(2)} DP`,
+          },
+        ]}
+      />
 
       {/* Footer: tool description (kept out of the header per site convention) */}
       <div className="glass-panel" style={{ marginTop: '25px', padding: '16px 22px' }}>
