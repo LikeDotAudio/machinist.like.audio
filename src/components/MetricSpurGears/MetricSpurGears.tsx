@@ -70,12 +70,17 @@ export interface CatalogGearRow {
   odMm: number;
 }
 
+// Standard diametral pitches for imperial gearing
+const STANDARD_DPS = [3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 24, 32, 40, 48, 64];
+
 export const MetricSpurGears: React.FC = () => {
   const { unit } = useUnit();
   const [activeTab, setActiveTab] = useState<'calculator' | 'catalog'>('calculator');
-  
-  // Calculator inputs
+
+  // Calculator inputs — metric gears are sized by MODULE, imperial gears by DIAMETRAL PITCH
+  const [gearSystem, setGearSystem] = useState<'module' | 'dp'>(unit === 'imperial' ? 'dp' : 'module');
   const [modInput, setModInput] = useState<string>('2');
+  const [dpInput, setDpInput] = useState<string>('24');
   const [teethInput, setTeethInput] = useState<string>('24');
   const [enableMating, setEnableMating] = useState<boolean>(true);
   const [matingTeethInput, setMatingTeethInput] = useState<string>('36');
@@ -93,28 +98,39 @@ export const MetricSpurGears: React.FC = () => {
 
   // Parse numeric values
   const modVal = parseFloat(modInput) || 2;
+  const dpVal = parseFloat(dpInput) || 24;
   const teethVal = Math.max(8, parseInt(teethInput) || 24);
   const matingTeethVal = Math.max(8, parseInt(matingTeethInput) || 36);
 
-  // Metrology Calculations (in mm)
-  const pcdMm = teethVal * modVal;
-  const odMm = (teethVal + 2) * modVal;
-  const addendumMm = modVal;
-  const wholeDepthMm = modVal < 1.25 ? 2.4 * modVal : 2.25 * modVal;
+  const isDP = gearSystem === 'dp';
+  // Module and DP are reciprocal tooth-size measures: DP = 25.4 / MOD.
+  // In DP mode all geometry derives from the equivalent module 25.4/DP (i.e. PD = N/DP in inches).
+  const effModMm = isDP ? 25.4 / dpVal : modVal;
+  const equivDp = 25.4 / effModMm;
+
+  // Metrology Calculations (internal mm)
+  const pcdMm = teethVal * effModMm;
+  const odMm = (teethVal + 2) * effModMm;
+  const addendumMm = effModMm;
+  // Whole depth: metric DIN — 2.25·MOD (2.4·MOD fine); imperial AGMA 20° — 2.25/DP coarse, 2.2/DP + 0.002" fine (DP ≥ 20)
+  const wholeDepthMm = isDP
+    ? (dpVal >= 20 ? (2.2 / dpVal + 0.002) * 25.4 : (2.25 / dpVal) * 25.4)
+    : (modVal < 1.25 ? 2.4 * modVal : 2.25 * modVal);
   const dedendumMm = wholeDepthMm - addendumMm;
   const rootDiaMm = odMm - 2 * wholeDepthMm;
-  const circularPitchMm = Math.PI * modVal;
+  const circularPitchMm = Math.PI * effModMm;
   const circularThicknessMm = circularPitchMm / 2;
 
   // Mating Gear Calculations
-  const matingPcdMm = matingTeethVal * modVal;
-  const matingOdMm = (matingTeethVal + 2) * modVal;
+  const matingPcdMm = matingTeethVal * effModMm;
+  const matingOdMm = (matingTeethVal + 2) * effModMm;
   const centerDistanceMm = (pcdMm + matingPcdMm) / 2;
 
-  // Convert to display unit
-  const isImp = unit === 'imperial';
+  // Convert to display unit — DP mode defaults to inches (imperial-native), module mode follows the global unit
+  const isImp = isDP || unit === 'imperial';
   const toUnit = (valMm: number) => isImp ? (valMm / 25.4).toFixed(4) : valMm.toFixed(3);
   const unitStr = isImp ? 'in' : 'mm';
+  const sizeLabel = isDP ? `DP ${dpVal}` : `MOD ${modVal}`;
 
   // Generate Catalog Data
   const catalogData = useMemo(() => {
@@ -152,29 +168,11 @@ export const MetricSpurGears: React.FC = () => {
   return (
     <div style={{ maxWidth: '1350px', margin: '0 auto', padding: '10px 0' }}>
       
-      {/* Title Header */}
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{ 
-          display: 'inline-block', 
-          background: 'rgba(244, 144, 44, 0.1)', 
-          color: 'var(--accent-cyan)', 
-          padding: '4px 14px', 
-          borderRadius: '20px', 
-          fontSize: '0.8rem', 
-          fontWeight: 600, 
-          letterSpacing: '1px', 
-          textTransform: 'uppercase', 
-          marginBottom: '10px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Hardinge & DIN 13 T1 Metrology
-        </div>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
-          Metric Spur Gear Calculator & Pre-Cut Catalog
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', fontSize: '1rem' }}>
-          Calculate exact tooth profiles, blank outside diameters, and center distances, or browse 2,800+ pre-cut gear part numbers (Modules 1 to 6).
-        </p>
+      {/* Compact Title Bar */}
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          ⚙️ Spur Gears <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Metric Module & Imperial Diametral Pitch</span>
+        </h2>
       </div>
 
       {/* Main Grid: Visualizer Top-Left (order: -1), Settings/Results Right */}
@@ -188,7 +186,7 @@ export const MetricSpurGears: React.FC = () => {
                 2D Gear Mesh & Geometry Visualizer
               </h3>
               <span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}>
-                MOD {modVal} // {teethVal}T Pinion {enableMating ? `↔ ${matingTeethVal}T Gear` : ''}
+                {sizeLabel} // {teethVal}T Pinion {enableMating ? `↔ ${matingTeethVal}T Gear` : ''}
               </span>
             </div>
             <div style={{ background: 'var(--bg-tertiary)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>
@@ -375,22 +373,66 @@ export const MetricSpurGears: React.FC = () => {
           {activeTab === 'calculator' ? (
             /* TAB 1: Calculator Inputs and Machining Outputs */
             <div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Module (MOD)
-                  </label>
-                  <select
-                    value={modInput}
-                    onChange={(e) => setModInput(e.target.value)}
-                    className="input-precision"
-                    style={{ width: '100%', padding: '10px', fontWeight: 700 }}
-                  >
-                    {[1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map((m) => (
-                      <option key={m} value={m.toString()}>MOD {m}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Gear System Toggle: metric MODULE vs imperial DIAMETRAL PITCH */}
+              <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '15px' }}>
+                <button
+                  onClick={() => setGearSystem('module')}
+                  style={{
+                    flex: 1, padding: '8px', border: 'none', borderRadius: '6px',
+                    background: !isDP ? 'var(--accent-cyan)' : 'transparent',
+                    color: !isDP ? '#000' : 'var(--text-secondary)',
+                    fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s ease'
+                  }}
+                >
+                  📏 Metric — Module (MOD)
+                </button>
+                <button
+                  onClick={() => setGearSystem('dp')}
+                  style={{
+                    flex: 1, padding: '8px', border: 'none', borderRadius: '6px',
+                    background: isDP ? '#f59e0b' : 'transparent',
+                    color: isDP ? '#000' : 'var(--text-secondary)',
+                    fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s ease'
+                  }}
+                >
+                  🔧 Imperial — Diametral Pitch (DP)
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                {!isDP ? (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Module (MOD)
+                    </label>
+                    <select
+                      value={modInput}
+                      onChange={(e) => setModInput(e.target.value)}
+                      className="input-precision"
+                      style={{ width: '100%', padding: '10px', fontWeight: 700 }}
+                    >
+                      {[1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map((m) => (
+                        <option key={m} value={m.toString()}>MOD {m}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Diametral Pitch (DP)
+                    </label>
+                    <select
+                      value={dpInput}
+                      onChange={(e) => setDpInput(e.target.value)}
+                      className="input-precision"
+                      style={{ width: '100%', padding: '10px', fontWeight: 700 }}
+                    >
+                      {STANDARD_DPS.map((dp) => (
+                        <option key={dp} value={dp.toString()}>{dp} DP</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px' }}>
@@ -438,23 +480,33 @@ export const MetricSpurGears: React.FC = () => {
                 )}
               </div>
 
+              {/* Module ↔ DP Equivalence */}
+              <div style={{ background: 'rgba(244, 144, 44, 0.06)', border: '1px solid rgba(244, 144, 44, 0.25)', padding: '10px 14px', borderRadius: '6px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
+                  {isDP ? 'Equivalent Module (25.4 / DP)' : 'Equivalent Diametral Pitch (25.4 / MOD)'}
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-cyan)', fontSize: '1rem' }}>
+                  {isDP ? `MOD ${(25.4 / dpVal).toFixed(3)} mm` : `${equivDp.toFixed(2)} DP`}
+                </span>
+              </div>
+
               {/* Results Table */}
               <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
-                <span>Machining Specifications</span>
+                <span>Machining Specifications {isDP ? '(20° AGMA, inches)' : '(DIN, metric)'}</span>
                 <span style={{ color: 'var(--accent-cyan)', fontSize: '0.8rem', textTransform: 'none' }}>Click value to copy</span>
               </h4>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {[
-                  { label: 'Outside Diameter (OD Blank)', form: '(N + 2) × MOD', val: toUnit(odMm), copyVal: toUnit(odMm), highlight: true },
-                  { label: 'Pitch Circle Diameter (PCD)', form: 'N × MOD', val: toUnit(pcdMm), copyVal: toUnit(pcdMm) },
+                  { label: 'Outside Diameter (OD Blank)', form: isDP ? '(N + 2) / DP' : '(N + 2) × MOD', val: toUnit(odMm), copyVal: toUnit(odMm), highlight: true },
+                  { label: isDP ? 'Pitch Diameter (PD)' : 'Pitch Circle Diameter (PCD)', form: isDP ? 'N / DP' : 'N × MOD', val: toUnit(pcdMm), copyVal: toUnit(pcdMm) },
                   { label: 'Root Circle Diameter', form: 'OD - 2H', val: toUnit(rootDiaMm), copyVal: toUnit(rootDiaMm) },
-                  { label: 'Whole Depth (H)', form: modVal < 1.25 ? '2.4 × MOD' : '2.25 × MOD', val: toUnit(wholeDepthMm), copyVal: toUnit(wholeDepthMm), highlight: true },
-                  { label: 'Addendum (A)', form: 'MOD', val: toUnit(addendumMm), copyVal: toUnit(addendumMm) },
+                  { label: 'Whole Depth (H)', form: isDP ? (dpVal >= 20 ? '2.2/DP + 0.002"' : '2.25 / DP') : (modVal < 1.25 ? '2.4 × MOD' : '2.25 × MOD'), val: toUnit(wholeDepthMm), copyVal: toUnit(wholeDepthMm), highlight: true },
+                  { label: 'Addendum (A)', form: isDP ? '1 / DP' : 'MOD', val: toUnit(addendumMm), copyVal: toUnit(addendumMm) },
                   { label: 'Dedendum (D)', form: 'H - A', val: toUnit(dedendumMm), copyVal: toUnit(dedendumMm) },
-                  { label: 'Circular Pitch (CP)', form: 'π × MOD', val: toUnit(circularPitchMm), copyVal: toUnit(circularPitchMm) },
+                  { label: 'Circular Pitch (CP)', form: isDP ? 'π / DP' : 'π × MOD', val: toUnit(circularPitchMm), copyVal: toUnit(circularPitchMm) },
                   { label: 'Tooth Width (CTT)', form: 'CP / 2', val: toUnit(circularThicknessMm), copyVal: toUnit(circularThicknessMm) },
-                  ...(enableMating ? [{ label: 'Center Distance (C)', form: '(PCD + PCD₂)/2', val: toUnit(centerDistanceMm), copyVal: toUnit(centerDistanceMm), highlight: true }] : [])
+                  ...(enableMating ? [{ label: 'Center Distance (C)', form: isDP ? '(N + N₂) / (2·DP)' : '(PCD + PCD₂)/2', val: toUnit(centerDistanceMm), copyVal: toUnit(centerDistanceMm), highlight: true }] : [])
                 ].map((row, idx) => (
                   <div
                     key={idx}

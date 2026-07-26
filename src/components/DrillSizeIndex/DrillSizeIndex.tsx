@@ -491,13 +491,60 @@ export const DrillSizeIndex: React.FC = () => {
           </div>
         </div>
 
+        {/* Search and Category Filters — top of page, drive both the lineup and the table */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '12px' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
+            <input
+              type="text"
+              placeholder="Search drill size (e.g., #7, 1/4, 0.201, 6mm)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="input-precision"
+              style={{ width: '100%', paddingLeft: '38px' }}
+            />
+            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '1.1rem', color: 'var(--text-muted)' }}>
+              🔍
+            </span>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1rem' }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {(['All', 'Number', 'Letter', 'Fractional', 'Metric'] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: '1px solid',
+                  borderColor: selectedCategory === cat ? (cat === 'All' ? 'var(--accent-cyan)' : CAT_COLORS[cat]) : 'var(--border-color)',
+                  background: selectedCategory === cat ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-primary)',
+                  color: selectedCategory === cat ? (cat === 'All' ? 'var(--accent-cyan)' : CAT_COLORS[cat]) : 'var(--text-secondary)',
+                  fontWeight: 600,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {cat === 'All' ? '🌐 All Drills' : cat === 'Number' ? '# Number (#1-#107)' : cat === 'Letter' ? '🔤 Letter (A-Z)' : cat === 'Fractional' ? '📐 Fractional' : '📏 Metric'}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div
           onMouseLeave={() => setHoveredDrillId(null)}
           style={{
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'flex-end',
-            gap: '3px',
+            gap: '2px',
             rowGap: '14px',
             background: 'var(--bg-primary)',
             border: '1px solid var(--border-color)',
@@ -509,10 +556,10 @@ export const DrillSizeIndex: React.FC = () => {
           }}
         >
           {lineupDrills.map((d) => {
-            // True proportional scaling — width and length track real diameter
+            // Strictly proportional widths — a 1/2" bit is exactly half the width of a 1" bit
             const frac = d.diameterIn / lineupMaxIn;
-            const w = Math.max(2.5, frac * 26);
-            const h = Math.max(12, frac * 118);
+            const w = Math.max(1, frac * 34);
+            const h = Math.max(10, frac * 118);
             const color = CAT_COLORS[d.category];
             const isSel = d.id === selectedDrillId;
             const isHov = d.id === hoveredDrillId;
@@ -562,55 +609,6 @@ export const DrillSizeIndex: React.FC = () => {
         {/* Left Card: Interactive Controls & Search Table */}
         <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          {/* Search and Category Filters */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ position: 'relative' }}>
-              <input
-                type="text"
-                placeholder="Search drill size (e.g., #7, 1/4, 0.201, 6mm)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-precision"
-                style={{ width: '100%', paddingLeft: '38px' }}
-              />
-              <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '1.1rem', color: 'var(--text-muted)' }}>
-                🔍
-              </span>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1rem' }}
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* Category Pills */}
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {(['All', 'Number', 'Letter', 'Fractional', 'Metric'] as const).map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    border: '1px solid',
-                    borderColor: selectedCategory === cat ? 'var(--accent-cyan)' : 'var(--border-color)',
-                    background: selectedCategory === cat ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-primary)',
-                    color: selectedCategory === cat ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                    fontWeight: 600,
-                    fontSize: '0.82rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  {cat === 'All' ? '🌐 All Drills' : cat === 'Number' ? '# Number (#1-#107)' : cat === 'Letter' ? '🔤 Letter (A-Z)' : cat === 'Fractional' ? '📐 Fractional' : '📏 Metric'}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Table Header / Sorting */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, padding: '0 10px' }}>
             <span>Drill Size ({filteredDrills.length} results)</span>
