@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUnit } from '../../context/UnitContext';
 
-export const SineBarVise: React.FC = () => {
+interface SineBarViseProps {
+  onNavigateToStack?: (height: number) => void;
+}
+
+export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) => {
   const { unit } = useUnit();
   const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [calcMode, setCalcMode] = useState<'findHeight' | 'findAngle'>('findHeight');
@@ -293,6 +297,30 @@ export const SineBarVise: React.FC = () => {
             <span style={{ fontSize: '1.05rem', color: 'var(--text-primary)', fontWeight: 600, display: 'block', marginTop: '4px' }}>
               {calcMode === 'findHeight' ? unitStr : `${dInt}° ${mInt}' ${sVal.toFixed(1)}"`}
             </span>
+            {calcMode === 'findHeight' && (
+              <button
+                onClick={() => onNavigateToStack && onNavigateToStack(parseFloat(calculatedHeight.toFixed(decPlaces)))}
+                className="btn-precision"
+                style={{
+                  marginTop: '15px',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  background: 'linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(0, 128, 255, 0.2))',
+                  border: '1px solid var(--accent-cyan)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  padding: '12px',
+                  borderRadius: '6px'
+                }}
+              >
+                = take me to the stack calculator ➔
+              </button>
+            )}
           </div>
 
           {/* Visual Interactive SVG Diagram (Top-Left Priority) */}

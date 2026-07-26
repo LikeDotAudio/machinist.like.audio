@@ -12,14 +12,24 @@ interface StackResult {
   total: number;
 }
 
-export const HeightGauge: React.FC = () => {
+interface HeightGaugeProps {
+  initialTargetValue?: string;
+}
+
+export const HeightGauge: React.FC<HeightGaugeProps> = ({ initialTargetValue }) => {
   const { unit: inputUnit } = useUnit();
   const prevUnitRef = useRef<'imperial' | 'metric'>(inputUnit);
-  const [targetValue, setTargetValue] = useState<string>('2.7342');
+  const [targetValue, setTargetValue] = useState<string>(initialTargetValue || '2.7342');
   const [imperialStack, setImperialStack] = useState<StackResult>({ blocks: [], error: null, total: 0 });
   const [metricStack, setMetricStack] = useState<StackResult>({ blocks: [], error: null, total: 0 });
   const [copiedImp, setCopiedImp] = useState(false);
   const [copiedMet, setCopiedMet] = useState(false);
+
+  useEffect(() => {
+    if (initialTargetValue !== undefined && initialTargetValue !== '') {
+      setTargetValue(initialTargetValue);
+    }
+  }, [initialTargetValue]);
 
   const imperialPresets = ['0.5000', '1.0000', '2.7342', '3.1415', '3.8750'];
   const metricPresets = ['10.000', '25.400', '69.449', '75.500', '100.000'];
