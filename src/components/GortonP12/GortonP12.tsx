@@ -34,8 +34,73 @@ const FACTORY_TABLE: TableRow[] = [
   { ratio: '16 to 1', lowerInches: 8.767, upperInches: 3.499, lowerMm: 222.68, upperMm: 88.86 },
 ];
 
+// Gorton P1-2 Cutting Chart Data (Page 35)
+interface GortonMaterial {
+  category: 'Cast Iron' | 'Steels' | 'Aluminum' | 'Copper & Brass & Bronze';
+  name: string;
+  tensile: string;
+  carbideDry: string;
+  carbideWet: string;
+  carbideCoolant: string;
+  hssDry: string;
+  hssWet: string;
+  hssCoolant: string;
+}
+
+const GORTON_MATERIALS: GortonMaterial[] = [
+  // Cast Iron
+  { category: 'Cast Iron', name: 'Average Brinell 150-170', tensile: '18,000 - 26,000', carbideDry: '250', carbideWet: '275', carbideCoolant: 'Dry or Soluble Oil', hssDry: '90', hssWet: '110', hssCoolant: 'Dry or Soluble Oil' },
+  { category: 'Cast Iron', name: 'C.I. up to 1.5% Nickel (Brinell 170-195)', tensile: '20,000 - 28,000', carbideDry: '-', carbideWet: '275 - 300', carbideCoolant: 'Soluble Oil / Dry', hssDry: '70', hssWet: '80', hssCoolant: 'Soluble Oil' },
+  { category: 'Cast Iron', name: 'C.I. up to 1% Cr. 3.5% Ni. (Brinell 200-210)', tensile: '30,000 - 36,000', carbideDry: '-', carbideWet: '210 - 230', carbideCoolant: 'Soluble Oil', hssDry: '65', hssWet: '70', hssCoolant: 'Soluble Oil' },
+  { category: 'Cast Iron', name: 'Semi Steel 20-30% Scrap w/ 2% Si', tensile: '30,000 - 36,000', carbideDry: '-', carbideWet: '175 - 200', carbideCoolant: 'Soluble Oil', hssDry: '62', hssWet: '72', hssCoolant: 'Soluble Oil' },
+
+  // Steels
+  { category: 'Steels', name: 'Bessemer Screw Stock S.A.E. #1112', tensile: '70,000 - 90,000', carbideDry: '-', carbideWet: '220 - 230', carbideCoolant: 'Cutting Oil', hssDry: '160', hssWet: '170', hssCoolant: 'Cutting Oil' },
+  { category: 'Steels', name: 'Free Cutting Bessemer (High Sulphur)', tensile: '70,000 - 90,000', carbideDry: '-', carbideWet: '240 - 260', carbideCoolant: 'Cutting Oil', hssDry: '175', hssWet: '185', hssCoolant: 'Cutting Oil' },
+  { category: 'Steels', name: '#2 Bessemer High Sulphur', tensile: '70,000 - 90,000', carbideDry: '-', carbideWet: '270 - 300', carbideCoolant: 'Cutting Oil', hssDry: '165', hssWet: '175', hssCoolant: 'Cutting Oil' },
+  { category: 'Steels', name: 'Ultra Cut High Manganese (same as #2)', tensile: '90,000 - 110,000', carbideDry: '-', carbideWet: '270 - 300', carbideCoolant: 'Cutting Oil', hssDry: '180', hssWet: '200', hssCoolant: 'Cutting Oil' },
+  { category: 'Steels', name: 'Open Hearth Screw Stock S.A.E. #1120', tensile: '70,000 - 85,000', carbideDry: '-', carbideWet: '250 - 260', carbideCoolant: 'Cutting Oil', hssDry: '135', hssWet: '145', hssCoolant: 'Soda Compound' },
+  { category: 'Steels', name: 'Soft Forging Steel S.A.E. #1020 (Low S)', tensile: '63,000 - 80,000', carbideDry: '-', carbideWet: '240 - 250', carbideCoolant: 'Soda Compound', hssDry: '110', hssWet: '120', hssCoolant: 'Soda Compound' },
+  { category: 'Steels', name: 'S.A.E. #1045 Carbon Steel', tensile: '95,000 - 125,000', carbideDry: '-', carbideWet: '200 - 240', carbideCoolant: 'Soda Compound', hssDry: '80', hssWet: '90', hssCoolant: 'Soda Compound' },
+  { category: 'Steels', name: 'Alloy Steels 3.5% Ni. S.A.E. #2315', tensile: '80,000 - 115,000', carbideDry: '-', carbideWet: '165 - 175', carbideCoolant: 'Soda Compound', hssDry: '110', hssWet: '120', hssCoolant: 'Soda Compound' },
+  { category: 'Steels', name: 'Chrome Ni. S.A.E. #3120 (Heat Treated Blanks)', tensile: '80,000 - 110,000', carbideDry: '-', carbideWet: '140 - 160', carbideCoolant: 'Soda Compound', hssDry: '90', hssWet: '100', hssCoolant: 'Soda Compound' },
+
+  // Aluminum
+  { category: 'Aluminum', name: 'Pure Cast Aluminum #43', tensile: '19,000', carbideDry: '-', carbideWet: '400 Up', carbideCoolant: 'Kerosene & Lard Oil', hssDry: '220', hssWet: '230', hssCoolant: 'Kerosene & Lard Oil' },
+  { category: 'Aluminum', name: 'Commercially Hard Temper Alum #2 SH.', tensile: '24,000', carbideDry: '-', carbideWet: '200 - 250', carbideCoolant: 'Kerosene & Lard Oil', hssDry: '130', hssWet: '140', hssCoolant: 'Kerosene & Lard Oil' },
+  { category: 'Aluminum', name: 'Dural High Tensile #17 ST.', tensile: '58,000', carbideDry: '-', carbideWet: '275 - 300', carbideCoolant: 'Soluble Oil', hssDry: '190', hssWet: '200', hssCoolant: 'Soluble Oil' },
+
+  // Copper, Brass & Bronze
+  { category: 'Copper & Brass & Bronze', name: 'Copper One-Half Hard Commercial', tensile: '31,000', carbideDry: '-', carbideWet: '180 - 200', carbideCoolant: 'Soluble Oil', hssDry: '100', hssWet: '120', hssCoolant: 'Soluble Oil' },
+  { category: 'Copper & Brass & Bronze', name: 'Brass, Cast Yellow', tensile: '20,000', carbideDry: '-', carbideWet: '400 - 600', carbideCoolant: 'Soluble Oil', hssDry: '200', hssWet: '220', hssCoolant: 'Soluble Oil' },
+  { category: 'Copper & Brass & Bronze', name: 'Brass One-Half Hard Commercial', tensile: '25,000 - 30,000', carbideDry: '-', carbideWet: '250 - 300', carbideCoolant: 'Soluble Oil', hssDry: '135', hssWet: '165', hssCoolant: 'Soluble Oil' },
+  { category: 'Copper & Brass & Bronze', name: 'Bronze, Gun Metal', tensile: '35,000', carbideDry: '-', carbideWet: '200 - 220', carbideCoolant: 'Soluble Oil', hssDry: '130', hssWet: '150', hssCoolant: 'Soluble Oil' },
+  { category: 'Copper & Brass & Bronze', name: 'Bronze, Phosphor', tensile: '50,000', carbideDry: '-', carbideWet: '160 - 180', carbideCoolant: 'Soluble Oil', hssDry: '95', hssWet: '115', hssCoolant: 'Soluble Oil' },
+];
+
+// Speed Chart Matrix Data (Page 34)
+const SPEED_MATRIX = [
+  { sfm: 30, d16: 1833, d8: 917, d316: 611, d4: 458, d516: 367, d38: 306 },
+  { sfm: 40, d16: 2445, d8: 1222, d316: 815, d4: 611, d516: 489, d38: 408 },
+  { sfm: 50, d16: 3056, d8: 1528, d316: 1019, d4: 764, d516: 611, d38: 509 },
+  { sfm: 60, d16: 3667, d8: 1833, d316: 1222, d4: 917, d516: 733, d38: 611 },
+  { sfm: 70, d16: 4278, d8: 2139, d316: 1426, d4: 1070, d516: 856, d38: 713 },
+  { sfm: 80, d16: 4889, d8: 2445, d316: 1630, d4: 1222, d516: 978, d38: 815 },
+  { sfm: 100, d16: 6112, d8: 3056, d316: 2037, d4: 1528, d516: 1222, d38: 1019 },
+  { sfm: 125, d16: 7641, d8: 3820, d316: 2546, d4: 1910, d516: 1528, d38: 1274 },
+  { sfm: 150, d16: 9169, d8: 4584, d316: 3056, d4: 2292, d516: 1833, d38: 1527 },
+  { sfm: 175, d16: 10714, d8: 5348, d316: 3565, d4: 2674, d516: 2139, d38: 1784 },
+  { sfm: 200, d16: 12224, d8: 6112, d316: 4074, d4: 3056, d516: 2444, d38: 2036 },
+  { sfm: 250, d16: 15281, d8: 7640, d316: 5092, d4: 3820, d516: 3055, d38: 2548 },
+  { sfm: 300, d16: 18337, d8: 9168, d316: 6111, d4: 4584, d516: 3666, d38: 3057 },
+  { sfm: 400, d16: 24450, d8: 12224, d316: 8148, d4: 6112, d516: 4888, d38: 4076 },
+  { sfm: 500, d16: 30562, d8: 15280, d316: 10185, d4: 7640, d516: 6110, d38: 5095 },
+  { sfm: 700, d16: 42787, d8: 21392, d316: 14259, d4: 10696, d516: 8554, d38: 7133 },
+  { sfm: 900, d16: 55012, d8: 27504, d316: 18333, d4: 13752, d516: 10998, d38: 9170 },
+];
+
 export const GortonP12: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'calculator' | 'table' | 'guide' | 'roll_sync'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'roll_sync' | 'speeds_materials' | 'table' | 'guide'>('calculator');
   const [rangeMode, setRangeMode] = useState<'standard' | 'low_ratio'>('standard');
   const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
 
@@ -53,6 +118,12 @@ export const GortonP12: React.FC = () => {
   // Roll Attachment inputs
   const [rollDia, setRollDia] = useState<string>('2.000');
   const [isRollMode, setIsRollMode] = useState<boolean>(false);
+
+  // Speeds & Materials Chart inputs
+  const [selectedMatIdx, setSelectedMatIdx] = useState<number>(4); // Bessemer Screw Stock
+  const [toolMat, setToolMat] = useState<'carbide' | 'hss'>('carbide');
+  const [cutMode, setCutMode] = useState<'wet' | 'dry'>('wet');
+  const [speedCutterDia, setSpeedCutterDia] = useState<string>('0.125');
 
   // Parse ratio
   const ratio = Math.max(1.1, parseFloat(ratioVal) || 2.0);
@@ -157,14 +228,30 @@ export const GortonP12: React.FC = () => {
   const calculatedRoller = cDia * ratio;
   const calculatedCutter = rDia / ratio;
 
+  // Speeds & Materials calculation (Page 34 & 35)
+  const currentMat = GORTON_MATERIALS[selectedMatIdx] || GORTON_MATERIALS[0];
+  const sfmRaw = toolMat === 'carbide' 
+    ? (cutMode === 'wet' ? currentMat.carbideWet : currentMat.carbideDry)
+    : (cutMode === 'wet' ? currentMat.hssWet : currentMat.hssDry);
+  const coolantRec = toolMat === 'carbide' ? currentMat.carbideCoolant : currentMat.hssCoolant;
+  
+  // Parse numeric SFM for RPM math (taking average if range e.g. "220 - 230" -> 225, or "400 Up" -> 400)
+  let sfmNum = 0;
+  if (sfmRaw && sfmRaw !== '-') {
+    const cleanStr = sfmRaw.replace(/Up/i, '').trim();
+    const parts = cleanStr.split('-').map(p => parseFloat(p.trim())).filter(n => !isNaN(n));
+    if (parts.length === 2) sfmNum = (parts[0] + parts[1]) / 2;
+    else if (parts.length === 1) sfmNum = parts[0];
+  }
+  const spdDiaNum = parseFloat(speedCutterDia) || 0.125;
+  const calculatedRpm = (sfmNum > 0 && spdDiaNum > 0) ? Math.round((sfmNum * 12) / (Math.PI * spdDiaNum)) : 0;
+
   // SVG Visualizer Geometry (Kinematic Pantograph Linkage)
   const svgW = 480;
   const svgH = 340;
   const anchorX = 120; // Pivot on column base
   const anchorY = 70;
   
-  // As ratio increases from 2:1 to 40:1, the slider block position moves closer to the pivot anchor
-  // We scale the visual linkage length to represent this kinematic transformation clearly
   const visualScale = Math.min(1.0, Math.max(0.15, 2.0 / ratio));
   const armLen = 260;
   const lowerBlockX = anchorX + (armLen * visualScale);
@@ -204,8 +291,8 @@ export const GortonP12: React.FC = () => {
         <h1 style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
           Gorton P1-2 Pantomill Reduction & Setup Suite
         </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.6 }}>
-          Precision pantograph bar setting calculator, master-to-workpiece scaling, Model 727 roll attachment circumference math, and style-to-cutter roller synchronizer based on official Gorton factory constants.
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '780px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.6 }}>
+          Precision pantograph bar setting calculator, tracing stylus grinding rules, special reduction alignments, official material cutting speeds (RPM/SFM), and Model 727 roll attachment math.
         </p>
       </div>
 
@@ -217,13 +304,13 @@ export const GortonP12: React.FC = () => {
           <button
             onClick={() => setActiveTab('calculator')}
             style={{
-              padding: '10px 18px',
+              padding: '10px 16px',
               border: 'none',
               borderRadius: 'var(--radius-sm)',
               background: activeTab === 'calculator' ? '#f59e0b' : 'transparent',
               color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
               fontWeight: 700,
-              fontSize: '0.88rem',
+              fontSize: '0.86rem',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               display: 'flex',
@@ -237,13 +324,13 @@ export const GortonP12: React.FC = () => {
           <button
             onClick={() => setActiveTab('roll_sync')}
             style={{
-              padding: '10px 18px',
+              padding: '10px 16px',
               border: 'none',
               borderRadius: 'var(--radius-sm)',
               background: activeTab === 'roll_sync' ? 'linear-gradient(135deg, #38bdf8, #3b82f6)' : 'transparent',
               color: activeTab === 'roll_sync' ? '#fff' : 'var(--text-secondary)',
               fontWeight: 700,
-              fontSize: '0.88rem',
+              fontSize: '0.86rem',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               display: 'flex',
@@ -251,41 +338,61 @@ export const GortonP12: React.FC = () => {
               gap: '6px'
             }}
           >
-            <span>⭕ Roll Engraving & Stylus Rollers</span>
+            <span>⭕ Tracing Stylus & Roll Engraving</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('speeds_materials')}
+            style={{
+              padding: '10px 16px',
+              border: 'none',
+              borderRadius: 'var(--radius-sm)',
+              background: activeTab === 'speeds_materials' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
+              color: activeTab === 'speeds_materials' ? '#fff' : 'var(--text-secondary)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span>⚡ Speeds & Cutting Chart (P. 34-35)</span>
           </button>
 
           <button
             onClick={() => setActiveTab('table')}
             style={{
-              padding: '10px 18px',
+              padding: '10px 16px',
               border: 'none',
               borderRadius: 'var(--radius-sm)',
               background: activeTab === 'table' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
               color: activeTab === 'table' ? '#fff' : 'var(--text-secondary)',
               fontWeight: 700,
-              fontSize: '0.88rem',
+              fontSize: '0.86rem',
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
-            <span>📊 Factory Reduction Table</span>
+            <span>📊 Reduction Table</span>
           </button>
 
           <button
             onClick={() => setActiveTab('guide')}
             style={{
-              padding: '10px 18px',
+              padding: '10px 16px',
               border: 'none',
               borderRadius: 'var(--radius-sm)',
               background: activeTab === 'guide' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
               color: activeTab === 'guide' ? '#fff' : 'var(--text-secondary)',
               fontWeight: 700,
-              fontSize: '0.88rem',
+              fontSize: '0.86rem',
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
-            <span>📖 Manual & Setup Guide</span>
+            <span>📖 Manual Guide</span>
           </button>
         </div>
 
@@ -726,9 +833,9 @@ export const GortonP12: React.FC = () => {
         </div>
       )}
 
-      {/* MAIN VIEW 2: ROLL ENGRAVING & STYLUS ROLLER SYNCHRONIZER */}
+      {/* MAIN VIEW 2: TRACING STYLUS, ROLL ENGRAVING & SPECIAL REDUCTIONS */}
       {activeTab === 'roll_sync' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '30px' }}>
           
           {/* Card 1: Stylus Roller to Cutter Diameter Synchronizer (Page 20) */}
           <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #38bdf8' }}>
@@ -811,7 +918,34 @@ export const GortonP12: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 2: Model 727 Roll Attachment Specifications & Formulas (Pages 26-27) */}
+          {/* Card 2: Tracing Stylus Selection & Grinding Rules (Pages 19-20) */}
+          <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #ec4899', background: 'var(--bg-primary)' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ec4899', marginBottom: '12px' }}>
+              🖋️ Tracing Stylus Selection & Grinding (P. 19-20)
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '20px', lineHeight: 1.6 }}>
+              Two distinct stylus families are engineered for the P1-2 Pantomill. Matching the stylus geometry to the copy type groove is essential to prevent master damage and ensure clean lettering.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #ec4899' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>1. Style No. 3253 (Conical Point for 90° V-Grooves):</strong>
+                Used exclusively for sunk lettering from standard 90° V-groove copy. <strong>Critical Maintenance:</strong> Must be kept ground to a sharp 90° included angle on a Gorton Cutter Grinder using 2/10" collets. If dull or off-angle, it will rapidly deform brass copy characters!
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>2. Style Sets 795-1 / 25-1 (Square Nose / Rollers):</strong>
+                Engineered for square-bottom groove copy and 3D relief (raised) designs. Use <strong>Set 25-1 (with rollers)</strong> when reduction ratios are large and stock removal is heavy. Use <strong>Set 795-1 (without rollers)</strong> for small ratios and fine finish passes into sharp internal corners.
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #00ff80' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>3. Stylus Springing Rule (Page 20):</strong>
+                Clamp stylus in the long arm collet so no excessive straining of pantograph joints occurs. The slight mechanical springing when moving stylus between characters is normal and harmless.
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Model 727 Roll Attachment Specifications & Formulas (Pages 26-27) */}
           <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #f59e0b', background: 'var(--bg-primary)' }}>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f59e0b', marginBottom: '12px' }}>
               ⚙️ Model 727 Roll Attachment Guide
@@ -820,7 +954,7 @@ export const GortonP12: React.FC = () => {
               The Gorton 727 Roll Attachment replaces the standard slider head to engrave cylindrical workpieces (0.75" to 3.0" dia, up to 7" length) without requiring a curved forming guide.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
               <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #00f0ff' }}>
                 <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>1. Master Circumference Scaling Rule:</strong>
                 Flat master length = Cylinder Circumference (π × D) × Reduction Ratio (R). Example: 2" cylinder at 2:1 ratio requires 6.2832 × 2 = 12.5664" master template length.
@@ -838,10 +972,281 @@ export const GortonP12: React.FC = () => {
             </div>
           </div>
 
+          {/* Card 4: Special Reductions & Corrective Screw "X" (Pages 15, 28-30) */}
+          <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #00f0ff', background: 'var(--bg-primary)' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#00f0ff', marginBottom: '12px' }}>
+              🎯 Special Reductions & Screw "X" (P. 15, 28)
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '20px', lineHeight: 1.6 }}>
+              When engraving non-standard odd ratios (from 2:1 to infinity) or correcting table alignment, follow official factory calibration rules from Pages 15, 28, and 29-30.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #00f0ff' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>1. Magnifying Glass Alignment Rule (Page 15):</strong>
+                To obtain true reproduction through the pantograph bars, settings must be made with a magnifying glass so index lines on slider blocks align perfectly with bar calibrations.
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #38bdf8' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>2. Corrective Screw "X" Parallelism (P. 15 Note & P. 28):</strong>
+                If parallelism between copy table and machine table deviates after setting bar reductions, adjust corrective screw <strong>"X"</strong> (Page 28). This mechanical alignment compensation does <strong>not</strong> alter pantograph bar calibrations or reproduction accuracy!
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', padding: '14px', borderRadius: '6px', borderLeft: '4px solid #a855f7' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '4px' }}>3. Trial Cut Verification (Page 15):</strong>
+                After setting a special reduction, verify by inserting a point in the spindle, raising work table until clearing by 1/64", and tracing copyholder T-slots. If point follows an arc or angle, recalculate and tap slider block until true.
+              </div>
+            </div>
+          </div>
+
         </div>
       )}
 
-      {/* MAIN VIEW 3: FACTORY REDUCTION TABLE (Pages 31-33) */}
+      {/* MAIN VIEW 3: SPEEDS & CUTTING MATERIALS CHART (Pages 34-35) */}
+      {activeTab === 'speeds_materials' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+          
+          {/* Top Section: Interactive Speeds & Coolant Calculator */}
+          <div className="glass-panel" style={{ padding: '35px', borderTop: '3px solid #10b981' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)', flexWrap: 'wrap', gap: '15px' }}>
+              <div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
+                  OFFICIAL GORTON CUTTING CHART (PAGES 34 & 35)
+                </span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#10b981', marginTop: '4px' }}>
+                  ⚡ Interactive Spindle Speed & Material Cutting Engine
+                </h3>
+              </div>
+              <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: 700, background: 'rgba(16, 185, 129, 0.12)', padding: '6px 14px', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                17 Factory Material Presets
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px', alignItems: 'start' }}>
+              
+              {/* Box 1: Material & Tool Selection */}
+              <div style={{ background: 'var(--bg-secondary)', padding: '22px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                  1. Select Workpiece Material:
+                </label>
+                <select
+                  value={selectedMatIdx}
+                  onChange={(e) => setSelectedMatIdx(Number(e.target.value))}
+                  className="input-precision"
+                  style={{ width: '100%', marginBottom: '18px', padding: '12px', fontSize: '0.95rem', fontWeight: 600 }}
+                >
+                  <optgroup label="── CAST IRON ──">
+                    {GORTON_MATERIALS.map((m, idx) => m.category === 'Cast Iron' && (
+                      <option key={idx} value={idx}>{m.name} ({m.tensile} TS)</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="── STEELS & SCREW STOCK ──">
+                    {GORTON_MATERIALS.map((m, idx) => m.category === 'Steels' && (
+                      <option key={idx} value={idx}>{m.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="── ALUMINUM ──">
+                    {GORTON_MATERIALS.map((m, idx) => m.category === 'Aluminum' && (
+                      <option key={idx} value={idx}>{m.name} ({m.tensile} TS)</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="── COPPER, BRASS & BRONZE ──">
+                    {GORTON_MATERIALS.map((m, idx) => m.category === 'Copper & Brass & Bronze' && (
+                      <option key={idx} value={idx}>{m.name}</option>
+                    ))}
+                  </optgroup>
+                </select>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                      Cutter Material:
+                    </label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={() => setToolMat('carbide')}
+                        style={{ flex: 1, padding: '8px', borderRadius: '4px', border: 'none', background: toolMat === 'carbide' ? '#10b981' : 'var(--bg-tertiary)', color: toolMat === 'carbide' ? '#000' : 'var(--text-secondary)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                      >
+                        Carbide
+                      </button>
+                      <button
+                        onClick={() => setToolMat('hss')}
+                        style={{ flex: 1, padding: '8px', borderRadius: '4px', border: 'none', background: toolMat === 'hss' ? '#10b981' : 'var(--bg-tertiary)', color: toolMat === 'hss' ? '#000' : 'var(--text-secondary)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                      >
+                        H.S.S.
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                      Coolant Mode:
+                    </label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={() => setCutMode('wet')}
+                        style={{ flex: 1, padding: '8px', borderRadius: '4px', border: 'none', background: cutMode === 'wet' ? '#38bdf8' : 'var(--bg-tertiary)', color: cutMode === 'wet' ? '#000' : 'var(--text-secondary)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                      >
+                        Wet
+                      </button>
+                      <button
+                        onClick={() => setCutMode('dry')}
+                        style={{ flex: 1, padding: '8px', borderRadius: '4px', border: 'none', background: cutMode === 'dry' ? '#f59e0b' : 'var(--bg-tertiary)', color: cutMode === 'dry' ? '#000' : 'var(--text-secondary)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                      >
+                        Dry
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Box 2: Cutter Diameter Selection */}
+              <div style={{ background: 'var(--bg-secondary)', padding: '22px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                  2. Select Cutter Diameter (Page 34):
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '16px' }}>
+                  {[
+                    { label: '1/16"', val: '0.0625' },
+                    { label: '1/8"', val: '0.125' },
+                    { label: '3/16"', val: '0.1875' },
+                    { label: '1/4"', val: '0.250' },
+                    { label: '5/16"', val: '0.3125' },
+                    { label: '3/8"', val: '0.375' },
+                  ].map(btn => (
+                    <button
+                      key={btn.label}
+                      onClick={() => setSpeedCutterDia(btn.val)}
+                      style={{
+                        padding: '10px 6px',
+                        borderRadius: '6px',
+                        border: speedCutterDia === btn.val ? '2px solid #00f0ff' : '1px solid var(--border-color)',
+                        background: speedCutterDia === btn.val ? 'rgba(0, 240, 255, 0.15)' : 'var(--bg-tertiary)',
+                        color: speedCutterDia === btn.val ? '#00f0ff' : 'var(--text-secondary)',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    Custom Diameter (Decimal Inches):
+                  </label>
+                  <input
+                    type="number"
+                    value={speedCutterDia}
+                    step="0.01"
+                    onChange={(e) => setSpeedCutterDia(e.target.value)}
+                    className="input-precision"
+                    style={{ fontWeight: 700, fontSize: '1.1rem', color: '#00f0ff' }}
+                  />
+                </div>
+              </div>
+
+              {/* Box 3: Spindle Telemetry Dashboard Card */}
+              <div style={{
+                background: 'linear-gradient(145deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.9) 100%)',
+                padding: '24px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                boxShadow: '0 10px 30px -5px rgba(16, 185, 129, 0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: '220px'
+              }}>
+                <div>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+                    RECOMMENDED SPINDLE SPEED
+                  </span>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 700, color: '#10b981', textShadow: '0 0 20px rgba(16, 185, 129, 0.4)' }}>
+                    {calculatedRpm > 0 ? calculatedRpm.toLocaleString() : 'N/A'} <span style={{ fontSize: '1.2rem', fontWeight: 500 }}>RPM</span>
+                  </div>
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>Surface Velocity:</span>
+                    <strong style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', color: '#fff' }}>{sfmRaw || 'N/A'} SFM</strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>Recommended Coolant:</span>
+                    <strong style={{ fontSize: '0.95rem', color: '#38bdf8' }}>{coolantRec || 'Dry'}</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Bottom Section: Official Page 34 Speed Matrix Table */}
+          <div className="glass-panel" style={{ padding: '35px', background: 'var(--bg-primary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+              <div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  📊 Official Speed Chart Matrix (Manual Page 34)
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
+                  Spindle revolutions per minute (RPM) across standard cutter diameters and surface speeds. Click any SFM row to test in calculator!
+                </p>
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', background: 'var(--bg-secondary)', padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                Formula: RPM = (SFM × 12) ÷ (π × Dia)
+              </div>
+            </div>
+
+            <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '0.9rem' }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg-secondary)', color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.5px' }}>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)', color: '#10b981' }}>Surface Ft. / Min (SFM)</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>1/16" Dia</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>1/8" Dia</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>3/16" Dia</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>1/4" Dia</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>5/16" Dia</th>
+                    <th style={{ padding: '14px', borderBottom: '2px solid var(--border-color)' }}>3/8" Dia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {SPEED_MATRIX.map((row, idx) => {
+                    const isCurrent = (sfmNum > 0 && Math.abs(row.sfm - sfmNum) < 15);
+                    return (
+                      <tr 
+                        key={row.sfm}
+                        style={{ 
+                          background: isCurrent ? 'rgba(16, 185, 129, 0.15)' : idx % 2 === 0 ? 'var(--bg-primary)' : 'var(--bg-tertiary)',
+                          borderBottom: '1px solid rgba(255,255,255,0.05)',
+                          transition: 'background 0.2s ease'
+                        }}
+                      >
+                        <td style={{ padding: '11px', fontWeight: 800, color: isCurrent ? '#10b981' : '#fff', background: isCurrent ? 'rgba(16, 185, 129, 0.2)' : 'transparent' }}>
+                          {row.sfm} SFM
+                        </td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.0625' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.0625' && isCurrent ? 800 : 400 }}>{row.d16.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.125' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.125' && isCurrent ? 800 : 400 }}>{row.d8.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.1875' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.1875' && isCurrent ? 800 : 400 }}>{row.d316.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.250' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.250' && isCurrent ? 800 : 400 }}>{row.d4.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.3125' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.3125' && isCurrent ? 800 : 400 }}>{row.d516.toLocaleString()}</td>
+                        <td style={{ padding: '11px', fontFamily: 'var(--font-mono)', color: speedCutterDia === '0.375' && isCurrent ? '#00f0ff' : 'var(--text-secondary)', fontWeight: speedCutterDia === '0.375' && isCurrent ? 800 : 400 }}>{row.d38.toLocaleString()}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* MAIN VIEW 4: FACTORY REDUCTION TABLE (Pages 31-33) */}
       {activeTab === 'table' && (
         <div className="glass-panel" style={{ padding: '35px', background: 'var(--bg-primary)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
@@ -904,7 +1309,7 @@ export const GortonP12: React.FC = () => {
         </div>
       )}
 
-      {/* MAIN VIEW 4: MANUAL & SETUP GUIDE (Pages 11-25) */}
+      {/* MAIN VIEW 5: MANUAL & SETUP GUIDE (Pages 11-25) */}
       {activeTab === 'guide' && (
         <div className="glass-panel" style={{ padding: '40px', background: 'var(--bg-primary)' }}>
           <div style={{ maxWidth: '950px', margin: '0 auto' }}>
