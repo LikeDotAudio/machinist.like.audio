@@ -716,7 +716,9 @@ export const SPEC_INFO: Record<string, SpecInfo> = {
     sizes: ['#0000', '#000', '#00', '#0', '#1', '#2 (most common)', '#3', '#4'],
   },
   'drive-phillips-slot': {
-    measurement: 'Combination recess — no unique sizing scale. Machined to accept the maximum material dimensions of both base standards (e.g., #2 Phillips intersecting a standard slot).',
+    standard: '"PlusMinus" / ECX / Modulo (trade names)',
+    measurement: 'Stepped two-tier recess: the tapered Phillips/Pozidriv cross forms the TOP tier (a self-centering funnel), while the slot is milled clean through the center as the BOTTOM tier, slightly deeper than the Phillips tip reaches — the straight-walled anchor. The electrical-trade standard (breaker lugs, terminal blocks); dedicated ECX/PlusMinus bits fill the whole stepped geometry for maximum torque without cam-out.',
+    sizes: ['#1 — PH/PZ1 + 3/16" (5 mm) slot', '#2 — PH/PZ2 + 1/4" (6 mm) slot'],
   },
   'drive-pozidriv': {
     standard: 'ISO 8764-1',
@@ -725,11 +727,12 @@ export const SPEC_INFO: Record<string, SpecInfo> = {
   },
   'drive-square': {
     standard: 'ANSI/ASME B18.6.3',
-    measurement: 'Measured across the flats of the square recess, with a slight standardized taper toward the bottom for a friction (stick) fit. Drivers are commonly color-coded.',
-    sizes: ['#00 (Orange)', '#0 (Yellow)', '#1 (Green)', '#2 (Red)', '#3 (Black)', '#4 (Brown)'],
+    measurement: 'Measured across the flats of the square recess, with a slight standardized taper toward the bottom for a friction (stick) fit. Drivers are color-coded by size — full recess dimension table below.',
   },
   'drive-square-slot': {
-    measurement: 'Combination recess — no unique sizing scale; accepts the standard sizes of its constituent Square (Robertson) and Slotted drives.',
+    standard: '"Recex" (trade name)',
+    measurement: 'Stepped two-tier recess: the straight-walled #2 Square sits at the bottom as the high-torque anchor, with the slotted channel across the top. Found in specialized marine and woodworking fasteners.',
+    sizes: ['#2 SQ + 1/4" slot (common)'],
   },
   'drive-torx': {
     standard: 'ISO 10664',
@@ -782,7 +785,9 @@ export const SPEC_INFO: Record<string, SpecInfo> = {
     sizes: ['1/8"', '5/32"', '3/16"', '1/4"', '5/16"'],
   },
   'drive-phillips-square': {
-    measurement: 'Quadrex combination — no unique sizing scale; accepts the maximum material dimensions of its Phillips and Square base standards (e.g., #2 PH ∩ #2 SQ).',
+    standard: '"Quadrex" (trade name)',
+    measurement: 'Stepped two-tier recess: the tapered #2 Phillips cross forms the top guiding tier, and the #2 Robertson square is punched into its deepest center point — nearly vertical walls, no taper — as the high-torque anchor. Standard in cabinet-making and HVAC: driven with a square bit in production, removable with a common Phillips later.',
+    sizes: ['#2 — PH2 + SQ2 (overwhelming standard)', '#3 — PH3 + SQ3 (structural timber)'],
   },
   // Head shapes (envelope dimensions per ASME B18 family)
   'head-flat82': {
@@ -845,6 +850,16 @@ export const SPEC_INFO: Record<string, SpecInfo> = {
     measurement: 'Same measurements as a finish nut but with larger across-flats and thickness for the same thread size.',
   },
 };
+
+// Robertson (square drive) standard recess dimensions with driver color codes
+export const ROBERTSON_SIZES: { swatch: string; color: string; no: string; screws: string; fraction: string; rangeIn: string; rangeMm: string }[] = [
+  { swatch: '#f59e0b', color: 'Orange', no: '#00', screws: '#1, #2', fraction: '—', rangeIn: '0.05', rangeMm: '1.3' },
+  { swatch: '#facc15', color: 'Yellow', no: '#0', screws: '#3, #4', fraction: '1/16 in +', rangeIn: '0.0696–0.071', rangeMm: '1.77–1.80' },
+  { swatch: '#16a34a', color: 'Green', no: '#1', screws: '#5, #6, #7', fraction: '3/32 in −', rangeIn: '0.090–0.091', rangeMm: '2.3' },
+  { swatch: '#ef4444', color: 'Red', no: '#2', screws: '#8, #9, #10', fraction: '7/64 in +', rangeIn: '0.111–0.1126', rangeMm: '2.82–2.86' },
+  { swatch: '#1a1a1a', color: 'Black', no: '#3', screws: '#12, 1/4', fraction: '1/8 in +', rangeIn: '0.1315–0.133', rangeMm: '3.34–3.38' },
+  { swatch: '#7f3b30', color: 'Brown', no: '#4', screws: '5/16, 3/8', fraction: '3/16 in +', rangeIn: '0.1895–0.191', rangeMm: '4.81–4.85' },
+];
 
 // Hex bolt / nut wrench sizes across flats (metric)
 export const HEX_WRENCH_SIZES: { size: string; wrenchMm: number }[] = [
@@ -968,6 +983,44 @@ export const ScrewHeadIndex: React.FC = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Robertson square recess dimension table with driver color codes */}
+          {(sel.id === 'drive-square' || sel.id === 'drive-8point' || sel.id === 'drive-phillips-square' || sel.id === 'drive-square-slot') && (
+            <div style={{ background: 'rgba(22, 163, 74, 0.05)', border: '1px solid rgba(22, 163, 74, 0.3)', padding: '12px 14px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.72rem', color: '#16a34a', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', fontWeight: 700 }}>
+                SQUARE RECESS DIMENSIONS & DRIVER COLOR CODE
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', fontFamily: 'var(--font-mono)' }}>
+                  <thead>
+                    <tr style={{ color: 'var(--text-muted)', textAlign: 'left' }}>
+                      <th style={{ padding: '4px 8px' }}>Color</th>
+                      <th style={{ padding: '4px 8px' }}>No</th>
+                      <th style={{ padding: '4px 8px' }}>Screw Sizes</th>
+                      <th style={{ padding: '4px 8px' }}>Fraction</th>
+                      <th style={{ padding: '4px 8px' }}>Range (in)</th>
+                      <th style={{ padding: '4px 8px' }}>Range (mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ROBERTSON_SIZES.map(r => (
+                      <tr key={r.no} style={{ borderTop: '1px solid var(--border-color)' }}>
+                        <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
+                          <span style={{ display: 'inline-block', width: '11px', height: '11px', borderRadius: '2px', background: r.swatch, border: '1px solid rgba(255,255,255,0.35)', marginRight: '6px', verticalAlign: 'middle' }} />
+                          <span style={{ color: '#fff' }}>{r.color}</span>
+                        </td>
+                        <td style={{ padding: '5px 8px', color: '#16a34a', fontWeight: 700 }}>{r.no}</td>
+                        <td style={{ padding: '5px 8px', color: 'var(--text-secondary)' }}>{r.screws}</td>
+                        <td style={{ padding: '5px 8px', color: 'var(--text-secondary)' }}>{r.fraction}</td>
+                        <td style={{ padding: '5px 8px', color: '#fff' }}>{r.rangeIn}</td>
+                        <td style={{ padding: '5px 8px', color: 'var(--text-secondary)' }}>{r.rangeMm}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
