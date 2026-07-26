@@ -10,6 +10,7 @@ import { TapDrillDie } from './components/TapDrillDie/TapDrillDie';
 import { Knurling } from './components/Knurling/Knurling';
 import { ThreadingChangeGears } from './components/ThreadingChangeGears/ThreadingChangeGears';
 import { SheetMetalBending } from './components/SheetMetalBending/SheetMetalBending';
+import { GortonP12 } from './components/GortonP12/GortonP12';
 
 type TabType = 
   | 'calculator' 
@@ -23,6 +24,7 @@ type TabType =
   | 'knurling' 
   | 'threading_change_gears' 
   | 'sheet_metal_bending'
+  | 'gorton_p12'
   | 'about';
 
 export function App() {
@@ -39,7 +41,8 @@ export function App() {
     'tap_drill_die',
     'knurling',
     'threading_change_gears',
-    'sheet_metal_bending'
+    'sheet_metal_bending',
+    'gorton_p12'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -106,6 +109,26 @@ export function App() {
             </p>
           </div>
           <div style={{ color: '#7dd3fc', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>Launch Tool</span> ➔
+          </div>
+        </div>
+
+        {/* Card 3: Gorton P1-2 Pantomill */}
+        <div 
+          onClick={() => setActiveTab('gorton_p12')}
+          className="glass-panel" 
+          style={{ padding: '30px', cursor: 'pointer', transition: 'all 0.25s ease', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '3px solid #f59e0b' }}
+        >
+          <div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>📜</div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+              Gorton P1-2 Pantomill
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '20px' }}>
+              Calculate exact pantograph bar setting distances, master-to-work ratios, and roll engraving setups (Manual 2701-A).
+            </p>
+          </div>
+          <div style={{ color: '#fbbf24', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span>Launch Tool</span> ➔
           </div>
         </div>
@@ -350,6 +373,8 @@ export function App() {
           <JoBlockCalculator />
         ) : activeTab === 'dividing_head' ? (
           <HardingeDividingHead />
+        ) : activeTab === 'gorton_p12' ? (
+          <GortonP12 />
         ) : activeTab === 'machinist_hub' ? (
           renderMachinistHub()
         ) : activeTab === 'speeds_feeds' ? (
