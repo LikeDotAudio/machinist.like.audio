@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface GearCombination {
   type: 'simple' | 'compound';
@@ -13,11 +14,27 @@ interface GearCombination {
 const DEFAULT_GEARS = [20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 100, 127];
 
 export const ThreadingChangeGears: React.FC = () => {
+  const { unit: globalUnit } = useUnit();
+  const targetUnit: 'tpi' | 'mm' = globalUnit === 'imperial' ? 'tpi' : 'mm';
+  const prevUnitRef = useRef<'tpi' | 'mm'>(targetUnit);
+
   const [leadScrewUnit, setLeadScrewUnit] = useState<'tpi' | 'mm'>('tpi');
   const [leadScrewVal, setLeadScrewVal] = useState<string>('8'); // 8 TPI lead screw standard
-  const [targetUnit, setTargetUnit] = useState<'tpi' | 'mm'>('mm');
   const [targetVal, setTargetVal] = useState<string>('1.5'); // M10x1.5 metric pitch on imperial lead screw!
   const [maxResults, setMaxResults] = useState<number>(10);
+
+  useEffect(() => {
+    if (prevUnitRef.current === targetUnit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = targetUnit;
+
+    const val = parseFloat(targetVal) || 0;
+    if (targetUnit === 'mm' && oldUnit === 'tpi' && val > 0) {
+      setTargetVal((25.4 / val).toFixed(3));
+    } else if (targetUnit === 'tpi' && oldUnit === 'mm' && val > 0) {
+      setTargetVal(Math.max(1, Math.round(25.4 / val)).toString());
+    }
+  }, [targetUnit]);
 
   // Allow user to toggle available gears in their shop
   const [availableGears, setAvailableGears] = useState<number[]>(DEFAULT_GEARS);
@@ -216,22 +233,6 @@ export const ThreadingChangeGears: React.FC = () => {
                   <option value={50}>Top 50 Results</option>
                 </select>
               </div>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-                <button
-                  type="button"
-                  onClick={() => setTargetUnit('tpi')}
-                  style={{ flex: 1, padding: '4px', fontSize: '0.75rem', background: targetUnit === 'tpi' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)', color: targetUnit === 'tpi' ? '#000' : 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  TPI
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTargetUnit('mm')}
-                  style={{ flex: 1, padding: '4px', fontSize: '0.75rem', background: targetUnit === 'mm' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)', color: targetUnit === 'mm' ? '#000' : 'var(--text-primary)', border: 'none', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  mm Pitch
-                </button>
-              </div>
               <input
                 type="number"
                 value={targetVal}
@@ -300,8 +301,8 @@ export const ThreadingChangeGears: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Card: Ranked Gear Train Results */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)' }}>
+        {/* Right Card (Ordered Left): Ranked Gear Train Results */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)', order: -1 }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>

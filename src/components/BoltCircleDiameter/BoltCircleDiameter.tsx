@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 export const BoltCircleDiameter: React.FC = () => {
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [method, setMethod] = useState<'adjacent' | 'caliper'>('caliper');
   const [holesCount, setHolesCount] = useState<number>(5);
   
@@ -13,22 +15,25 @@ export const BoltCircleDiameter: React.FC = () => {
   const [caliperMeas, setCaliperMeas] = useState<string>('4.5000');
   const [holeDia, setHoleDia] = useState<string>('0.5000');
 
-  const handleUnitToggle = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
     const adjVal = parseFloat(adjacentDist) || 0;
     const measVal = parseFloat(caliperMeas) || 0;
     const diaVal = parseFloat(holeDia) || 0;
 
-    if (newUnit === 'metric' && unit === 'imperial') {
+    if (unit === 'metric' && oldUnit === 'imperial') {
       setAdjacentDist((adjVal * 25.4).toFixed(3));
       setCaliperMeas((measVal * 25.4).toFixed(3));
       setHoleDia((diaVal * 25.4).toFixed(3));
-    } else if (newUnit === 'imperial' && unit === 'metric') {
+    } else if (unit === 'imperial' && oldUnit === 'metric') {
       setAdjacentDist((adjVal / 25.4).toFixed(4));
       setCaliperMeas((measVal / 25.4).toFixed(4));
       setHoleDia((diaVal / 25.4).toFixed(4));
     }
-    setUnit(newUnit);
-  };
+  }, [unit]);
 
   const count = Math.max(3, Math.min(50, holesCount));
   const decPlaces = unit === 'imperial' ? 4 : 3;
@@ -107,39 +112,6 @@ export const BoltCircleDiameter: React.FC = () => {
         <div className="glass-panel" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>🔍 Measurement Technique</h3>
-            
-            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '3px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-              <button
-                onClick={() => handleUnitToggle('imperial')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Imperial (in)
-              </button>
-              <button
-                onClick={() => handleUnitToggle('metric')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Metric (mm)
-              </button>
-            </div>
           </div>
 
           {/* Method Selector Tabs */}
@@ -292,8 +264,8 @@ export const BoltCircleDiameter: React.FC = () => {
           )}
         </div>
 
-        {/* Right Card: Result Output & Verification */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.6) 100%)' }}>
+        {/* Right Card (Ordered Left): Result Output & Verification */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.6) 100%)', order: -1 }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
               REVERSE-ENGINEERED RESULT

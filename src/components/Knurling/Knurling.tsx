@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface KnurlPitchPreset {
   name: string;
@@ -24,24 +25,28 @@ interface OptimalDiameter {
 }
 
 export const Knurling: React.FC = () => {
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [selectedPreset, setSelectedPreset] = useState<number>(1); // Medium 21 TPI
   const [targetDiameter, setTargetDiameter] = useState<string>('1.0000');
   const [customPitch, setCustomPitch] = useState<string>('21'); // TPI or mm
   const [isCustom, setIsCustom] = useState<boolean>(false);
 
-  const handleUnitToggle = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
     const diaVal = parseFloat(targetDiameter) || 0;
-    if (newUnit === 'metric' && unit === 'imperial') {
+    if (unit === 'metric' && oldUnit === 'imperial') {
       setTargetDiameter((diaVal * 25.4).toFixed(3));
       setSelectedPreset(4); // Metric Medium 1.0mm
-    } else if (newUnit === 'imperial' && unit === 'metric') {
+    } else if (unit === 'imperial' && oldUnit === 'metric') {
       setTargetDiameter((diaVal / 25.4).toFixed(4));
       setSelectedPreset(1); // Imperial Medium 21 TPI
     }
-    setUnit(newUnit);
     setIsCustom(false);
-  };
+  }, [unit]);
 
   const handleSelectPreset = (idx: number) => {
     setSelectedPreset(idx);
@@ -133,39 +138,6 @@ export const Knurling: React.FC = () => {
         <div className="glass-panel" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>⚙️ Tool & Workpiece Specs</h3>
-            
-            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '3px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-              <button
-                onClick={() => handleUnitToggle('imperial')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Imperial (in)
-              </button>
-              <button
-                onClick={() => handleUnitToggle('metric')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Metric (mm)
-              </button>
-            </div>
           </div>
 
           <div style={{ marginBottom: '20px' }}>
@@ -255,8 +227,8 @@ export const Knurling: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Card: Optimal Diameters & Tracking Verification */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)' }}>
+        {/* Right Card (Ordered Left): Optimal Diameters & Tracking Verification */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)', order: -1 }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
               TRACKING QUALITY ANALYSIS

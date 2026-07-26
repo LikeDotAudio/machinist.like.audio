@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 // SendCutSend Material Bending Specifications Database
 export interface BendingSpec {
@@ -91,8 +92,10 @@ export const SENDCUTSEND_BENDING_SPECS: BendingSpec[] = [
 const UNIQUE_MATERIALS = Array.from(new Set(SENDCUTSEND_BENDING_SPECS.map(s => s.material)));
 
 export const SheetMetalBending: React.FC = () => {
-  // Unit toggle
-  const [unit, setUnit] = useState<'in' | 'mm'>('in');
+  // Global Unit context
+  const { unit: globalUnit } = useUnit();
+  const unit: 'in' | 'mm' = globalUnit === 'imperial' ? 'in' : 'mm';
+  const prevUnitRef = useRef<'in' | 'mm'>(unit);
 
   // Material and Spec selection
   const [selectedMaterial, setSelectedMaterial] = useState<string>('Mild Steel');
@@ -113,6 +116,32 @@ export const SheetMetalBending: React.FC = () => {
   // Active UI Tab
   const [activeTab, setActiveTab] = useState<'calculator' | 'diagram' | 'specs_table'>('calculator');
   const [searchMaterial, setSearchMaterial] = useState<string>('');
+
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
+    const bVal = parseFloat(baseLength) || 0;
+    const lVal = parseFloat(leftFlange) || 0;
+    const rVal = parseFloat(rightFlange) || 0;
+    const ctVal = parseFloat(customThickness) || 0;
+    const crVal = parseFloat(customRadius) || 0;
+
+    if (unit === 'mm' && oldUnit === 'in') {
+      setBaseLength((bVal * 25.4).toFixed(2));
+      setLeftFlange((lVal * 25.4).toFixed(2));
+      setRightFlange((rVal * 25.4).toFixed(2));
+      setCustomThickness((ctVal * 25.4).toFixed(3));
+      setCustomRadius((crVal * 25.4).toFixed(3));
+    } else if (unit === 'in' && oldUnit === 'mm') {
+      setBaseLength((bVal / 25.4).toFixed(3));
+      setLeftFlange((lVal / 25.4).toFixed(3));
+      setRightFlange((rVal / 25.4).toFixed(3));
+      setCustomThickness((ctVal / 25.4).toFixed(3));
+      setCustomRadius((crVal / 25.4).toFixed(3));
+    }
+  }, [unit]);
 
   // Filter specs for current material
   const availableSpecs = useMemo(() => {
@@ -316,42 +345,6 @@ export const SheetMetalBending: React.FC = () => {
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>⚙️</span> Step 1: Material & Specs
               </h3>
-              
-              {/* Unit Selector */}
-              <div style={{ display: 'flex', background: 'var(--bg-tertiary)', borderRadius: '6px', padding: '3px', border: '1px solid var(--border-color)' }}>
-                <button
-                  type="button"
-                  onClick={() => setUnit('in')}
-                  style={{
-                    padding: '4px 12px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    borderRadius: '4px',
-                    border: 'none',
-                    background: unit === 'in' ? 'var(--accent-cyan)' : 'transparent',
-                    color: unit === 'in' ? '#000' : 'var(--text-secondary)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Inches (in)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUnit('mm')}
-                  style={{
-                    padding: '4px 12px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    borderRadius: '4px',
-                    border: 'none',
-                    background: unit === 'mm' ? 'var(--accent-cyan)' : 'transparent',
-                    color: unit === 'mm' ? '#000' : 'var(--text-secondary)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Metric (mm)
-                </button>
-              </div>
             </div>
 
             {/* Material Category Dropdown */}
@@ -574,8 +567,8 @@ export const SheetMetalBending: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT PANEL: MATHEMATICAL RESULTS & FLAT PATTERN OUTPUT */}
-          <div className="glass-panel" style={{ padding: '25px', borderTop: '3px solid #00ff80', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          {/* RIGHT PANEL (Ordered Left): MATHEMATICAL RESULTS & FLAT PATTERN OUTPUT */}
+          <div className="glass-panel" style={{ padding: '25px', borderTop: '3px solid #00ff80', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', order: -1 }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -593,7 +586,7 @@ export const SheetMetalBending: React.FC = () => {
                 borderRadius: '12px', 
                 padding: '24px', 
                 textAlign: 'center',
-                marginBottom: '25px',
+                marginBottom: '20px',
                 boxShadow: '0 0 25px rgba(0, 255, 128, 0.1)'
               }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#00ff80', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '6px' }}>
@@ -606,6 +599,30 @@ export const SheetMetalBending: React.FC = () => {
                   Unbent blank size ready for laser or waterjet cutting before brake forming
                 </div>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('diagram')}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: 'linear-gradient(90deg, var(--accent-cyan), #00ff80)',
+                  color: '#000',
+                  fontWeight: 800,
+                  fontSize: '1rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  marginBottom: '25px',
+                  boxShadow: '0 4px 15px rgba(0, 240, 255, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px'
+                }}
+              >
+                <span>📐</span> View Interactive 2D Bending Diagrams & Animations →
+              </button>
 
               {/* DETAILED FORMING PARAMETERS TABLE */}
               <div style={{ background: 'var(--bg-primary)', borderRadius: '8px', border: '1px solid var(--border-color)', padding: '16px', marginBottom: '20px' }}>
@@ -698,9 +715,19 @@ export const SheetMetalBending: React.FC = () => {
       {/* TAB 2: VISUAL DIAGRAMS (FLAT PATTERN & 2D FORMED PROFILE) */}
       {activeTab === 'diagram' && (
         <div className="glass-panel" style={{ padding: '30px', borderTop: '3px solid var(--accent-cyan)' }}>
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-            📐 Visual Flat Pattern Strip & Formed Profile Preview
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              📐 Visual Flat Pattern Strip & Formed Profile Preview
+            </h3>
+            <button
+              type="button"
+              onClick={() => setActiveTab('calculator')}
+              className="btn-secondary"
+              style={{ padding: '8px 16px', fontSize: '0.9rem', cursor: 'pointer' }}
+            >
+              ← Back to Calculator Inputs
+            </button>
+          </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '25px' }}>
             Below is the scaled mathematical visualization of your sheet metal blank before and after press brake bending.
           </p>

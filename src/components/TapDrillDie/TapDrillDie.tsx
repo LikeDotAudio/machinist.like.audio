@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface ThreadSpec {
   name: string;
@@ -46,15 +47,42 @@ const THREAD_DATABASE: ThreadSpec[] = [
 ];
 
 export const TapDrillDie: React.FC = () => {
+  const { unit: globalUnit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(globalUnit);
+
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedIdx, setSelectedIdx] = useState<number>(4); // default 1/4-20 UNC
   const [targetEngagement, setTargetEngagement] = useState<number>(75); // % thread engagement
   const [isCustom, setIsCustom] = useState<boolean>(false);
 
   // Custom thread inputs
-  const [customUnit, setCustomUnit] = useState<'imperial' | 'metric'>('imperial');
+  const [customUnit, setCustomUnit] = useState<'imperial' | 'metric'>(globalUnit);
   const [customMajor, setCustomMajor] = useState<string>('0.2500');
   const [customPitch, setCustomPitch] = useState<string>('20'); // TPI or mm pitch
+
+  useEffect(() => {
+    if (prevUnitRef.current === globalUnit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = globalUnit;
+
+    if (isCustom) {
+      const maj = parseFloat(customMajor) || 0;
+      if (globalUnit === 'metric' && oldUnit === 'imperial') {
+        setCustomMajor((maj * 25.4).toFixed(3));
+        setCustomUnit('metric');
+      } else if (globalUnit === 'imperial' && oldUnit === 'metric') {
+        setCustomMajor((maj / 25.4).toFixed(4));
+        setCustomUnit('imperial');
+      }
+    } else {
+      const currentTh = THREAD_DATABASE[selectedIdx];
+      if (globalUnit === 'metric' && !currentTh?.isMetric) {
+        setSelectedIdx(37); // M6 x 1.0
+      } else if (globalUnit === 'imperial' && currentTh?.isMetric) {
+        setSelectedIdx(4); // 1/4-20 UNC
+      }
+    }
+  }, [globalUnit, isCustom, customMajor, selectedIdx]);
 
   const handleSelectThread = (idx: number) => {
     setSelectedIdx(idx);
@@ -138,45 +166,6 @@ export const TapDrillDie: React.FC = () => {
           {isCustom ? (
             <div className="animate-fade-in" style={{ flex: 1 }}>
               <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '20px' }}>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    Measurement System
-                  </label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      type="button"
-                      onClick={() => setCustomUnit('imperial')}
-                      style={{
-                        flex: 1,
-                        padding: '8px',
-                        background: customUnit === 'imperial' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                        color: customUnit === 'imperial' ? '#000' : 'var(--text-primary)',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Imperial (Inches)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setCustomUnit('metric')}
-                      style={{
-                        flex: 1,
-                        padding: '8px',
-                        background: customUnit === 'metric' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                        color: customUnit === 'metric' ? '#000' : 'var(--text-primary)',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Metric (mm)
-                    </button>
-                  </div>
-                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                   <div>
@@ -290,8 +279,8 @@ export const TapDrillDie: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Card: Results & Die Threading Guidance */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)' }}>
+        {/* Right Card (Ordered Left): Results & Die Threading Guidance */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)', order: -1 }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
               RECOMMENDED TOOLING SETUP

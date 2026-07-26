@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface Block {
   value: number;
@@ -12,7 +13,8 @@ interface StackResult {
 }
 
 export const HeightGauge: React.FC = () => {
-  const [inputUnit, setInputUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit: inputUnit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(inputUnit);
   const [targetValue, setTargetValue] = useState<string>('2.7342');
   const [imperialStack, setImperialStack] = useState<StackResult>({ blocks: [], error: null, total: 0 });
   const [metricStack, setMetricStack] = useState<StackResult>({ blocks: [], error: null, total: 0 });
@@ -160,17 +162,20 @@ export const HeightGauge: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleUnitChange = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === inputUnit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = inputUnit;
+
     const val = parseFloat(targetValue);
     if (!isNaN(val) && val > 0) {
-      if (newUnit === 'metric' && inputUnit === 'imperial') {
+      if (inputUnit === 'metric' && oldUnit === 'imperial') {
         setTargetValue((val * 25.4).toFixed(3));
-      } else if (newUnit === 'imperial' && inputUnit === 'metric') {
+      } else if (inputUnit === 'imperial' && oldUnit === 'metric') {
         setTargetValue((val / 25.4).toFixed(4));
       }
     }
-    setInputUnit(newUnit);
-  };
+  }, [inputUnit]);
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px 0' }}>
@@ -199,55 +204,7 @@ export const HeightGauge: React.FC = () => {
       </div>
 
       <div className="glass-panel" style={{ padding: '25px 30px', marginBottom: '30px', maxWidth: '850px', margin: '0 auto 35px auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px', alignItems: 'center' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Input Measurement Unit
-            </label>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: '1fr 1fr', 
-              background: 'var(--bg-primary)', 
-              padding: '4px', 
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)'
-            }}>
-              <button
-                onClick={() => handleUnitChange('imperial')}
-                style={{
-                  padding: '10px',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  background: inputUnit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                  color: inputUnit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  fontFamily: 'var(--font-sans)'
-                }}
-              >
-                Inches (in)
-              </button>
-              <button
-                onClick={() => handleUnitChange('metric')}
-                style={{
-                  padding: '10px',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  background: inputUnit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                  color: inputUnit === 'metric' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  fontFamily: 'var(--font-sans)'
-                }}
-              >
-                Millimeters (mm)
-              </button>
-            </div>
-          </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '25px', alignItems: 'center' }}>
 
           <div>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -451,7 +408,7 @@ export const HeightGauge: React.FC = () => {
           )}
         </div>
 
-        <div className="glass-panel" style={{ padding: '30px', minHeight: '520px', display: 'flex', flexDirection: 'column', borderTop: '3px solid #10b981' }}>
+        <div className="glass-panel" style={{ padding: '30px', minHeight: '520px', display: 'flex', flexDirection: 'column', borderTop: '3px solid #10b981', order: inputUnit === 'metric' ? -1 : 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
             <div>
               <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
