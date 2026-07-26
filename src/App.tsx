@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './index.css';
-import { JoBlockCalculator } from './components/JoBlockCalculator';
+import { JoBlockCalculator } from './components/HeightGauge';
 import { HardingeDividingHead } from './components/HardingeDividingHead';
 import { SpeedsFeeds } from './components/SpeedsFeeds/SpeedsFeeds';
 import { BoltCircleLayout } from './components/BoltCircleLayout/BoltCircleLayout';
@@ -26,10 +26,12 @@ type TabType =
   | 'about';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('calculator');
+  const [activeTab, setActiveTab] = useState<TabType>('machinist_hub');
 
   const isMachinistTool = [
     'machinist_hub',
+    'calculator',
+    'dividing_head',
     'speeds_feeds',
     'bolt_circle_layout',
     'bolt_circle_diameter',
@@ -68,7 +70,47 @@ export function App() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '25px' }}>
         
-        {/* Card 1 */}
+        {/* Card 1: Jo Block Stack & Height Gauge */}
+        <div 
+          onClick={() => setActiveTab('calculator')}
+          className="glass-panel" 
+          style={{ padding: '30px', cursor: 'pointer', transition: 'all 0.25s ease', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '3px solid #a855f7' }}
+        >
+          <div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>📐</div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+              Jo Block & Height Gauge
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '20px' }}>
+              Calculate exact gauge block combinations for precise metrology height gauge setups in Imperial (81-pc) and Metric (87-pc) sets.
+            </p>
+          </div>
+          <div style={{ color: '#c084fc', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>Launch Tool</span> ➔
+          </div>
+        </div>
+
+        {/* Card 2: Hardinge Dividing Head Indexing */}
+        <div 
+          onClick={() => setActiveTab('dividing_head')}
+          className="glass-panel" 
+          style={{ padding: '30px', cursor: 'pointer', transition: 'all 0.25s ease', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '3px solid #38bdf8' }}
+        >
+          <div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>⚙️</div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+              Hardinge Dividing Head
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '20px' }}>
+              Find exact index plates, hole circles, and crank handle turns for precision gear cutting and angular divisions.
+            </p>
+          </div>
+          <div style={{ color: '#7dd3fc', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>Launch Tool</span> ➔
+          </div>
+        </div>
+
+        {/* Card 3 */}
         <div 
           onClick={() => setActiveTab('speeds_feeds')}
           className="glass-panel" 
@@ -247,7 +289,7 @@ export function App() {
         <div style={{ maxWidth: '1350px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           
           {/* Logo & Brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('calculator')}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('machinist_hub')}>
             <div style={{ 
               width: '38px', 
               height: '38px', 
@@ -276,42 +318,6 @@ export function App() {
           {/* Navigation Links */}
           <nav style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button
-              onClick={() => setActiveTab('calculator')}
-              style={{
-                background: activeTab === 'calculator' ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
-                color: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                border: `1px solid ${activeTab === 'calculator' ? 'rgba(0, 240, 255, 0.4)' : 'transparent'}`,
-                padding: '8px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              📐 Jo Blocks
-            </button>
-
-            <button
-              onClick={() => setActiveTab('dividing_head')}
-              style={{
-                background: activeTab === 'dividing_head' ? 'rgba(0, 240, 255, 0.15)' : 'transparent',
-                color: activeTab === 'dividing_head' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                border: `1px solid ${activeTab === 'dividing_head' ? 'rgba(0, 240, 255, 0.4)' : 'transparent'}`,
-                padding: '8px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              ⚙️ Dividing Head
-            </button>
-
-            <button
               onClick={() => setActiveTab('machinist_hub')}
               style={{
                 background: isMachinistTool ? 'rgba(0, 255, 128, 0.15)' : 'transparent',
@@ -326,7 +332,7 @@ export function App() {
                 fontFamily: 'var(--font-sans)'
               }}
             >
-              🧰 Machinist Calculators (8)
+              🧰 Machinist Calculators Hub (10)
             </button>
 
             <button
@@ -460,10 +466,10 @@ export function App() {
                   🐙 View GitHub Repo
                 </a>
                 <button 
-                  onClick={() => setActiveTab('calculator')} 
+                  onClick={() => setActiveTab('machinist_hub')} 
                   className="btn-secondary"
                 >
-                  ← Back to Calculator
+                  ← Back to Machinist Calculators Hub
                 </button>
               </div>
             </div>

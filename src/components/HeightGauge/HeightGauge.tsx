@@ -11,7 +11,7 @@ interface StackResult {
   total: number;
 }
 
-export const JoBlockCalculator: React.FC = () => {
+export const HeightGauge: React.FC = () => {
   const [inputUnit, setInputUnit] = useState<'imperial' | 'metric'>('imperial');
   const [targetValue, setTargetValue] = useState<string>('2.7342');
   const [imperialStack, setImperialStack] = useState<StackResult>({ blocks: [], error: null, total: 0 });
@@ -599,3 +599,5 @@ export const JoBlockCalculator: React.FC = () => {
     </div>
   );
 };
+
+export const JoBlockCalculator = HeightGauge;
