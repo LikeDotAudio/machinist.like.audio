@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { DividingHeadVisualizer } from './DividingHeadVisualizer';
 
 interface Plate {
   id: string;
@@ -46,6 +47,13 @@ export const HardingeDividingHead: React.FC = () => {
   const [checkedPlates, setCheckedPlates] = useState<string[]>(
     HARDINGE_PLATES.filter((p) => p.defaultChecked).map((p) => p.id)
   );
+  const [selectedVizMatch, setSelectedVizMatch] = useState<{
+    plateName: string;
+    circleHoles: number;
+    fullTurns: number;
+    remainingHoles: number;
+    totalHoles: number;
+  } | null>(null);
 
   const D = useMemo(() => {
     const val = parseInt(divisionsStr, 10);
@@ -145,6 +153,30 @@ export const HardingeDividingHead: React.FC = () => {
       approxMatches: approxs,
     };
   }, [D, ratio, checkedPlates]);
+
+  const activeVizMatch = useMemo(() => {
+    if (selectedVizMatch) {
+      const stillExact = exactMatches.find((m) => m.plateName === selectedVizMatch.plateName && m.circleHoles === selectedVizMatch.circleHoles);
+      if (stillExact) return { plateName: stillExact.plateName, circleHoles: stillExact.circleHoles, fullTurns: stillExact.fullTurns, remainingHoles: stillExact.remainingHoles, totalHoles: stillExact.totalHoles };
+      const stillApprox = approxMatches.find((m) => m.plateName === selectedVizMatch.plateName && m.circleHoles === selectedVizMatch.circleHoles);
+      if (stillApprox) return { plateName: stillApprox.plateName, circleHoles: stillApprox.circleHoles, fullTurns: stillApprox.fullTurns, remainingHoles: stillApprox.remainingHoles, totalHoles: stillApprox.fullTurns * stillApprox.circleHoles + stillApprox.remainingHoles };
+    }
+    if (exactMatches.length > 0) {
+      const m = exactMatches[0];
+      return { plateName: m.plateName, circleHoles: m.circleHoles, fullTurns: m.fullTurns, remainingHoles: m.remainingHoles, totalHoles: m.totalHoles };
+    }
+    if (approxMatches.length > 0) {
+      const m = approxMatches[0];
+      return { plateName: m.plateName, circleHoles: m.circleHoles, fullTurns: m.fullTurns, remainingHoles: m.remainingHoles, totalHoles: m.fullTurns * m.circleHoles + m.remainingHoles };
+    }
+    return null;
+  }, [selectedVizMatch, exactMatches, approxMatches]);
+
+  const activePlateCircles = useMemo(() => {
+    if (!activeVizMatch) return [15, 16, 17, 18, 19, 40];
+    const plate = HARDINGE_PLATES.find((p) => p.name === activeVizMatch.plateName);
+    return plate ? plate.holes : [15, 16, 17, 18, 19, 40];
+  }, [activeVizMatch]);
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 0' }} className="animate-fade-in">
@@ -383,6 +415,19 @@ export const HardingeDividingHead: React.FC = () => {
         </div>
       </div>
 
+      {/* Interactive Visualizer Component */}
+      {activeVizMatch && (
+        <DividingHeadVisualizer
+          plateName={activeVizMatch.plateName}
+          allCircleHoles={activePlateCircles}
+          selectedCircleHoles={activeVizMatch.circleHoles}
+          fullTurns={activeVizMatch.fullTurns}
+          remainingHoles={activeVizMatch.remainingHoles}
+          totalHoles={activeVizMatch.totalHoles}
+          ratio={ratio}
+        />
+      )}
+
       {/* Results Display */}
       <div style={{ marginBottom: '40px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -483,7 +528,26 @@ export const HardingeDividingHead: React.FC = () => {
                       <span style={{ width: '8px', height: '8px', background: '#00ff80', borderRadius: '50%', boxShadow: '0 0 8px #00ff80' }} />
                       Exact Integer Match
                     </span>
-                    <span>Ratio: {ratio}:1</span>
+                    <button
+                      onClick={() => {
+                        setSelectedVizMatch({ plateName: match.plateName, circleHoles: match.circleHoles, fullTurns: match.fullTurns, remainingHoles: match.remainingHoles, totalHoles: match.totalHoles });
+                        window.scrollTo({ top: 350, behavior: 'smooth' });
+                      }}
+                      style={{
+                        background: activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? 'var(--accent-cyan)' : 'rgba(0, 240, 255, 0.15)',
+                        color: activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? '#000' : 'var(--accent-cyan)',
+                        border: '1px solid rgba(0, 240, 255, 0.4)',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        fontWeight: 700,
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        fontFamily: 'var(--font-sans)'
+                      }}
+                    >
+                      {activeVizMatch?.plateName === match.plateName && activeVizMatch?.circleHoles === match.circleHoles ? '👁️ Active in Visualizer' : '👁️ Visualize'}
+                    </button>
                   </div>
                 </div>
               );
@@ -520,6 +584,7 @@ export const HardingeDividingHead: React.FC = () => {
                       <th style={{ padding: '14px 18px', fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Achieved Divisions</th>
                       <th style={{ padding: '14px 18px', fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Step Angle Achieved</th>
                       <th style={{ padding: '14px 18px', fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Arcsecond Error</th>
+                      <th style={{ padding: '14px 18px', fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -540,6 +605,27 @@ export const HardingeDividingHead: React.FC = () => {
                             <span style={{ background: 'rgba(255, 170, 0, 0.15)', color: 'var(--accent-gold)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
                               ±{app.errorSec.toFixed(2)}" arcsec
                             </span>
+                          </td>
+                          <td style={{ padding: '14px 18px' }}>
+                            <button
+                              onClick={() => {
+                                setSelectedVizMatch({ plateName: app.plateName, circleHoles: app.circleHoles, fullTurns: app.fullTurns, remainingHoles: app.remainingHoles, totalHoles: app.fullTurns * app.circleHoles + app.remainingHoles });
+                                window.scrollTo({ top: 350, behavior: 'smooth' });
+                              }}
+                              style={{
+                                background: activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? 'var(--accent-cyan)' : 'rgba(0, 240, 255, 0.15)',
+                                color: activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? '#000' : 'var(--accent-cyan)',
+                                border: '1px solid rgba(0, 240, 255, 0.4)',
+                                padding: '4px 10px',
+                                borderRadius: '4px',
+                                fontWeight: 700,
+                                fontSize: '0.75rem',
+                                cursor: 'pointer',
+                                fontFamily: 'var(--font-sans)'
+                              }}
+                            >
+                              {activeVizMatch?.plateName === app.plateName && activeVizMatch?.circleHoles === app.circleHoles ? '👁️ Active' : '👁️ Visualize'}
+                            </button>
                           </td>
                         </tr>
                       );

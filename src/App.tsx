@@ -314,71 +314,6 @@ export function App() {
               </div>
             </div>
           </div>
-
-          {/* Navigation Links */}
-          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setActiveTab('machinist_hub')}
-              style={{
-                background: isMachinistTool ? 'rgba(0, 255, 128, 0.15)' : 'transparent',
-                color: isMachinistTool ? '#00ff80' : 'var(--text-secondary)',
-                border: `1px solid ${isMachinistTool ? 'rgba(0, 255, 128, 0.4)' : 'transparent'}`,
-                padding: '8px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              🧰 Machinist Calculators Hub (10)
-            </button>
-
-            <button
-              onClick={() => setActiveTab('about')}
-              style={{
-                background: activeTab === 'about' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                color: activeTab === 'about' ? '#fff' : 'var(--text-secondary)',
-                border: '1px solid transparent',
-                padding: '8px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 500,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              ℹ️ Architecture
-            </button>
-
-            <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 4px' }} />
-
-            {/* Live CI/CD Status Badge */}
-            <a 
-              href="https://github.com/LikeDotAudio/machinist.like.audio/actions" 
-              target="_blank" 
-              rel="noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'rgba(0, 255, 128, 0.1)',
-                color: '#00ff80',
-                padding: '6px 12px',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-                border: '1px solid rgba(0, 255, 128, 0.3)',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00ff80', boxShadow: '0 0 8px #00ff80' }} />
-              <span>FTPS CD LIVE</span>
-            </a>
-          </nav>
         </div>
       </header>
 
@@ -490,15 +425,15 @@ export function App() {
           <div>
             © {new Date().getFullYear()} <strong style={{ color: 'var(--text-primary)' }}>Like.Audio</strong> // Engineered for Precision.
           </div>
-          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
             <a href="https://machinist.like.audio/Site/Index.htm" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
               📁 Static Tool Directory
             </a>
-            <a href="https://machinist.like.audio/Site/HardingeDivigingHead/DividingHeadCalculator.htm" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
-              ⚙️ Legacy HTML Indexer
-            </a>
-            <a href="https://github.com/LikeDotAudio/machinist.like.audio" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
-              ⚡ GitHub CI/CD
+            <span onClick={() => setActiveTab('about')} style={{ color: 'var(--text-secondary)', cursor: 'pointer', textDecoration: 'none' }}>
+              ℹ️ Architecture & Tech Stack
+            </span>
+            <a href="https://github.com/LikeDotAudio/machinist.like.audio" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
+              🐙 GitHub Repo
             </a>
           </div>
         </div>
