@@ -15,6 +15,7 @@ import { DrillSizeIndex } from './components/DrillSizeIndex/DrillSizeIndex';
 import { TapThreadIndex } from './components/TapThreadIndex/TapThreadIndex';
 import { GeometricDieHead } from './components/GeometricDieHead';
 import { MetricSpurGears } from './components/MetricSpurGears';
+import { ScrewHeadIndex } from './components/ScrewHeadIndex';
 import { useUnit } from './context/UnitContext';
 
 type TabType = 
@@ -34,6 +35,7 @@ type TabType =
   | 'tap_thread_index'
   | 'geometric_die_head'
   | 'spur_gears'
+  | 'screw_head_index'
   | 'about';
 
 export function App() {
@@ -57,7 +59,8 @@ export function App() {
     'drill_size_index',
     'tap_thread_index',
     'geometric_die_head',
-    'spur_gears'
+    'spur_gears',
+    'screw_head_index'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -374,6 +377,25 @@ export function App() {
           </p>
         </div>
 
+        {/* Card 16: NEW Screw Head & Drive SVG Library */}
+        <div
+          onClick={() => setActiveTab('screw_head_index')}
+          className="glass-panel"
+          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #fbbf24', background: 'linear-gradient(145deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🪛</span>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
+              Screw Head & Drive Index
+            </h3>
+          </div>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+            SVG library of drive recesses, head shapes, screw/bolt and nut types with hex key & wrench size charts.
+          </p>
+        </div>
+
       </div>
     </div>
   );
@@ -527,6 +549,8 @@ export function App() {
           <GeometricDieHead />
         ) : activeTab === 'spur_gears' ? (
           <MetricSpurGears />
+        ) : activeTab === 'screw_head_index' ? (
+          <ScrewHeadIndex />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>

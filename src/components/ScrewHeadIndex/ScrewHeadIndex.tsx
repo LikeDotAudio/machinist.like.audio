@@ -538,6 +538,171 @@ export const FASTENER_LIBRARY: FastenerItem[] = [
       </Side>
     ),
   },
+  // ============ NUT TYPES (side profile) ============
+  {
+    id: 'nut-hex', name: 'Hex Finish Nut', group: 'nut',
+    description: 'The standard general-purpose hexagon nut — see the wrench size chart below.',
+    render: () => <Side><NutBody y={44} h={32} /><circle cx="60" cy="60" r="11" fill={RECESS} /></Side>,
+  },
+  {
+    id: 'nut-jam', name: 'Hex Jam Nut', group: 'nut',
+    description: 'Thin (half-height) hex nut — jammed against a full nut to lock it, or used in tight spaces.',
+    render: () => <Side><NutBody y={50} h={19} /><circle cx="60" cy="60" r="10" fill={RECESS} /></Side>,
+  },
+  {
+    id: 'nut-heavy', name: 'Heavy Hex Nut', group: 'nut',
+    description: 'Taller and wider across flats than a finish nut — structural and high-pressure joints.',
+    render: () => <Side><NutBody y={40} h={40} w={94} /><circle cx="60" cy="60" r="12" fill={RECESS} /></Side>,
+  },
+  {
+    id: 'nut-square', name: 'Square Nut', group: 'nut',
+    description: 'Four-sided nut with large bearing surface — resists loosening in wood and channel.',
+    render: () => <Side><rect x="24" y="42" width="72" height="34" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="2" /><circle cx="60" cy="59" r="11" fill={RECESS} /></Side>,
+  },
+  {
+    id: 'nut-acorn', name: 'Cap (Acorn) Nut', group: 'nut',
+    description: 'Hex nut with a closed dome that covers and protects the bolt end.',
+    render: () => <Side><path d="M 38 56 A 22 26 0 0 1 82 56 Z" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" /><NutBody y={56} h={28} w={68} /></Side>,
+  },
+  {
+    id: 'nut-castle', name: 'Castle Nut', group: 'nut',
+    description: 'Crenellated top takes a cotter pin through the bolt for positive locking (axles, spindles).',
+    render: () => (
+      <Side>
+        {[34, 54, 74].map(x => <rect key={x} x={x} y={36} width={12} height={14} fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />)}
+        <NutBody y={50} h={30} w={76} />
+        <circle cx="60" cy="65" r="10" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-slotted', name: 'Slotted Hex Nut', group: 'nut',
+    description: 'Slots cut directly into the hex flats for cotter pinning — no raised crown.',
+    render: () => (
+      <Side>
+        <NutBody y={40} h={38} w={80} />
+        <rect x="42" y="40" width="9" height="13" fill={RECESS} />
+        <rect x="69" y="40" width="9" height="13" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-nyloc', name: 'Nylon Insert Lock', group: 'nut',
+    description: 'Nylon collar grips the bolt threads — prevailing-torque lock, resists vibration.',
+    render: () => (
+      <Side>
+        <path d="M 40 48 Q 40 34 60 34 Q 80 34 80 48 Z" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />
+        <rect x="44" y="38" width="32" height="7" fill="#3b82f6" rx="2" />
+        <NutBody y={48} h={30} />
+        <circle cx="60" cy="63" r="10" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-keps', name: 'Keps-K Lock Nut', group: 'nut',
+    description: 'Hex nut with free-spinning external-tooth star washer attached — one-piece assembly.',
+    render: () => (
+      <Side>
+        <NutBody y={38} h={30} w={72} />
+        <polygon points={starPoints(60, 76, 12, 34, 24, 0)} fill={STEEL_DK} stroke={OUTLINE} strokeWidth="1" />
+        <circle cx="60" cy="53" r="10" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-flange', name: 'Flange Serrated Nut', group: 'nut',
+    description: 'Integral wide flange with serrations bites the surface — spreads load, resists loosening.',
+    render: () => (
+      <Side>
+        <NutBody y={36} h={30} w={68} />
+        <path d="M 22 66 L 98 66 L 90 80 L 30 80 Z" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />
+        {[32, 42, 52, 62, 72, 82].map(x => <line key={x} x1={x} y1="80" x2={x + 4} y2="72" stroke={STEEL_DK} strokeWidth="2" />)}
+        <circle cx="60" cy="51" r="9" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-coupling', name: 'Coupling Nut', group: 'nut',
+    description: 'Long hex nut joining two threaded rods or extending studs.',
+    render: () => <Side><NutBody y={14} h={92} w={58} /><circle cx="60" cy="60" r="9" fill={RECESS} /></Side>,
+  },
+  {
+    id: 'nut-thumb', name: 'Knurled Thumb Nut', group: 'nut',
+    description: 'Cylindrical knurled body for tool-free finger tightening.',
+    render: () => (
+      <Side>
+        <rect x="26" y="40" width="68" height="38" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="4" />
+        {[34, 42, 50, 58, 66, 74, 82].map(x => <line key={x} x1={x} y1="42" x2={x} y2="76" stroke={STEEL_DK} strokeWidth="1.5" />)}
+        <circle cx="60" cy="59" r="9" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-wing', name: 'Wing Nut', group: 'nut',
+    description: 'Two flat wings for hand tightening — clamps, jigs and battery terminals.',
+    render: () => (
+      <Side>
+        <path d="M 40 60 C 22 34 14 40 18 62 C 20 74 32 74 40 70 Z" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />
+        <path d="M 80 60 C 98 34 106 40 102 62 C 100 74 88 74 80 70 Z" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />
+        <rect x="40" y="52" width="40" height="26" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="3" />
+        <circle cx="60" cy="65" r="9" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-cage', name: 'Cage Nut', group: 'nut',
+    description: 'Square nut in a sprung steel cage — snaps into square holes in racks and panels.',
+    render: () => (
+      <Side>
+        <path d="M 24 40 L 24 84 L 40 84 L 40 92 L 20 92 L 20 32 L 40 32 L 40 40 Z" fill={STEEL_DK} stroke={OUTLINE} strokeWidth="1.5" />
+        <path d="M 96 40 L 96 84 L 80 84 L 80 92 L 100 92 L 100 32 L 80 32 L 80 40 Z" fill={STEEL_DK} stroke={OUTLINE} strokeWidth="1.5" />
+        <rect x="34" y="44" width="52" height="34" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="2" />
+        <circle cx="60" cy="61" r="10" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-tslot', name: 'T-Slot Nut', group: 'nut',
+    description: 'T-profile slides in machine table or extrusion slots — the machinist\'s hold-down nut.',
+    render: () => (
+      <Side>
+        <rect x="40" y="38" width="40" height="22" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" />
+        <rect x="20" y="60" width="80" height="26" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="2" />
+        <circle cx="60" cy="52" r="9" fill={RECESS} />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-barrel', name: 'Barrel Nut', group: 'nut',
+    description: 'Cylinder with a cross-threaded hole — joins panels in furniture (with a cross-dowel bolt).',
+    render: () => (
+      <Side>
+        <rect x="34" y="24" width="52" height="76" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="10" />
+        <circle cx="60" cy="62" r="12" fill={RECESS} />
+        <rect x="50" y="28" width="20" height="6" fill={RECESS} rx="2" />
+      </Side>
+    ),
+  },
+  {
+    id: 'nut-insert', name: 'Threaded Insert Nut', group: 'nut',
+    description: 'Coarse external wood thread, machine thread inside — screws into wood to accept bolts.',
+    render: () => (
+      <Side>
+        <Shank topY={26} botY={100} w={40} pitch={15} />
+        <rect x="34" y="20" width="52" height="10" fill={STEEL} stroke={OUTLINE} strokeWidth="1.5" rx="2" />
+        <rect x="49" y="20" width="22" height="8" fill={RECESS} rx="1" />
+      </Side>
+    ),
+  },
+];
+
+// Hex bolt / nut wrench sizes across flats (metric)
+export const HEX_WRENCH_SIZES: { size: string; wrenchMm: number }[] = [
+  { size: 'M4', wrenchMm: 7 }, { size: 'M5', wrenchMm: 8 }, { size: 'M6', wrenchMm: 10 },
+  { size: 'M8', wrenchMm: 14 }, { size: 'M10', wrenchMm: 17 }, { size: 'M12', wrenchMm: 19 },
+  { size: 'M14', wrenchMm: 22 }, { size: 'M16', wrenchMm: 24 }, { size: 'M18', wrenchMm: 27 },
+  { size: 'M20', wrenchMm: 30 }, { size: 'M22', wrenchMm: 32 }, { size: 'M24', wrenchMm: 36 },
+  { size: 'M27', wrenchMm: 41 }, { size: 'M30', wrenchMm: 46 },
 ];
 
 // Socket head cap screw hex key sizes (metric)
@@ -551,6 +716,7 @@ const GROUP_META: Record<Group, { label: string; color: string; bg: string; bord
   drive: { label: 'Drive Type', color: 'var(--accent-cyan)', bg: 'rgba(244, 144, 44, 0.12)', border: 'rgba(244, 144, 44, 0.4)' },
   head: { label: 'Head Shape', color: '#00ff80', bg: 'rgba(0, 255, 128, 0.1)', border: 'rgba(0, 255, 128, 0.35)' },
   screw: { label: 'Screw / Bolt Type', color: '#c084fc', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' },
+  nut: { label: 'Nut Type', color: '#fbbf24', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)' },
 };
 
 type GroupFilter = 'all' | Group;
@@ -571,11 +737,13 @@ export const ScrewHeadIndex: React.FC = () => {
   const sel = useMemo(() => FASTENER_LIBRARY.find(f => f.id === selectedId) || FASTENER_LIBRARY[0], [selectedId]);
   const selMeta = GROUP_META[sel.group];
   const showKeys = sel.id === 'screw-sockethead' || sel.id === 'head-socket' || sel.id === 'drive-hex' || sel.id === 'head-button' || sel.id === 'screw-set';
+  const showWrench = sel.group === 'nut' || ['head-hex', 'head-hexwasher', 'screw-hexbolt', 'screw-lag', 'screw-selfdrill'].includes(sel.id);
 
   const counts = useMemo(() => ({
     drive: FASTENER_LIBRARY.filter(f => f.group === 'drive').length,
     head: FASTENER_LIBRARY.filter(f => f.group === 'head').length,
     screw: FASTENER_LIBRARY.filter(f => f.group === 'screw').length,
+    nut: FASTENER_LIBRARY.filter(f => f.group === 'nut').length,
   }), []);
 
   return (
@@ -615,6 +783,23 @@ export const ScrewHeadIndex: React.FC = () => {
             {sel.description}
           </p>
 
+          {/* Hex bolt / nut wrench sizes */}
+          {showWrench && (
+            <div style={{ background: 'rgba(245, 158, 11, 0.06)', border: '1px solid rgba(245, 158, 11, 0.25)', padding: '12px 14px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.72rem', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', fontWeight: 700 }}>
+                HEX WRENCH SIZES (ACROSS FLATS)
+              </div>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {HEX_WRENCH_SIZES.map(k => (
+                  <span key={k.size} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '6px', padding: '4px 8px' }}>
+                    <strong style={{ color: '#fff' }}>{k.size}</strong>
+                    <span style={{ color: '#fbbf24' }}> → {k.wrenchMm} mm</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Socket cap hex key sizes */}
           {showKeys && (
             <div style={{ background: 'rgba(244, 144, 44, 0.06)', border: '1px solid rgba(244, 144, 44, 0.25)', padding: '12px 14px', borderRadius: '8px' }}>
@@ -637,7 +822,7 @@ export const ScrewHeadIndex: React.FC = () => {
         <div className="glass-panel" style={{ padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
-              {(['all', 'drive', 'head', 'screw'] as GroupFilter[]).map(gp => {
+              {(['all', 'drive', 'head', 'screw', 'nut'] as GroupFilter[]).map(gp => {
                 const active = groupFilter === gp;
                 const color = gp === 'all' ? '#fff' : GROUP_META[gp].color;
                 return (
@@ -652,7 +837,7 @@ export const ScrewHeadIndex: React.FC = () => {
                       boxShadow: active && gp !== 'all' ? `inset 0 0 0 1px ${GROUP_META[gp].border}` : 'none'
                     }}
                   >
-                    {gp === 'all' ? 'All' : gp === 'drive' ? 'Drive Types' : gp === 'head' ? 'Head Shapes' : 'Screw Types'}
+                    {gp === 'all' ? 'All' : gp === 'drive' ? 'Drive Types' : gp === 'head' ? 'Head Shapes' : gp === 'screw' ? 'Screw Types' : 'Nut Types'}
                   </button>
                 );
               })}
@@ -720,10 +905,11 @@ export const ScrewHeadIndex: React.FC = () => {
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>
           Schematic SVG library of <strong style={{ color: GROUP_META.drive.color }}>drive recesses</strong> (top view),{' '}
-          <strong style={{ color: GROUP_META.head.color }}>head shapes</strong> (side profile) and{' '}
-          <strong style={{ color: GROUP_META.screw.color }}>screw &amp; bolt types</strong> (full body) for identifying
-          fasteners on the bench. Select any glyph for an enlarged rendering and usage notes; socket-drive items include
-          the metric hex key size chart (M3 → 2.5 mm through M16 → 14 mm).
+          <strong style={{ color: GROUP_META.head.color }}>head shapes</strong> (side profile),{' '}
+          <strong style={{ color: GROUP_META.screw.color }}>screw &amp; bolt types</strong> (full body) and{' '}
+          <strong style={{ color: GROUP_META.nut.color }}>nut types</strong> for identifying fasteners on the bench.
+          Select any glyph for an enlarged rendering and usage notes. Socket-drive items include the metric hex key chart
+          (M3 → 2.5 mm through M16 → 14 mm); hex heads and nuts include the wrench-across-flats chart (M4 → 7 mm through M30 → 46 mm).
         </p>
       </div>
     </div>
