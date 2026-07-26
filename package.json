@@ -1,11 +1,11 @@
 {
-  "name": "temp_app",
+  "name": "machinist.like.audio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && cp -r Site dist/Site",
     "lint": "oxlint",
     "preview": "vite preview"
   },

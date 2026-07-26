@@ -1,0 +1,299 @@
+<?php
+
+<style>
+    .jo-calc-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #333;
+        max-width: 500px;
+        margin: 20px auto;
+        line-height: 1.5;
+    }
+    .jo-calc-card {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+    }
+    .jo-calc-card h2 {
+        text-align: center;
+        margin-top: 0;
+        color: #2c3e50;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    .jo-calc-tabs {
+        display: flex;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #eee;
+    }
+    .jo-calc-tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #95a5a6;
+        transition: 0.2s ease;
+    }
+    .jo-calc-tab.active {
+        color: #2980b9;
+        border-bottom: 2px solid #2980b9;
+        margin-bottom: -2px;
+    }
+    .jo-calc-input-group {
+        margin-bottom: 20px;
+    }
+    .jo-calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #34495e;
+    }
+    .jo-calc-wrapper input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dcdde1;
+        border-radius: 6px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    .jo-calc-wrapper input[type="number"]:focus {
+        outline: none;
+        border-color: #2980b9;
+    }
+    .jo-calc-btn {
+        width: 100%;
+        padding: 14px;
+        background: #2980b9;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s background;
+    }
+    .jo-calc-btn:hover {
+        background: #2471a3;
+    }
+    .jo-calc-error {
+        color: #c0392b;
+        background: #fadbd8;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-size: 14px;
+        display: none;
+    }
+    .jo-calc-result-container {
+        margin-top: 25px;
+        display: none;
+    }
+    .jo-calc-block-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .jo-calc-block-list li {
+        background: #f8f9fa;
+        margin-bottom: 6px;
+        padding: 12px 15px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 16px;
+        border: 1px solid #eee;
+    }
+    .jo-calc-block-list li.total {
+        background: #2c3e50;
+        color: white;
+        font-weight: bold;
+        margin-top: 15px;
+        border: none;
+    }
+    .jo-calc-unit-badge {
+        font-size: 12px;
+        color: #7f8c8d;
+    }
+    .total .jo-calc-unit-badge {
+        color: #bdc3c7;
+    }
+</style>
+
+<div class="jo-calc-wrapper">
+    <div class="jo-calc-card">
+        <h2>Jo Block Stack Calculator</h2>
+        
+        <div class="jo-calc-tabs">
+            <div class="jo-calc-tab active" onclick="joSetMode('imperial')" id="jo-tab-imperial">Imperial (81-pc)</div>
+            <div class="jo-calc-tab" onclick="joSetMode('metric')" id="jo-tab-metric">Metric (87-pc)</div>
+        </div>
+
+        <div class="jo-calc-input-group">
+            <label id="jo-input-label">Target Measurement (Inches)</label>
+            <input type="number" id="jo-target-value" step="0.0001" min="0.2000" placeholder="e.g. 2.7342">
+        </div>
+
+        <button class="jo-calc-btn" onclick="joCalculateStack()">Calculate Blocks</button>
+
+        <div id="jo-error-msg" class="jo-calc-error"></div>
+
+        <div id="jo-result-container" class="jo-calc-result-container">
+            <label>Required Blocks:</label>
+            <ul id="jo-block-list" class="jo-calc-block-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    let joCurrentMode = 'imperial';
+
+    function joSetMode(mode) {
+        joCurrentMode = mode;
+        document.getElementById('jo-tab-imperial').className = mode === 'imperial' ? 'jo-calc-tab active' : 'jo-calc-tab';
+        document.getElementById('jo-tab-metric').className = mode === 'metric' ? 'jo-calc-tab active' : 'jo-calc-tab';
+        
+        const input = document.getElementById('jo-target-value');
+        if (mode === 'imperial') {
+            document.getElementById('jo-input-label').innerText = 'Target Measurement (Inches)';
+            input.step = '0.0001';
+            input.placeholder = 'e.g. 2.7342';
+        } else {
+            document.getElementById('jo-input-label').innerText = 'Target Measurement (mm)';
+            input.step = '0.001';
+            input.placeholder = 'e.g. 34.145';
+        }
+        
+        document.getElementById('jo-error-msg').style.display = 'none';
+        document.getElementById('jo-result-container').style.display = 'none';
+        input.value = '';
+    }
+
+    function joCalculateStack() {
+        const val = parseFloat(document.getElementById('jo-target-value').value);
+        const errorEl = document.getElementById('jo-error-msg');
+        const resultEl = document.getElementById('jo-result-container');
+        const listEl = document.getElementById('jo-block-list');
+
+        if (isNaN(val) || val <= 0) {
+            joShowError("Please enter a valid positive number.");
+            return;
+        }
+
+        errorEl.style.display = 'none';
+        resultEl.style.display = 'block';
+        listEl.innerHTML = '';
+
+        let blocks = [];
+        let unit = '';
+        let decPlaces = 0;
+        let t = 0;
+
+        if (joCurrentMode === 'imperial') {
+            unit = 'in';
+            decPlaces = 4;
+            t = Math.round(val * 10000); 
+
+            let step1 = t % 10;
+            if (step1 !== 0) {
+                let b = 1000 + step1;
+                blocks.push(b / 10000);
+                t -= b;
+            }
+
+            if (t > 0 && t % 500 !== 0) {
+                let rem = (t % 500) / 10;
+                let b = 100 + rem; 
+                blocks.push(b / 1000);
+                t -= b * 10;
+            }
+
+            if (t > 0 && t % 10000 !== 0) {
+                let rem = (t % 10000);
+                let b = rem / 10000;
+                blocks.push(b);
+                t -= rem;
+            }
+
+            if (t > 0) {
+                let b = t / 10000;
+                while (b > 0) {
+                    if (b >= 4) { blocks.push(4.0); b -= 4.0; }
+                    else if (b >= 3) { blocks.push(3.0); b -= 3.0; }
+                    else if (b >= 2) { blocks.push(2.0); b -= 2.0; }
+                    else if (b >= 1) { blocks.push(1.0); b -= 1.0; }
+                }
+            }
+
+        } else {
+            unit = 'mm';
+            decPlaces = 3;
+            t = Math.round(val * 1000); 
+
+            let step1 = t % 10;
+            if (step1 !== 0) {
+                let b = 1000 + step1;
+                blocks.push(b / 1000);
+                t -= b;
+            }
+
+            if (t > 0 && t % 500 !== 0) {
+                let rem = (t % 500) / 10;
+                let b = 100 + rem;
+                blocks.push(b / 100);
+                t -= b * 10;
+            }
+
+            if (t > 0 && t % 10000 !== 0) {
+                let rem = t % 10000;
+                let b = rem / 1000;
+                blocks.push(b);
+                t -= rem;
+            }
+
+            if (t > 0) {
+                let b = t / 1000;
+                while (b > 0) {
+                    if (b >= 100) { blocks.push(100.0); b -= 100.0; }
+                    else if (b >= 90) { blocks.push(90.0); b -= 90.0; }
+                    else if (b >= 80) { blocks.push(80.0); b -= 80.0; }
+                    else if (b >= 70) { blocks.push(70.0); b -= 70.0; }
+                    else if (b >= 60) { blocks.push(60.0); b -= 60.0; }
+                    else if (b >= 50) { blocks.push(50.0); b -= 50.0; }
+                    else if (b >= 40) { blocks.push(40.0); b -= 40.0; }
+                    else if (b >= 30) { blocks.push(30.0); b -= 30.0; }
+                    else if (b >= 20) { blocks.push(20.0); b -= 20.0; }
+                    else if (b >= 10) { blocks.push(10.0); b -= 10.0; }
+                }
+            }
+        }
+
+        if (t < 0) {
+            joShowError(`This dimension is too small to build with a standard ${joCurrentMode === 'imperial' ? '81' : '87'}-piece set.`);
+            resultEl.style.display = 'none';
+            return;
+        }
+
+        let checkSum = 0;
+        blocks.forEach((block, index) => {
+            checkSum += block;
+            const li = document.createElement('li');
+            li.innerHTML = `<span>Block ${index + 1}</span> <span>${block.toFixed(decPlaces)} <span class="jo-calc-unit-badge">${unit}</span></span>`;
+            listEl.appendChild(li);
+        });
+
+        const totalLi = document.createElement('li');
+        totalLi.className = 'total';
+        totalLi.innerHTML = `<span>Total Stack</span> <span>${checkSum.toFixed(decPlaces)} <span class="jo-calc-unit-badge">${unit}</span></span>`;
+        listEl.appendChild(totalLi);
+    }
+
+    function joShowError(msg) {
+        const errorEl = document.getElementById('jo-error-msg');
+        errorEl.innerText = msg;
+        errorEl.style.display = 'block';
+    }
+</script>
