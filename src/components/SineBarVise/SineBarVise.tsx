@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 export const SineBarVise: React.FC = () => {
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [calcMode, setCalcMode] = useState<'findHeight' | 'findAngle'>('findHeight');
   const [barLength, setBarLength] = useState<string>('5.0000'); // standard 5" or 100mm
   
@@ -15,19 +17,22 @@ export const SineBarVise: React.FC = () => {
   // Height input (for findAngle mode)
   const [blockHeight, setBlockHeight] = useState<string>('1.2941');
 
-  const handleUnitToggle = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
     const lenVal = parseFloat(barLength) || 0;
     const hVal = parseFloat(blockHeight) || 0;
 
-    if (newUnit === 'metric' && unit === 'imperial') {
+    if (unit === 'metric' && oldUnit === 'imperial') {
       setBarLength(lenVal === 5 ? '100.000' : lenVal === 10 ? '200.000' : (lenVal * 25.4).toFixed(3));
       setBlockHeight((hVal * 25.4).toFixed(3));
-    } else if (newUnit === 'imperial' && unit === 'metric') {
+    } else if (unit === 'imperial' && oldUnit === 'metric') {
       setBarLength(lenVal === 100 ? '5.0000' : lenVal === 200 ? '10.0000' : (lenVal / 25.4).toFixed(4));
       setBlockHeight((hVal / 25.4).toFixed(4));
     }
-    setUnit(newUnit);
-  };
+  }, [unit]);
 
   const len = parseFloat(barLength) || 0.0001;
   const decPlaces = unit === 'imperial' ? 4 : 3;
@@ -103,39 +108,6 @@ export const SineBarVise: React.FC = () => {
         <div className="glass-panel" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>📐 Sine Tool Parameters</h3>
-            
-            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '3px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-              <button
-                onClick={() => handleUnitToggle('imperial')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Imperial (in)
-              </button>
-              <button
-                onClick={() => handleUnitToggle('metric')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Metric (mm)
-              </button>
-            </div>
           </div>
 
           {/* Mode Selector */}
@@ -292,8 +264,8 @@ export const SineBarVise: React.FC = () => {
           )}
         </div>
 
-        {/* Right Card: Result Output & Visual Diagram */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)' }}>
+        {/* Right Card (Ordered Left): Result Output & Visual Diagram */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)', order: -1 }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
               PRECISION SETTING RESULT
@@ -323,7 +295,7 @@ export const SineBarVise: React.FC = () => {
             </span>
           </div>
 
-          {/* Visual Interactive SVG Diagram */}
+          {/* Visual Interactive SVG Diagram (Top-Left Priority) */}
           <div style={{
             background: 'var(--bg-primary)',
             borderRadius: 'var(--radius-md)',
@@ -331,7 +303,8 @@ export const SineBarVise: React.FC = () => {
             padding: '20px',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            order: -1
           }}>
             <svg viewBox="0 0 320 140" style={{ width: '100%', maxWidth: '300px', height: 'auto', overflow: 'visible' }}>
               {/* Surface Plate Base */}

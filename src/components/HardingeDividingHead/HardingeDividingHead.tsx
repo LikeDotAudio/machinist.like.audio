@@ -205,9 +205,14 @@ export const HardingeDividingHead: React.FC = () => {
         </p>
       </div>
 
-      {/* Control Panel Glass Card */}
-      <div className="glass-panel" style={{ padding: '30px', marginBottom: '30px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px' }}>
+      {/* Top Layout Grid: Visualizer Top-Left Priority */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start', marginBottom: '40px' }}>
+        
+        {/* Right Column: Control Panel & Summary Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+          {/* Control Panel Glass Card */}
+          <div className="glass-panel" style={{ padding: '30px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px' }}>
           {/* Target Divisions */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -414,19 +419,34 @@ export const HardingeDividingHead: React.FC = () => {
           </span>
         </div>
       </div>
+      </div>
 
-      {/* Interactive Visualizer Component */}
-      {activeVizMatch && (
-        <DividingHeadVisualizer
-          plateName={activeVizMatch.plateName}
-          allCircleHoles={activePlateCircles}
-          selectedCircleHoles={activeVizMatch.circleHoles}
-          fullTurns={activeVizMatch.fullTurns}
-          remainingHoles={activeVizMatch.remainingHoles}
-          totalHoles={activeVizMatch.totalHoles}
-          ratio={ratio}
-        />
-      )}
+        {/* Left Column (Ordered Left / Top-Left Priority): Interactive Visualizer */}
+        <div style={{ order: -1 }}>
+          {activeVizMatch ? (
+            <DividingHeadVisualizer
+              plateName={activeVizMatch.plateName}
+              allCircleHoles={activePlateCircles}
+              selectedCircleHoles={activeVizMatch.circleHoles}
+              fullTurns={activeVizMatch.fullTurns}
+              remainingHoles={activeVizMatch.remainingHoles}
+              totalHoles={activeVizMatch.totalHoles}
+              ratio={ratio}
+            />
+          ) : (
+            <DividingHeadVisualizer
+              plateName="Plate 1"
+              allCircleHoles={[15, 16, 17, 18, 19, 40]}
+              selectedCircleHoles={40}
+              fullTurns={0}
+              remainingHoles={0}
+              totalHoles={40}
+              ratio={ratio}
+            />
+          )}
+        </div>
+
+      </div>
 
       {/* Results Display */}
       <div style={{ marginBottom: '40px' }}>

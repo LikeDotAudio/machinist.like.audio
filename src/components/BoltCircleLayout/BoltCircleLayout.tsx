@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useUnit } from '../../context/UnitContext';
 
 interface HoleCoordinate {
   id: number;
@@ -8,7 +9,8 @@ interface HoleCoordinate {
 }
 
 export const BoltCircleLayout: React.FC = () => {
-  const [unit, setUnit] = useState<'imperial' | 'metric'>('imperial');
+  const { unit } = useUnit();
+  const prevUnitRef = useRef<'imperial' | 'metric'>(unit);
   const [bcd, setBcd] = useState<string>('4.0000');
   const [holesCount, setHolesCount] = useState<number>(6);
   const [startAngle, setStartAngle] = useState<string>('0'); // degrees from 3 o'clock (positive CCW)
@@ -16,22 +18,25 @@ export const BoltCircleLayout: React.FC = () => {
   const [centerY, setCenterY] = useState<string>('0.0000');
   const [copied, setCopied] = useState<boolean>(false);
 
-  const handleUnitToggle = (newUnit: 'imperial' | 'metric') => {
+  useEffect(() => {
+    if (prevUnitRef.current === unit) return;
+    const oldUnit = prevUnitRef.current;
+    prevUnitRef.current = unit;
+
     const bVal = parseFloat(bcd) || 0;
     const cxVal = parseFloat(centerX) || 0;
     const cyVal = parseFloat(centerY) || 0;
 
-    if (newUnit === 'metric' && unit === 'imperial') {
+    if (unit === 'metric' && oldUnit === 'imperial') {
       setBcd((bVal * 25.4).toFixed(3));
       setCenterX((cxVal * 25.4).toFixed(3));
       setCenterY((cyVal * 25.4).toFixed(3));
-    } else if (newUnit === 'imperial' && unit === 'metric') {
+    } else if (unit === 'imperial' && oldUnit === 'metric') {
       setBcd((bVal / 25.4).toFixed(4));
       setCenterX((cxVal / 25.4).toFixed(4));
       setCenterY((cyVal / 25.4).toFixed(4));
     }
-    setUnit(newUnit);
-  };
+  }, [unit]);
 
   const diameter = parseFloat(bcd) || 0;
   const count = Math.max(1, Math.min(100, holesCount));
@@ -102,39 +107,6 @@ export const BoltCircleLayout: React.FC = () => {
         <div className="glass-panel" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>📐 Pattern Specification</h3>
-            
-            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '3px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-              <button
-                onClick={() => handleUnitToggle('imperial')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'imperial' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Imperial (in)
-              </button>
-              <button
-                onClick={() => handleUnitToggle('metric')}
-                style={{
-                  padding: '6px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  background: unit === 'metric' ? 'var(--accent-cyan)' : 'transparent',
-                  color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Metric (mm)
-              </button>
-            </div>
           </div>
 
           <div style={{ marginBottom: '20px' }}>
@@ -238,8 +210,8 @@ export const BoltCircleLayout: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Card: SVG Visualizer & Table */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px' }}>
+        {/* Right Card (Ordered Left): SVG Visualizer & Table */}
+        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', order: -1 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>🟢 Visual Pattern Preview</h3>
             <button
