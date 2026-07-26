@@ -415,6 +415,7 @@ export const DrillSizeIndex: React.FC = () => {
   const [sortField, setSortField] = useState<'diameter' | 'name'>('diameter');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedDrillId, setSelectedDrillId] = useState<string>('frac-1-4'); // default 1/4"
+  const [hoveredDrillId, setHoveredDrillId] = useState<string | null>(null);
 
   // Filter and Sort Drills
   const filteredDrills = useMemo(() => {
@@ -446,20 +447,110 @@ export const DrillSizeIndex: React.FC = () => {
   const bitVisualHeightPx = Math.max(6, (selectedDrill.diameterIn / maxDiameterIn) * 110);
   const bitLengthPx = Math.min(260, Math.max(120, 100 + (selectedDrill.diameterIn * 80)));
 
+  // Lineup ("school picture") — filtered drills, always smallest → biggest, wrapping rows
+  const lineupDrills = useMemo(
+    () => [...filteredDrills].sort((a, b) => a.diameterIn - b.diameterIn),
+    [filteredDrills]
+  );
+  const lineupMaxIn = lineupDrills.length ? lineupDrills[lineupDrills.length - 1].diameterIn : maxDiameterIn;
+  const CAT_COLORS: Record<DrillItem['category'], string> = {
+    Number: '#38bdf8',
+    Letter: '#c084fc',
+    Fractional: '#fbbf24',
+    Metric: '#00ff80',
+  };
+  const infoDrill = useMemo(
+    () => (hoveredDrillId ? DRILL_DATABASE.find(d => d.id === hoveredDrillId) : undefined) || selectedDrill,
+    [hoveredDrillId, selectedDrill]
+  );
+
   return (
     <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '10px 0' }}>
-      {/* Title Header */}
-      <div style={{ marginBottom: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '15px' }}>
-        <div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
-            PRECISION DRILL REFERENCE TABLE // SCALED SPECS
-          </div>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', margin: 0 }}>
-            Interactive Drill Size Index & Scale Chart
-          </h2>
+      {/* Compact Title Bar */}
+      <div style={{ marginBottom: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', margin: 0 }}>
+          🗂️ Drill Size Index <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Scale Chart</span>
+        </h2>
+        <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', padding: '6px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <strong style={{ color: '#fff' }}>{DRILL_DATABASE.length}</strong> Standard Drills
         </div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', padding: '8px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          Active Database: <strong style={{ color: '#fff' }}>{DRILL_DATABASE.length} Standard Drills</strong>
+      </div>
+
+      {/* Visual Drill Index Lineup — grows/shrinks with the active filter */}
+      <div className="glass-panel" style={{ padding: '18px 22px', marginBottom: '25px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
+            DRILL INDEX LINEUP — {lineupDrills.length} BITS (SMALLEST → BIGGEST)
+          </div>
+          {/* Live details for hovered / selected bit */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', background: 'var(--bg-primary)', border: `1px solid ${CAT_COLORS[infoDrill.category]}`, borderRadius: '8px', padding: '6px 14px' }}>
+            <strong style={{ color: CAT_COLORS[infoDrill.category], fontSize: '1rem' }}>{infoDrill.name}</strong>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', textTransform: 'uppercase' }}>{infoDrill.category}</span>
+            <span style={{ color: '#fff' }}>{infoDrill.diameterIn.toFixed(4)}"</span>
+            <span style={{ color: 'var(--text-secondary)' }}>{infoDrill.diameterMm.toFixed(3)} mm</span>
+          </div>
+        </div>
+
+        <div
+          onMouseLeave={() => setHoveredDrillId(null)}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+            gap: '3px',
+            rowGap: '14px',
+            background: 'var(--bg-primary)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-md)',
+            padding: '14px 12px',
+            maxHeight: '340px',
+            overflowY: 'auto',
+            transition: 'all 0.25s ease'
+          }}
+        >
+          {lineupDrills.map((d) => {
+            const frac = Math.sqrt(d.diameterIn / lineupMaxIn); // sqrt keeps tiny bits visible
+            const w = Math.max(3, Math.round(3 + frac * 15));
+            const h = Math.max(16, Math.round(14 + frac * 78));
+            const color = CAT_COLORS[d.category];
+            const isSel = d.id === selectedDrillId;
+            const isHov = d.id === hoveredDrillId;
+            return (
+              <div
+                key={d.id}
+                onClick={() => setSelectedDrillId(d.id)}
+                onMouseEnter={() => setHoveredDrillId(d.id)}
+                title={`${d.name} — ${d.diameterIn.toFixed(4)}" / ${d.diameterMm.toFixed(3)} mm (${d.category})`}
+                style={{
+                  width: `${w}px`,
+                  height: `${h}px`,
+                  cursor: 'pointer',
+                  background: `linear-gradient(90deg, ${color} 0%, #e2e8f0 45%, ${color} 100%)`,
+                  clipPath: 'polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%)',
+                  opacity: isSel || isHov ? 1 : 0.72,
+                  outline: isSel ? '2px solid #fff' : isHov ? `2px solid ${color}` : 'none',
+                  outlineOffset: '1px',
+                  transform: isSel || isHov ? 'scaleY(1.08)' : 'none',
+                  transformOrigin: 'bottom',
+                  transition: 'opacity 0.12s ease, transform 0.12s ease',
+                  flexShrink: 0
+                }}
+              />
+            );
+          })}
+          {lineupDrills.length === 0 && (
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', padding: '10px' }}>No drills match the current filter.</span>
+          )}
+        </div>
+
+        {/* Category color legend */}
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '10px' }}>
+          {(Object.keys(CAT_COLORS) as DrillItem['category'][]).map(cat => (
+            <span key={cat} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: CAT_COLORS[cat], display: 'inline-block' }} />
+              {cat} ({DRILL_DATABASE.filter(d => d.category === cat).length})
+            </span>
+          ))}
         </div>
       </div>
 
