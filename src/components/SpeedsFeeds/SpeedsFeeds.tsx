@@ -252,14 +252,169 @@ export const SpeedsFeeds: React.FC = () => {
 
       {/* Main Content Grid */}
       {activeTab !== 'formulas' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start' }}>
-          
-          {/* Left Column: Tool & Cut Parameters */}
-          <div className="glass-panel" style={{ padding: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>🛠️ Cutter & Workpiece Parameters</span>
-              </h3>
+        <div>
+          {/* TOP SECTION: 1. VISUAL & 2. VARIABLES */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '12px', marginBottom: '12px', alignItems: 'start' }}>
+            
+            {/* 1. VISUAL: Live Kinematic Cutter Engagement Simulation (First in DOM order) */}
+            <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(244, 144, 44, 0.2)' }}>
+              
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
+                    TOP-DOWN CUTTER TELEMETRY
+                  </span>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginTop: '2px', marginBottom: 0 }}>
+                    🟢 VISUAL // Radial Engagement Simulation
+                  </h4>
+                </div>
+
+                <button
+                  onClick={() => setIsAnimating(!isAnimating)}
+                  style={{
+                    background: isAnimating ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                    color: isAnimating ? '#f87171' : '#4ade80',
+                    border: `1px solid ${isAnimating ? 'rgba(239, 68, 68, 0.4)' : 'rgba(34, 197, 94, 0.4)'}`,
+                    padding: '4px 10px',
+                    borderRadius: '20px',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <span>{isAnimating ? '⏸ Pause Spindle' : '▶ Spin Spindle'}</span>
+                </button>
+              </div>
+
+              {/* SVG Canvas */}
+              <div style={{ position: 'relative', width: `${svgSize}px`, height: `${svgSize}px`, background: '#090d16', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.8)' }}>
+                
+                {/* Background Grid */}
+                <svg width={svgSize} height={svgSize} style={{ position: 'absolute', top: 0, left: 0 }}>
+                  <defs>
+                    <pattern id="cutterGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.04)" strokeWidth="1" />
+                    </pattern>
+                    <radialGradient id="cutterGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="rgba(244, 144, 44, 0.2)" />
+                      <stop offset="100%" stopColor="rgba(244, 144, 44, 0)" />
+                    </radialGradient>
+                    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#334155" />
+                      <stop offset="100%" stopColor="#475569" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <rect width={svgSize} height={svgSize} fill="url(#cutterGrid)" />
+
+                  {/* WORKPIECE BLOCK */}
+                  <rect
+                    x={blockLeftX}
+                    y={blockTopY}
+                    width={svgSize - blockLeftX}
+                    height={blockHeight}
+                    fill="url(#metalGrad)"
+                    stroke="#64748b"
+                    strokeWidth="2"
+                  />
+                  
+                  {/* Machined channel (cutout where tool passed) */}
+                  <path
+                    d={`M ${blockLeftX} ${blockTopY} L ${blockRightX} ${blockTopY} L ${blockRightX} ${center} A ${maxRadiusPx} ${maxRadiusPx} 0 0 0 ${blockLeftX} ${center - Math.sin(contactAngleRad) * maxRadiusPx} Z`}
+                    fill="#090d16"
+                    opacity="0.85"
+                  />
+
+                  {/* Engagement Arc Highlight (The actual chip formation zone!) */}
+                  <path
+                    d={`M ${center} ${center} L ${blockRightX} ${center} A ${maxRadiusPx} ${maxRadiusPx} 0 0 0 ${blockLeftX} ${center - Math.sin(contactAngleRad) * maxRadiusPx} Z`}
+                    fill="rgba(249, 115, 22, 0.25)"
+                    stroke="#f97316"
+                    strokeWidth="2"
+                    strokeDasharray="4 2"
+                  />
+
+                  {/* Cutter Glow & Outer Diameter Circle */}
+                  <circle cx={center} cy={center} r={maxRadiusPx + 10} fill="url(#cutterGlow)" />
+                  <circle cx={center} cy={center} r={maxRadiusPx} fill="rgba(15, 23, 42, 0.8)" stroke="#f4902c" strokeWidth="2.5" />
+                  <circle cx={center} cy={center} r={maxRadiusPx * 0.4} fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
+                  <circle cx={center} cy={center} r={5} fill="#f4902c" />
+
+                  {/* Rotating Flutes */}
+                  <g transform={`rotate(${rotation}, ${center}, ${center})`}>
+                    {Array.from({ length: flutes }).map((_, i) => {
+                      const angleDeg = (360 / flutes) * i;
+                      const angleRad = (angleDeg * Math.PI) / 180;
+                      const x2 = center + Math.cos(angleRad) * maxRadiusPx;
+                      const y2 = center + Math.sin(angleRad) * maxRadiusPx;
+                      const xInner = center + Math.cos(angleRad) * (maxRadiusPx * 0.4);
+                      const yInner = center + Math.sin(angleRad) * (maxRadiusPx * 0.4);
+
+                      // Flute cutting tip arc
+                      const tipRad = ((angleDeg + 15) * Math.PI) / 180;
+                      const xTip = center + Math.cos(tipRad) * (maxRadiusPx * 0.85);
+                      const yTip = center + Math.sin(tipRad) * (maxRadiusPx * 0.85);
+
+                      return (
+                        <g key={i}>
+                          <path
+                            d={`M ${xInner} ${yInner} L ${x2} ${y2} Q ${xTip} ${yTip} ${xInner} ${yInner}`}
+                            fill="rgba(244, 144, 44, 0.3)"
+                            stroke="#f4902c"
+                            strokeWidth="1.5"
+                          />
+                          <circle cx={x2} cy={y2} r="3" fill="#fff" />
+                        </g>
+                      );
+                    })}
+                  </g>
+
+                  {/* Dimension Lines / Telemetry Overlays on Canvas */}
+                  {/* WOC Arrow */}
+                  <line x1={blockLeftX} y1={blockTopY - 12} x2={blockRightX} y2={blockTopY - 12} stroke="#38bdf8" strokeWidth="1.5" markerEnd="url(#arrow)" />
+                  <text x={(blockLeftX + blockRightX) / 2} y={blockTopY - 18} fill="#38bdf8" fontSize="11" textAnchor="middle" fontWeight="bold" fontFamily="monospace">
+                    Ae: {widthOfCut} {unit === 'imperial' ? 'in' : 'mm'}
+                  </text>
+                </svg>
+
+                {/* Telemetry Badges overlaid on corners */}
+                <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
+                  <span>Spindle: </span><strong style={{ color: '#f4902c' }}>{Math.round(rpm)} RPM</strong>
+                </div>
+
+                <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
+                  <span>Immersion: </span><strong style={{ color: isChipThinningActive ? '#c084fc' : '#4ade80' }}>{radialStepoverPercent.toFixed(0)}% ({contactAngleDeg.toFixed(0)}°)</strong>
+                </div>
+
+              </div>
+
+              {/* Visualizer Legend */}
+              <div style={{ display: 'flex', gap: '15px', marginTop: '12px', fontSize: '0.72rem', color: 'var(--text-secondary)', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f4902c', display: 'inline-block' }}></span>
+                  <span>Cutter Flutes ({flutes})</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#475569', display: 'inline-block' }}></span>
+                  <span>Workpiece Stock</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(249, 115, 22, 0.6)', display: 'inline-block' }}></span>
+                  <span>Chip Formation Arc</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 2. VARIABLES: Cutter & Workpiece Parameters (Second in DOM order) */}
+            <div className="glass-panel" style={{ padding: '25px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid var(--border-color)' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                  <span>⚙️ VARIABLES // Cutter & Workpiece Parameters</span>
+                </h3>
               {isCustom && (
                 <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', padding: '3px 8px', borderRadius: '12px', border: '1px solid rgba(234, 179, 8, 0.4)', fontWeight: 600 }}>
                   Custom Overrides Active
@@ -423,23 +578,16 @@ export const SpeedsFeeds: React.FC = () => {
               </div>
             </div>
 
+            </div>
           </div>
 
-          {/* Right Column (Ordered Left): Dynamic Results Dashboard & SVG Visualizer */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', order: -1 }}>
-            
-            {/* RESULTS DASHBOARD */}
-            <div className="glass-panel" style={{ padding: '30px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%)', borderTop: activeTab === 'chip_thinning' ? '3px solid #a855f7' : '3px solid var(--accent-cyan)' }}>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px', marginBottom: '20px' }}>
-                <div>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
-                    {activeTab === 'chip_thinning' ? 'HEM CHIP THINNING DASHBOARD' : 'OPTIMAL MACHINING PARAMETERS'}
-                  </span>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: activeTab === 'chip_thinning' ? '#c084fc' : 'var(--accent-cyan)', marginTop: '4px' }}>
-                    {MATERIALS[selectedMat].name}
-                  </h3>
-                </div>
+          {/* BOTTOM SECTION: 3. EXPLANATION & RESULTS */}
+          <div className="glass-panel" style={{ padding: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%)', borderTop: activeTab === 'chip_thinning' ? '3px solid #a855f7' : '3px solid var(--accent-cyan)' }}>
+            <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: activeTab === 'chip_thinning' ? '#c084fc' : 'var(--accent-cyan)', margin: 0 }}>
+                📐 EXPLANATION // {activeTab === 'chip_thinning' ? 'HEM CHIP THINNING DASHBOARD' : 'OPTIMAL MACHINING PARAMETERS'} — {MATERIALS[selectedMat].name}
+              </h3>
+            </div>
 
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>ESTIMATED CUT TIME</span>
@@ -645,162 +793,7 @@ export const SpeedsFeeds: React.FC = () => {
               </div>
 
             </div>
-
-            {/* LIVE KINEMATIC CUTTER ENGAGEMENT VISUALIZER (TOP-LEFT PRIORITY) */}
-            <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 30, 0.95) 100%)', border: '1px solid rgba(244, 144, 44, 0.2)', order: -1 }}>
-              
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
-                    TOP-DOWN CUTTER TELEMETRY
-                  </span>
-                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginTop: '2px' }}>
-                    Live Radial Engagement Simulation
-                  </h4>
-                </div>
-
-                <button
-                  onClick={() => setIsAnimating(!isAnimating)}
-                  style={{
-                    background: isAnimating ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
-                    color: isAnimating ? '#f87171' : '#4ade80',
-                    border: `1px solid ${isAnimating ? 'rgba(239, 68, 68, 0.4)' : 'rgba(34, 197, 94, 0.4)'}`,
-                    padding: '6px 12px',
-                    borderRadius: '20px',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <span>{isAnimating ? '⏸ Pause Spindle' : '▶ Spin Spindle'}</span>
-                </button>
-              </div>
-
-              {/* SVG Canvas */}
-              <div style={{ position: 'relative', width: `${svgSize}px`, height: `${svgSize}px`, background: '#090d16', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.8)' }}>
-                
-                {/* Background Grid */}
-                <svg width={svgSize} height={svgSize} style={{ position: 'absolute', top: 0, left: 0 }}>
-                  <defs>
-                    <pattern id="cutterGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.04)" strokeWidth="1" />
-                    </pattern>
-                    <radialGradient id="cutterGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="rgba(244, 144, 44, 0.2)" />
-                      <stop offset="100%" stopColor="rgba(244, 144, 44, 0)" />
-                    </radialGradient>
-                    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#334155" />
-                      <stop offset="100%" stopColor="#475569" />
-                    </linearGradient>
-                  </defs>
-                  
-                  <rect width={svgSize} height={svgSize} fill="url(#cutterGrid)" />
-
-                  {/* WORKPIECE BLOCK */}
-                  <rect
-                    x={blockLeftX}
-                    y={blockTopY}
-                    width={svgSize - blockLeftX}
-                    height={blockHeight}
-                    fill="url(#metalGrad)"
-                    stroke="#64748b"
-                    strokeWidth="2"
-                  />
-                  
-                  {/* Machined channel (cutout where tool passed) */}
-                  <path
-                    d={`M ${blockLeftX} ${blockTopY} L ${blockRightX} ${blockTopY} L ${blockRightX} ${center} A ${maxRadiusPx} ${maxRadiusPx} 0 0 0 ${blockLeftX} ${center - Math.sin(contactAngleRad) * maxRadiusPx} Z`}
-                    fill="#090d16"
-                    opacity="0.85"
-                  />
-
-                  {/* Engagement Arc Highlight (The actual chip formation zone!) */}
-                  <path
-                    d={`M ${center} ${center} L ${blockRightX} ${center} A ${maxRadiusPx} ${maxRadiusPx} 0 0 0 ${blockLeftX} ${center - Math.sin(contactAngleRad) * maxRadiusPx} Z`}
-                    fill="rgba(249, 115, 22, 0.25)"
-                    stroke="#f97316"
-                    strokeWidth="2"
-                    strokeDasharray="4 2"
-                  />
-
-                  {/* Cutter Glow & Outer Diameter Circle */}
-                  <circle cx={center} cy={center} r={maxRadiusPx + 10} fill="url(#cutterGlow)" />
-                  <circle cx={center} cy={center} r={maxRadiusPx} fill="rgba(15, 23, 42, 0.8)" stroke="#f4902c" strokeWidth="2.5" />
-                  <circle cx={center} cy={center} r={maxRadiusPx * 0.4} fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
-                  <circle cx={center} cy={center} r={5} fill="#f4902c" />
-
-                  {/* Rotating Flutes */}
-                  <g transform={`rotate(${rotation}, ${center}, ${center})`}>
-                    {Array.from({ length: flutes }).map((_, i) => {
-                      const angleDeg = (360 / flutes) * i;
-                      const angleRad = (angleDeg * Math.PI) / 180;
-                      const x2 = center + Math.cos(angleRad) * maxRadiusPx;
-                      const y2 = center + Math.sin(angleRad) * maxRadiusPx;
-                      const xInner = center + Math.cos(angleRad) * (maxRadiusPx * 0.4);
-                      const yInner = center + Math.sin(angleRad) * (maxRadiusPx * 0.4);
-
-                      // Flute cutting tip arc
-                      const tipRad = ((angleDeg + 15) * Math.PI) / 180;
-                      const xTip = center + Math.cos(tipRad) * (maxRadiusPx * 0.85);
-                      const yTip = center + Math.sin(tipRad) * (maxRadiusPx * 0.85);
-
-                      return (
-                        <g key={i}>
-                          <path
-                            d={`M ${xInner} ${yInner} L ${x2} ${y2} Q ${xTip} ${yTip} ${xInner} ${yInner}`}
-                            fill="rgba(244, 144, 44, 0.3)"
-                            stroke="#f4902c"
-                            strokeWidth="1.5"
-                          />
-                          <circle cx={x2} cy={y2} r="3" fill="#fff" />
-                        </g>
-                      );
-                    })}
-                  </g>
-
-                  {/* Dimension Lines / Telemetry Overlays on Canvas */}
-                  {/* WOC Arrow */}
-                  <line x1={blockLeftX} y1={blockTopY - 12} x2={blockRightX} y2={blockTopY - 12} stroke="#38bdf8" strokeWidth="1.5" markerEnd="url(#arrow)" />
-                  <text x={(blockLeftX + blockRightX) / 2} y={blockTopY - 18} fill="#38bdf8" fontSize="11" textAnchor="middle" fontWeight="bold" fontFamily="monospace">
-                    Ae: {widthOfCut} {unit === 'imperial' ? 'in' : 'mm'}
-                  </text>
-                </svg>
-
-                {/* Telemetry Badges overlaid on corners */}
-                <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
-                  <span>Spindle: </span><strong style={{ color: '#f4902c' }}>{Math.round(rpm)} RPM</strong>
-                </div>
-
-                <div style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(15, 23, 42, 0.85)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'var(--font-mono)' }}>
-                  <span>Immersion: </span><strong style={{ color: isChipThinningActive ? '#c084fc' : '#4ade80' }}>{radialStepoverPercent.toFixed(0)}% ({contactAngleDeg.toFixed(0)}°)</strong>
-                </div>
-
-              </div>
-
-              {/* Visualizer Legend */}
-              <div style={{ display: 'flex', gap: '20px', marginTop: '15px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f4902c', display: 'inline-block' }}></span>
-                  <span>Cutter Flutes ({flutes})</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#475569', display: 'inline-block' }}></span>
-                  <span>Workpiece Stock</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(249, 115, 22, 0.6)', display: 'inline-block' }}></span>
-                  <span>Chip Formation Arc</span>
-                </div>
-              </div>
-
-            </div>
-
           </div>
-
         </div>
       ) : (
         /* FORMULAS REFERENCE TAB (Inspired by Garr Tool's Formulas Page) */

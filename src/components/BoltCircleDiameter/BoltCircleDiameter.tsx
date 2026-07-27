@@ -82,12 +82,103 @@ export const BoltCircleDiameter: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1150px', margin: '0 auto', padding: '0' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px', alignItems: 'start' }}>
+      {/* TOP SECTION: 1. VISUAL & 2. VARIABLES */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '12px', marginBottom: '12px', alignItems: 'start' }}>
         
-        {/* Left Card: Input Method & Controls */}
-        <div className="glass-panel" style={{ padding: '30px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', paddingBottom: '15px', borderBottom: '1px solid var(--border-color)' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)' }}>🔍 Measurement Technique</h3>
+        {/* 1. VISUAL: Interactive Measurement Diagram (First in DOM order) */}
+        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              🟢 VISUAL // Reverse-Engineer Diagram
+            </h3>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              {count} Holes // {method === 'caliper' ? 'Caliper Span' : 'Chord Distance'}
+            </span>
+          </div>
+
+          <div style={{
+            background: 'var(--bg-primary)',
+            border: '1px solid var(--border-color)',
+            padding: '15px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '260px'
+          }}>
+            <svg viewBox="-140 -140 280 280" style={{ width: '100%', maxWidth: '260px', height: 'auto', overflow: 'visible' }}>
+              {/* Axes / Crosshairs */}
+              <line x1="-130" y1="0" x2="130" y2="0" stroke="#334155" strokeWidth="1" strokeDasharray="4,4" />
+              <line x1="0" y1="-130" x2="0" y2="130" stroke="#334155" strokeWidth="1" strokeDasharray="4,4" />
+              
+              {/* Pitch Circle */}
+              <circle cx="0" cy="0" r="85" fill="none" stroke="var(--accent-cyan)" strokeWidth="1.5" strokeDasharray="6,4" opacity="0.7" />
+              <circle cx="0" cy="0" r="3" fill="#64748b" />
+
+              {/* Holes */}
+              {Array.from({ length: Math.min(count, 24) }).map((_, idx) => {
+                const rad = (idx * (360 / count) * Math.PI) / 180;
+                const svgX = 85 * Math.cos(rad);
+                const svgY = -85 * Math.sin(rad);
+                const isTarget = idx === 0 || (method === 'adjacent' ? idx === 1 : idx === Math.floor(count / 2));
+
+                return (
+                  <g key={idx}>
+                    <line x1="0" y1="0" x2={svgX} y2={svgY} stroke="#1e293b" strokeWidth="1" />
+                    <circle cx={svgX} cy={svgY} r={isTarget ? "10" : "7"} fill="#0f172a" stroke={isTarget ? "#f4902c" : "#00ff80"} strokeWidth={isTarget ? "2.5" : "1.5"} />
+                    <text x={svgX * 1.25} y={svgY * 1.25} fill="#f8fafc" fontSize="10" fontWeight="700" textAnchor="middle" dominantBaseline="middle" fontFamily="var(--font-mono)">
+                      #{idx + 1}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Measurement Span Line */}
+              {(() => {
+                const rad0 = 0;
+                const rad1 = method === 'adjacent' ? ((360 / count) * Math.PI) / 180 : ((Math.floor(count / 2) * (360 / count)) * Math.PI) / 180;
+                const x0 = 85 * Math.cos(rad0);
+                const y0 = -85 * Math.sin(rad0);
+                const x1 = 85 * Math.cos(rad1);
+                const y1 = -85 * Math.sin(rad1);
+                return (
+                  <g>
+                    <line x1={x0} y1={y0} x2={x1} y2={y1} stroke="#f4902c" strokeWidth="2.5" strokeDasharray="3,3" />
+                    <circle cx={(x0 + x1) / 2} cy={(y0 + y1) / 2} r="14" fill="#0f172a" stroke="#f4902c" strokeWidth="1.5" />
+                    <text x={(x0 + x1) / 2} y={(y0 + y1) / 2} fill="#f4902c" fontSize="11" fontWeight="800" textAnchor="middle" dominantBaseline="middle" fontFamily="var(--font-mono)">
+                      {method === 'adjacent' ? 'C' : 'M'}
+                    </text>
+                  </g>
+                );
+              })()}
+            </svg>
+          </div>
+
+          <div style={{ background: 'var(--bg-tertiary)', padding: '12px 14px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                Estimated BCD
+              </span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>
+                {bcd > 0 ? bcd.toFixed(decPlaces) : '---'} <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{unitStr}</span>
+              </span>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                Hole Angle
+              </span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 700, color: '#00ff80' }}>
+                {(360 / count).toFixed(2)}°
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. VARIABLES: Measurement Technique & Inputs (Second in DOM order) */}
+        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              ⚙️ VARIABLES // Measurement Technique
+            </h3>
           </div>
 
           {/* Method Selector Tabs */}
@@ -96,20 +187,17 @@ export const BoltCircleDiameter: React.FC = () => {
             gridTemplateColumns: '1fr 1fr', 
             background: 'var(--bg-primary)', 
             padding: '4px', 
-            borderRadius: 'var(--radius-md)', 
-            marginBottom: '25px',
             border: '1px solid var(--border-color)'
           }}>
             <button
               onClick={() => setMethod('caliper')}
               style={{
-                padding: '12px 10px',
+                padding: '10px 8px',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
                 background: method === 'caliper' ? 'var(--accent-cyan)' : 'transparent',
                 color: method === 'caliper' ? '#000' : 'var(--text-secondary)',
                 fontWeight: 600,
-                fontSize: '0.88rem',
+                fontSize: '0.85rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
@@ -119,13 +207,12 @@ export const BoltCircleDiameter: React.FC = () => {
             <button
               onClick={() => setMethod('adjacent')}
               style={{
-                padding: '12px 10px',
+                padding: '10px 8px',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
                 background: method === 'adjacent' ? 'var(--accent-cyan)' : 'transparent',
                 color: method === 'adjacent' ? '#000' : 'var(--text-secondary)',
                 fontWeight: 600,
-                fontSize: '0.88rem',
+                fontSize: '0.85rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
@@ -134,8 +221,8 @@ export const BoltCircleDiameter: React.FC = () => {
             </button>
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
               Total Number of Holes in Pattern
             </label>
             <input
@@ -146,54 +233,54 @@ export const BoltCircleDiameter: React.FC = () => {
               onChange={(e) => setHolesCount(parseInt(e.target.value) || 3)}
               className="input-precision"
             />
-            <span style={{ fontSize: '0.78rem', color: count % 2 === 0 ? '#38bdf8' : '#f59e0b', marginTop: '6px', display: 'block', fontWeight: 600 }}>
-              {count % 2 === 0 ? `✓ Even pattern (${count} holes): Caliper directly spans diametrically opposite holes.` : `⚠️ Odd pattern (${count} holes): Caliper spans widest non-opposite chord; algorithm applies geometric correction.`}
+            <span style={{ fontSize: '0.75rem', color: count % 2 === 0 ? '#38bdf8' : '#f59e0b', marginTop: '4px', display: 'block', fontWeight: 600 }}>
+              {count % 2 === 0 ? `✓ Even pattern (${count} holes): Directly spans opposite holes.` : `⚠️ Odd pattern (${count} holes): Spans widest chord; algorithm applies geometric correction.`}
             </span>
           </div>
 
           {method === 'caliper' ? (
-            <div className="animate-fade-in">
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+            <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                   Caliper Placement Mode
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <button
                     type="button"
                     onClick={() => setCaliperMode('outer')}
                     style={{
-                      padding: '10px',
+                      padding: '8px',
                       background: caliperMode === 'outer' ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                       border: `1px solid ${caliperMode === 'outer' ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                       color: caliperMode === 'outer' ? 'var(--accent-cyan)' : 'var(--text-primary)',
-                      borderRadius: 'var(--radius-sm)',
                       fontWeight: 600,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '0.82rem'
                     }}
                   >
-                    Outer Edges (Max Distance)
+                    Outer Edges (Max)
                   </button>
                   <button
                     type="button"
                     onClick={() => setCaliperMode('inner')}
                     style={{
-                      padding: '10px',
+                      padding: '8px',
                       background: caliperMode === 'inner' ? 'rgba(244, 144, 44, 0.15)' : 'var(--bg-tertiary)',
                       border: `1px solid ${caliperMode === 'inner' ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
                       color: caliperMode === 'inner' ? 'var(--accent-cyan)' : 'var(--text-primary)',
-                      borderRadius: 'var(--radius-sm)',
                       fontWeight: 600,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '0.82rem'
                     }}
                   >
-                    Inner Edges (Min Distance)
+                    Inner Edges (Min)
                   </button>
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                     Caliper Reading ({unitStr})
                   </label>
                   <input
@@ -206,7 +293,7 @@ export const BoltCircleDiameter: React.FC = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                     Hole Diameter ({unitStr})
                   </label>
                   <input
@@ -222,7 +309,7 @@ export const BoltCircleDiameter: React.FC = () => {
           ) : (
             <div className="animate-fade-in">
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                   Adjacent Hole Center-to-Center Distance ({unitStr})
                 </label>
                 <input
@@ -232,61 +319,57 @@ export const BoltCircleDiameter: React.FC = () => {
                   onChange={(e) => setAdjacentDist(e.target.value)}
                   className="input-precision"
                 />
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '6px', display: 'block' }}>
-                  Measure exact center-to-center distance between any two neighboring holes using gauge pins or CMM.
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
+                  Measure exact center-to-center distance between neighboring holes using gauge pins or CMM.
                 </span>
               </div>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Right Card (Ordered Left): Result Output & Verification */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.6) 100%)', order: -1 }}>
-          <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              REVERSE-ENGINEERED RESULT
-            </span>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fff', marginTop: '4px' }}>
-              Calculated Pitch Circle
-            </h3>
-          </div>
+      {/* BOTTOM SECTION: 3. EXPLANATION & RESULTS */}
+      <div className="glass-panel">
+        <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginBottom: '15px' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            📐 EXPLANATION // Reverse-Engineered Result & Verification
+          </h3>
+        </div>
 
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px', alignItems: 'center' }}>
           {/* Main BCD Box */}
           <div style={{
             background: 'var(--bg-primary)',
-            padding: '30px',
-            borderRadius: 'var(--radius-md)',
-            border: '2px solid var(--accent-cyan)',
-            textAlign: 'center',
-            boxShadow: '0 15px 35px -10px rgba(244, 144, 44, 0.2)',
-            position: 'relative'
+            padding: '20px',
+            border: '1px solid var(--accent-cyan)',
+            textAlign: 'center'
           }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '10px', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               EXACT BOLT CIRCLE DIAMETER (BCD)
             </span>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '3rem', fontWeight: 800, color: '#f4902c', textShadow: '0 0 20px rgba(244, 144, 44, 0.5)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.5rem', fontWeight: 800, color: '#f4902c' }}>
               {bcd > 0 ? bcd.toFixed(decPlaces) : '---'}
             </div>
-            <span style={{ fontSize: '1.1rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+            <span style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 600 }}>
               {unitStr}
             </span>
           </div>
 
           {/* Verification Metrics */}
-          <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-md)', padding: '20px', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '12px', fontWeight: 600 }}>
+          <div style={{ background: 'var(--bg-primary)', padding: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '10px', fontWeight: 600 }}>
               Pattern Verification & Checks
             </h4>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Radius from Center:</span>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-primary)' }}>
                   {bcd > 0 ? (bcd / 2).toFixed(decPlaces) : '---'} {unitStr}
                 </span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Adjacent Hole Distance (Chord):</span>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#00ff80' }}>
                   {verifChordal > 0 ? verifChordal.toFixed(decPlaces) : '---'} {unitStr}
@@ -301,21 +384,20 @@ export const BoltCircleDiameter: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Formula Explanation Alert */}
-          <div style={{
-            background: 'rgba(56, 189, 248, 0.1)',
-            border: '1px solid rgba(56, 189, 248, 0.3)',
-            padding: '14px',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            color: '#7dd3fc',
-            lineHeight: 1.5
-          }}>
-            <strong>📐 Geometry Note:</strong> {explanation}
-          </div>
         </div>
 
+        {/* Formula Explanation Alert */}
+        <div style={{
+          background: 'rgba(56, 189, 248, 0.1)',
+          border: '1px solid rgba(56, 189, 248, 0.3)',
+          padding: '12px',
+          marginTop: '15px',
+          fontSize: '0.82rem',
+          color: '#7dd3fc',
+          lineHeight: 1.5
+        }}>
+          <strong>📐 Geometry Note:</strong> {explanation}
+        </div>
       </div>
 
       {/* Footer: tool description (kept out of the header per site convention) */}
