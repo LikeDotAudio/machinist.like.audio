@@ -114,8 +114,47 @@ export const SheetMetalBending: React.FC = () => {
   const [bendAngle, setBendAngle] = useState<number>(90);
 
   // Active UI Tab
-  const [activeTab, setActiveTab] = useState<'calculator' | 'diagram' | 'specs_table'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'diagram' | 'specs_table' | 'simulator'>('calculator');
   const [searchMaterial, setSearchMaterial] = useState<string>('');
+
+  // Live Bend Simulator State
+  const [simAngle, setSimAngle] = useState<number>(90);
+  const [simRadius, setSimRadius] = useState<string>('0.125');
+  const [simThickness, setSimThickness] = useState<string>('0.100');
+  const [simKFactor, setSimKFactor] = useState<string>('0.42');
+  const [simFlange1, setSimFlange1] = useState<string>('4.000');
+  const [simFlange2, setSimFlange2] = useState<string>('4.000');
+
+  // Simulator Math Engine (60 FPS Reactive Solvers)
+  const simCalc = useMemo(() => {
+    const angle = Math.min(179, Math.max(1, simAngle)); // degrees
+    const R = parseFloat(simRadius) || 0.125;
+    const T = parseFloat(simThickness) || 0.100;
+    const K = parseFloat(simKFactor) || 0.42;
+    const L1 = parseFloat(simFlange1) || 4.0;
+    const L2 = parseFloat(simFlange2) || 4.0;
+
+    // Y-Factor = K * (pi / 2)
+    const Y = K * (Math.PI / 2);
+    // Neutral Axis Radius = R + K * T
+    const r_neutral = R + K * T;
+
+    // Bend Allowance BA = DL = (pi / 180) * (R + K * T) * angle
+    const BA = (Math.PI / 180) * r_neutral * angle;
+    const DL = BA;
+
+    // Outside Setback OSSB = (R + T) * tan(angle / 2 in rad)
+    const halfRad = ((angle / 2) * Math.PI) / 180;
+    const OSSB = (R + T) * Math.tan(halfRad);
+
+    // Bend Deduction BD = 2 * OSSB - BA
+    const BD = (2 * OSSB) - BA;
+
+    // Flat Pattern Length FL = L1 + L2 - BD
+    const FL = L1 + L2 - BD;
+
+    return { angle, R, T, K, L1, L2, Y, r_neutral, BA, DL, OSSB, BD, FL };
+  }, [simAngle, simRadius, simThickness, simKFactor, simFlange1, simFlange2]);
 
   useEffect(() => {
     if (prevUnitRef.current === unit) return;
@@ -332,6 +371,26 @@ export const SheetMetalBending: React.FC = () => {
           }}
         >
           <span>📋</span> Material Bending Specs (10 Alloys)
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('simulator')}
+          style={{
+            background: activeTab === 'simulator' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
+            color: activeTab === 'simulator' ? '#000' : 'var(--text-primary)',
+            border: '1px solid var(--border-color)',
+            padding: '10px 22px',
+            borderRadius: '6px',
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>🎮</span> Live Bend Simulator & Formulas
         </button>
       </div>
 
@@ -995,6 +1054,432 @@ export const SheetMetalBending: React.FC = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* TAB 4: INTERACTIVE LIVE BEND SIMULATOR & FORMULAS */}
+      {activeTab === 'simulator' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+          
+          {/* Top Explanatory Banner */}
+          <div className="glass-panel" style={{ padding: '25px', borderLeft: '4px solid var(--accent-cyan)' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span>🎮</span> Real-Time Press Brake Bend Simulator & Metrology Engine
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem', margin: 0 }}>
+              Adjust the interactive sliders below to physically form the sheet metal in real time. Watch how the neutral axis shifts, corner setbacks expand, and flat pattern lengths dynamically grow and shrink across all 7 metrological relationships defined in industrial sheet metal forming standards.
+            </p>
+          </div>
+
+          {/* Interactive Workspace: Control Panel & Live Digital Dashboard */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '25px' }}>
+            
+            {/* LEFT PANEL: SLIDER CONTROLS */}
+            <div className="glass-panel" style={{ padding: '25px', borderTop: '3px solid #38bdf8' }}>
+              <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🎛️</span> Live Deformation Control Levers
+              </h4>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                
+                {/* Bend Angle Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      Bend Angle (θ): <span style={{ color: 'var(--accent-cyan)' }}>{simAngle}°</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>1° (Flat) to 179° (Sharp Fold)</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="179"
+                    step="1"
+                    value={simAngle}
+                    onChange={(e) => setSimAngle(parseInt(e.target.value) || 90)}
+                    style={{ width: '100%', accentColor: 'var(--accent-cyan)', cursor: 'pointer' }}
+                  />
+                </div>
+
+                {/* Inside Radius Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      Inside Radius (R): <span style={{ color: '#00ff80' }}>{simRadius}"</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>0.010" to 1.000"</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.010"
+                    max="1.000"
+                    step="0.005"
+                    value={simRadius}
+                    onChange={(e) => setSimRadius(e.target.value)}
+                    style={{ width: '100%', accentColor: '#00ff80', cursor: 'pointer' }}
+                  />
+                </div>
+
+                {/* Material Thickness Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      Material Thickness (T): <span style={{ color: '#f59e0b' }}>{simThickness}"</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>0.020" to 0.500"</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.020"
+                    max="0.500"
+                    step="0.005"
+                    value={simThickness}
+                    onChange={(e) => setSimThickness(e.target.value)}
+                    style={{ width: '100%', accentColor: '#f59e0b', cursor: 'pointer' }}
+                  />
+                </div>
+
+                {/* K-Factor Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      K-Factor (K): <span style={{ color: '#a855f7' }}>{simKFactor}</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>0.25 (Soft) to 0.50 (Coining)</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.25"
+                    max="0.50"
+                    step="0.01"
+                    value={simKFactor}
+                    onChange={(e) => setSimKFactor(e.target.value)}
+                    style={{ width: '100%', accentColor: '#a855f7', cursor: 'pointer' }}
+                  />
+                </div>
+
+                {/* Flange Length 1 Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      Flange 1 Length (L₁): <span style={{ color: 'var(--text-primary)' }}>{simFlange1}"</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>1.00" to 12.00"</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.00"
+                    max="12.00"
+                    step="0.25"
+                    value={simFlange1}
+                    onChange={(e) => setSimFlange1(e.target.value)}
+                    style={{ width: '100%', accentColor: '#38bdf8', cursor: 'pointer' }}
+                  />
+                </div>
+
+                {/* Flange Length 2 Slider */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <label style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                      Flange 2 Length (L₂): <span style={{ color: 'var(--text-primary)' }}>{simFlange2}"</span>
+                    </label>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>1.00" to 12.00"</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.00"
+                    max="12.00"
+                    step="0.25"
+                    value={simFlange2}
+                    onChange={(e) => setSimFlange2(e.target.value)}
+                    style={{ width: '100%', accentColor: '#38bdf8', cursor: 'pointer' }}
+                  />
+                </div>
+
+              </div>
+            </div>
+
+            {/* RIGHT PANEL: LIVE METROLOGY DASHBOARD (WATCH NUMBERS GROW & SHRINK) */}
+            <div className="glass-panel" style={{ padding: '25px', borderTop: '3px solid #00ff80', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>📊</span> Live Metrology Readouts
+                </h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '20px' }}>
+                  Real-time computation of the 7 core relationships. Watch values dynamically grow and shrink as you form the bend!
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+                  
+                  {/* Card 1: Flat Pattern Length (FL) */}
+                  <div style={{ background: 'rgba(0, 255, 128, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(0, 255, 128, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      Flat Pattern Length (FL)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#00ff80', fontFamily: 'monospace' }}>
+                      {simCalc.FL.toFixed(4)}"
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      L₁ + L₂ - BD
+                    </div>
+                  </div>
+
+                  {/* Card 2: Bend Deduction (BD) */}
+                  <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      Bend Deduction (BD)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#ef4444', fontFamily: 'monospace' }}>
+                      {simCalc.BD.toFixed(4)}"
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      2 × OSSB - BA
+                    </div>
+                  </div>
+
+                  {/* Card 3: Bend Allowance / Developed Arc (BA / DL) */}
+                  <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(56, 189, 248, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      Bend Allowance (BA / DL)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#38bdf8', fontFamily: 'monospace' }}>
+                      {simCalc.BA.toFixed(4)}"
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      Neutral Arc Length
+                    </div>
+                  </div>
+
+                  {/* Card 4: Outside Setback (OSSB) */}
+                  <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      Outside Setback (OSSB)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f59e0b', fontFamily: 'monospace' }}>
+                      {simCalc.OSSB.toFixed(4)}"
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      Tangent to Apex Distance
+                    </div>
+                  </div>
+
+                  {/* Card 5: K-Factor ($K$) */}
+                  <div style={{ background: 'rgba(168, 85, 247, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(168, 85, 247, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      K-Factor Ratio (K)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#a855f7', fontFamily: 'monospace' }}>
+                      {simCalc.K.toFixed(2)}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      t / T (Neutral Shift)
+                    </div>
+                  </div>
+
+                  {/* Card 6: Y-Factor ($Y$) */}
+                  <div style={{ background: 'rgba(236, 72, 153, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(236, 72, 153, 0.3)', textAlign: 'center', transition: 'all 0.15s ease' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      Y-Factor Value (Y)
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#ec4899', fontFamily: 'monospace' }}>
+                      {simCalc.Y.toFixed(4)}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      K × (π / 2) (CAD Factor)
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div style={{ marginTop: '20px', padding: '12px', background: 'var(--bg-primary)', borderRadius: '6px', border: '1px dashed var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Neutral Axis Radius (r_neutral):</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--accent-cyan)', fontFamily: 'monospace' }}>{simCalc.r_neutral.toFixed(4)}"</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* LIVE ANIMATED VECTOR VISUALIZER */}
+          <div className="glass-panel" style={{ padding: '30px', borderTop: '3px solid #f59e0b', textAlign: 'center' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <span>⚡</span> Live Vector Bending Simulation & Geometry Projections
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '700px', margin: '0 auto 20px auto' }}>
+              Real-time vector visualization of the plastic deformation zone. Notice how the dashed green neutral axis (K × T) shifts inward from the geometric centerline as bend angle θ increases.
+            </p>
+
+            <div style={{ background: '#0a0e17', borderRadius: '12px', padding: '20px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
+              <svg viewBox="0 0 800 360" style={{ width: '100%', height: 'auto', maxHeight: '380px' }}>
+                <defs>
+                  <pattern id="simGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                  </pattern>
+                  <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#475569" />
+                    <stop offset="50%" stopColor="#64748b" />
+                    <stop offset="100%" stopColor="#334155" />
+                  </linearGradient>
+                </defs>
+                <rect width="800" height="360" fill="url(#simGrid)" />
+
+                {/* Base reference line */}
+                <line x1="50" y1="280" x2="750" y2="280" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="4 4" />
+                <text x="70" y="300" fill="rgba(255,255,255,0.3)" fontSize="12" fontFamily="monospace">DATUM PLANO: HORIZONTAL BASE</text>
+
+                {/* Left Flange (Fixed Horizontal) */}
+                <rect x="100" y={280 - Math.min(50, simCalc.T * 100)} width="240" height={Math.min(50, simCalc.T * 100)} fill="url(#metalGrad)" stroke="#94a3b8" strokeWidth="2" />
+                <text x="220" y={270 - Math.min(50, simCalc.T * 100)} fill="#38bdf8" fontSize="13" fontWeight="bold" textAnchor="middle">FLANGE 1 ({simCalc.L1}")</text>
+
+                {/* Bend Zone & Right Flange Representation (Rotated dynamically by simAngle) */}
+                <g transform={`translate(340, ${280})`}>
+                  {/* Outer Apex Setback Projection Lines */}
+                  <line x1="0" y1="0" x2={Math.min(120, simCalc.OSSB * 80)} y2="0" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <circle cx="0" cy="0" r="4" fill="#38bdf8" />
+                  <text x="0" y="20" fill="#38bdf8" fontSize="11" textAnchor="middle" fontWeight="bold">TANGENT POINT</text>
+                  
+                  {/* Rotated Right Flange */}
+                  <g transform={`rotate(-${simCalc.angle}, 0, 0)`}>
+                    <rect x="0" y={-Math.min(50, simCalc.T * 100)} width="240" height={Math.min(50, simCalc.T * 100)} fill="url(#metalGrad)" stroke="#94a3b8" strokeWidth="2" opacity="0.9" />
+                    <line x1="0" y1="0" x2={Math.min(120, simCalc.OSSB * 80)} y2="0" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" />
+                    <text x="120" y={-Math.min(50, simCalc.T * 100) - 10} fill="#38bdf8" fontSize="13" fontWeight="bold" textAnchor="middle">FLANGE 2 ({simCalc.L2}")</text>
+
+                    {/* Neutral Axis Arc representation */}
+                    <line x1="20" y1={-Math.min(50, simCalc.T * 100) * simCalc.K} x2="220" y2={-Math.min(50, simCalc.T * 100) * simCalc.K} stroke="#00ff80" strokeWidth="2" strokeDasharray="6 4" />
+                  </g>
+                </g>
+
+                {/* Left Neutral Axis Line */}
+                <line x1="100" y1={280 - Math.min(50, simCalc.T * 100) * simCalc.K} x2="340" y2={280 - Math.min(50, simCalc.T * 100) * simCalc.K} stroke="#00ff80" strokeWidth="2" strokeDasharray="6 4" />
+
+                {/* HUD Overlay Indicators */}
+                <g transform="translate(550, 40)">
+                  <rect x="0" y="0" width="220" height="110" fill="rgba(15, 23, 42, 0.8)" stroke="var(--border-color)" rx="6" />
+                  <text x="15" y="25" fill="#00ff80" fontSize="12" fontWeight="bold" fontFamily="monospace">--- NEUTRAL AXIS (K={simCalc.K})</text>
+                  <text x="15" y="48" fill="#f59e0b" fontSize="12" fontWeight="bold" fontFamily="monospace">... APEX SETBACK (OSSB)</text>
+                  <text x="15" y="71" fill="#38bdf8" fontSize="12" fontWeight="bold" fontFamily="monospace">=== BEND ALLOWANCE ({simCalc.BA.toFixed(3)}")</text>
+                  <text x="15" y="94" fill="#ef4444" fontSize="12" fontWeight="bold" fontFamily="monospace">▼ BEND DEDUCTION ({simCalc.BD.toFixed(3)}")</text>
+                </g>
+
+                {/* Live Angle Arc Indicator */}
+                <path d={`M 400 280 A 60 60 0 0 0 ${400 - 60 * Math.cos((simCalc.angle * Math.PI)/180)} ${280 - 60 * Math.sin((simCalc.angle * Math.PI)/180)}`} fill="none" stroke="var(--accent-cyan)" strokeWidth="2" />
+                <text x="430" y="250" fill="var(--accent-cyan)" fontSize="16" fontWeight="bold" fontFamily="monospace">θ = {simCalc.angle}°</text>
+              </svg>
+            </div>
+          </div>
+
+          {/* BOTTOM SECTION: THE 7 FORMULA EXPLANATIONS FROM IMAGE-1.PNG */}
+          <div className="glass-panel" style={{ padding: '30px', borderTop: '3px solid #a855f7' }}>
+            <h4 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span>📚</span> Authoritative Breakdown of the 7 Bending Formulas (image-1.png)
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '25px', lineHeight: 1.6 }}>
+              In precision sheet metal engineering, these 7 core geometric relationships govern the exact transition between flat raw stock and formed 3D parts.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+              
+              {/* Formula 1: K-Factor */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #a855f7' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#a855f7', margin: 0 }}>1. K-Factor (K)</h5>
+                  <span style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Ratio</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.1rem', textAlign: 'center' }}>
+                  K = t / T
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  The ratio representing the inward shift of the neutral axis (t) relative to total material thickness (T). Standard air bending in mild steel uses K ≈ 0.42 to 0.45.
+                </p>
+              </div>
+
+              {/* Formula 2: Y-Factor */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #ec4899' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ec4899', margin: 0 }}>2. Y-Factor (Y)</h5>
+                  <span style={{ background: 'rgba(236, 72, 153, 0.15)', color: '#ec4899', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>CAD Factor</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.1rem', textAlign: 'center' }}>
+                  Y = K × (π / 2)
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  An alternative representation of neutral axis location utilized in CAD systems (PTC Creo, marine software). A K-Factor of 0.45 converts to a Y-Factor of 0.7068.
+                </p>
+              </div>
+
+              {/* Formula 3: Outside Setback (OSSB) */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #f59e0b' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f59e0b', margin: 0 }}>3. Outside Setback (OSSB)</h5>
+                  <span style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Geometry</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.0rem', textAlign: 'center' }}>
+                  OSSB = (R + T) × tan(θ / 2)
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  The distance along the outside flange from the tangent bend start line to the sharp apex intersection vertex. Crucial for determining Bend Deduction.
+                </p>
+              </div>
+
+              {/* Formula 4: Bend Allowance (BA) */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #38bdf8' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#38bdf8', margin: 0 }}>4. Bend Allowance (BA)</h5>
+                  <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Neutral Arc</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '0.95rem', textAlign: 'center' }}>
+                  BA = (π / 180) × (R + K·T) × θ
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  The true physical length of metal along the neutral axis through the curved bend zone. Because this layer neither stretches nor shrinks, its length is preserved!
+                </p>
+              </div>
+
+              {/* Formula 5: Developed Length of Arc (DL) */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #00ff80' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#00ff80', margin: 0 }}>5. Developed Arc Length (DL)</h5>
+                  <span style={{ background: 'rgba(0, 255, 128, 0.15)', color: '#00ff80', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>ISO Standard</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.1rem', textAlign: 'center' }}>
+                  DL ≡ BA
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  Synonymous with Bend Allowance in European and international metrology specifications. Represents the exact arc circumference of the neutral layer.
+                </p>
+              </div>
+
+              {/* Formula 6: Bend Deduction (BD) */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid #ef4444' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ef4444', margin: 0 }}>6. Bend Deduction (BD)</h5>
+                  <span style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Subtraction</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.05rem', textAlign: 'center' }}>
+                  BD = (2 × OSSB) - BA
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  The exact length subtracted per bend from the sum of outside mold dimensions to correct for corner duplication and metal stretching.
+                </p>
+              </div>
+
+              {/* Formula 7: Flat Pattern Length (FL) */}
+              <div style={{ background: 'var(--bg-primary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)', borderLeft: '4px solid var(--accent-cyan)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h5 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--accent-cyan)', margin: 0 }}>7. Flat Pattern Length (FL)</h5>
+                  <span style={{ background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Final Blank</span>
+                </div>
+                <div style={{ background: '#0a0e17', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', color: '#00ff80', marginBottom: '10px', fontSize: '1.05rem', textAlign: 'center' }}>
+                  FL = L₁ + L₂ - BD
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                  The actionable flat sheet metal blank cut length required for laser cutting or punching. Guarantees precision formed parts after brake bending.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       )}
     </div>

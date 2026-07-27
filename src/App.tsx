@@ -26,6 +26,8 @@ import { FitsTolerances } from './components/FitsTolerances';
 import { SurfaceFinish } from './components/SurfaceFinish';
 import { HardnessConversion } from './components/HardnessConversion';
 import { MaterialWeight } from './components/MaterialWeight';
+import { Metallurgy } from './components/Metallurgy/Metallurgy';
+import { WeldingSuite } from './components/Welding/WeldingSuite';
 import { useUnit } from './context/UnitContext';
 
 type TabType = 
@@ -56,11 +58,65 @@ type TabType =
   | 'surface_finish'
   | 'hardness_conversion'
   | 'material_weight'
+  | 'metallurgy_suite'
+  | 'welding_suite'
   | 'about';
+
+interface HubTool {
+  id: TabType;
+  category: string;
+  icon: string;
+  title: string;
+  description: string;
+  borderColor: string;
+}
+
+const HUB_CATEGORIES = [
+  { id: 'all', label: '🌟 All Tools' },
+  { id: 'metrology', label: '📐 Metrology & GD&T' },
+  { id: 'machining', label: '⚡ Machining & Milling' },
+  { id: 'threading', label: '🔩 Threading & Gears' },
+  { id: 'metallurgy', label: '🔥 Metallurgy & Materials' },
+  { id: 'welding', label: '🧑‍🏭 Welding & Fabrication' },
+  { id: 'forming', label: '🏗️ Sheet Metal Forming' },
+  { id: 'geometry', label: '🧭 Math & Geometry' }
+];
+
+const HUB_TOOLS: HubTool[] = [
+  { id: 'calculator', category: 'metrology', icon: '📐', title: 'Jo Block & Height Gauge', description: 'Calculate exact gauge block combinations for precise metrology setups in Imperial (81-pc) and Metric (87-pc) sets.', borderColor: '#a855f7' },
+  { id: 'dividing_head', category: 'threading', icon: '⚙️', title: 'Hardinge Dividing Head', description: 'Find exact index plates, hole circles, and crank handle turns for precision gear cutting and angular divisions.', borderColor: '#38bdf8' },
+  { id: 'gorton_p12', category: 'machining', icon: '⚡', title: 'Gorton P1-2 Pantomill', description: 'Set slider bar distances, master-to-workpiece ratios, and roll engraving indexing for Gorton P1-2 pantographs.', borderColor: '#f59e0b' },
+  { id: 'speeds_feeds', category: 'machining', icon: '🏎️', title: 'Speeds & Feeds Calculator', description: 'Optimize cutting speeds (SFM/RPM), chip loads, and table feeds (IPM) for carbide and HSS end mills across alloys.', borderColor: '#00ff80' },
+  { id: 'bolt_circle_layout', category: 'machining', icon: '⭕', title: 'Bolt Circle Layout', description: 'Compute absolute Cartesian (X, Y) hole center coordinates on a Pitch Circle Diameter (PCD) for manual milling or DRO entry.', borderColor: '#ec4899' },
+  { id: 'bolt_circle_diameter', category: 'machining', icon: '🔍', title: 'Bolt Circle Reverse-Engineering', description: 'Reverse-engineer unknown bolt circle diameters (PCD) from caliper measurements across adjacent holes.', borderColor: '#38bdf8' },
+  { id: 'sine_bar_vise', category: 'metrology', icon: '📐', title: 'Sine Bar & Sine Vise Angle', description: 'Calculate gauge block stack heights required to tilt 5-inch or 10-inch sine bars and toolmaker vises to precise angles.', borderColor: '#a855f7' },
+  { id: 'tap_drill_die', category: 'threading', icon: '🔩', title: 'Tap, Drill & Die Reference', description: 'Find standard tap drill sizes, custom thread percentage engagement bit selection, and die rod blank turning diameters.', borderColor: '#f59e0b' },
+  { id: 'knurling', category: 'forming', icon: '💎', title: 'Knurling Blank Diameter', description: 'Calculate optimal turned blank diameters that synchronize with knurl wheel pitch teeth to prevent tool chatter and double-tracking.', borderColor: '#00ff80' },
+  { id: 'threading_change_gears', category: 'threading', icon: '⚙️', title: 'Lathe Threading Change Gears', description: 'Calculate simple and compound gear train combinations for manual lathes to cut metric, imperial, or custom module thread pitches.', borderColor: '#ec4899' },
+  { id: 'sheet_metal_bending', category: 'forming', icon: '🏗️', title: 'Sheet Metal Bending Simulator', description: 'Develop exact flat pattern cut blanks using SendCutSend empirical tables, featuring a live interactive bend angle animation simulator.', borderColor: '#38bdf8' },
+  { id: 'drill_size_index', category: 'threading', icon: '🔢', title: 'Interactive Drill Size Index', description: 'Search standard twist bit diameters (#1–#107, A–Z, Fractional, Metric) with live scaled SVG drill point visualizers.', borderColor: '#a855f7' },
+  { id: 'tap_thread_index', category: 'threading', icon: '📐', title: 'Interactive Tap & Thread Index', description: 'Explore ISO Metric & ASME UNC/UNF thread pitch diameters, root depths, and Class 2A/3A fit limits with interactive SVG previews.', borderColor: '#f59e0b' },
+  { id: 'geometric_die_head', category: 'threading', icon: '🔩', title: 'Geometric Die Head Chasers', description: 'Select chaser part numbers, pitch diameters, 3-wire over-wire measurements, and rod blank tolerances for automatic die heads.', borderColor: '#00ff80' },
+  { id: 'spur_gears', category: 'threading', icon: '⚙️', title: 'Spur Gear Calculator', description: 'Calculate addendum, dedendum, whole depth, and center distances with Hardinge pre-cut gear cutter number mapping (M1–M8).', borderColor: '#ec4899' },
+  { id: 'screw_head_index', category: 'threading', icon: '🪛', title: 'Screw Head & Drive Library', description: 'Visualize fastener head dimensions, drive recess profiles (Hex, Torx, Socket), counterbore diameters, and hex key clearances.', borderColor: '#38bdf8' },
+  { id: 'drill_point_length', category: 'machining', icon: '📐', title: 'Drill Point & Countersink Depth', description: 'Determine the extra point length of 118° and 135° drill bits to ensure complete breakthrough or accurate cylindrical depth in blind holes.', borderColor: '#a855f7' },
+  { id: 'thread_milling', category: 'machining', icon: '🌀', title: 'CNC Thread Milling Generator', description: 'Generate ready-to-paste helical G-code (G02/G03) and compensated feed rates for internal and external CNC thread milling cycles.', borderColor: '#f59e0b' },
+  { id: 'trig_solver', category: 'geometry', icon: '📐', title: 'Right Triangle Trig Solver', description: 'Solve unknown side lengths and angles from two known variables for daily shop floor chamfers, tapers, and dovetails.', borderColor: '#00ff80' },
+  { id: 'polar_rectangular', category: 'geometry', icon: '🧭', title: 'Polar ⇄ Rectangular Converter', description: 'Convert bolt hole radii and angular positions into X/Y table coordinates (and vice versa) with live 4-quadrant plotting.', borderColor: '#ec4899' },
+  { id: 'taper_angle', category: 'geometry', icon: '📐', title: 'Taper Angle & Standard Tapers', description: 'Convert between Taper Per Foot (TPF), compound rest angles, and standard toolroom tapers (Morse, B&S, R8, CAT/BT).', borderColor: '#38bdf8' },
+  { id: 'true_position', category: 'metrology', icon: '🎯', title: 'True Position (GD&T) Calculator', description: 'Verify hole location deviations against MMC/LMC bonus tolerance limits with instant PASS/FAIL inspection verdicts.', borderColor: '#a855f7' },
+  { id: 'fits_tolerances', category: 'metrology', icon: '📏', title: 'Fits & Tolerances (ISO/ANSI)', description: 'Determine exact shaft and hole tolerance limits (H7/g6, H7/p6, etc.) for clearance, transition, and interference fits.', borderColor: '#f59e0b' },
+  { id: 'surface_finish', category: 'metrology', icon: '✨', title: 'Surface Finish Conversion', description: 'Translate roughness measurements across global standards (Ra, RMS, Rz, CLA, ISO N-Grades) and map them to shop capabilities.', borderColor: '#00ff80' },
+  { id: 'hardness_conversion', category: 'metrology', icon: '🔬', title: 'Hardness & Tensile Conversion', description: 'Convert hardness readings between Rockwell (HRC/HRB), Brinell (HBW), and Vickers (HV) with tensile strength estimates.', borderColor: '#ec4899' },
+  { id: 'material_weight', category: 'metallurgy', icon: '⚖️', title: 'Material Weight & Stock Calc', description: 'Estimate raw material weight for round, square, flat, hex, and tubing stock in steel, aluminum, brass, bronze, copper, and titanium.', borderColor: '#38bdf8' },
+  { id: 'metallurgy_suite', category: 'metallurgy', icon: '🔥', title: 'Metallurgy & Thermal Suite', description: 'Explore heating, melting (solidus/liquidus), thermal expansion, and casting superheat temperatures across 21 industrial alloys.', borderColor: '#f59e0b' },
+  { id: 'welding_suite', category: 'welding', icon: '🧑‍🏭', title: 'Welding & Fabrication Suite', description: '6 sub-calculators for heat input/arc energy, deposition rate, preheat CE IIW, weld groove volume, cost analysis, and duty cycle.', borderColor: '#00ff80' }
+];
 
 export function App() {
   const [activeTab, setActiveTab] = useState<TabType>('machinist_hub');
   const [stackTargetHeight, setStackTargetHeight] = useState<string | undefined>(undefined);
+  const [hubCategory, setHubCategory] = useState<string>('all');
   const { unit, setUnit } = useUnit();
 
   const isMachinistTool = [
@@ -90,7 +146,9 @@ export function App() {
     'fits_tolerances',
     'surface_finish',
     'hardness_conversion',
-    'material_weight'
+    'material_weight',
+    'metallurgy_suite',
+    'welding_suite'
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
@@ -114,508 +172,62 @@ export function App() {
         <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
           Machinist Calculators Hub
         </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto', fontSize: '0.95rem' }}>
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto 20px auto', fontSize: '0.95rem' }}>
           Helpful precision calculators, metrology formulas, and setup utilities for toolroom milling, turning, and drilling projects.
         </p>
+
+        {/* Taxonomy Category Filter Tabs */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
+          {HUB_CATEGORIES.map((cat) => {
+            const isActive = hubCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setHubCategory(cat.id)}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: isActive ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+                  background: isActive ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                  color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  fontSize: '0.82rem',
+                  fontWeight: isActive ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Ultra-compact grid: halved vertical height, icon beside title, implied launch */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '15px' }}>
-        
-        {/* Card 1: Jo Block Stack & Height Gauge */}
-        <div 
-          onClick={() => setActiveTab('calculator')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #a855f7' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📐</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Jo Block & Height Gauge
-            </h3>
+        {HUB_TOOLS.filter((tool) => hubCategory === 'all' || tool.category === hubCategory).map((tool) => (
+          <div
+            key={tool.id}
+            onClick={() => setActiveTab(tool.id)}
+            className="glass-panel"
+            style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: `4px solid ${tool.borderColor}` }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{tool.icon}</span>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                {tool.title}
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+              {tool.description}
+            </p>
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Calculate exact gauge block combinations for precise metrology setups in Imperial (81-pc) and Metric (87-pc) sets.
-          </p>
-        </div>
-
-        {/* Card 2: Hardinge Dividing Head Indexing */}
-        <div 
-          onClick={() => setActiveTab('dividing_head')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚙️</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Hardinge Dividing Head
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find exact index plates, hole circles, and crank handle turns for precision gear cutting and angular divisions.
-          </p>
-        </div>
-
-        {/* Card 3: Gorton P1-2 Pantomill */}
-        <div 
-          onClick={() => setActiveTab('gorton_p12')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f59e0b' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📜</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Gorton P1-2 Pantomill
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Calculate exact pantograph bar setting distances, master-to-work ratios, and roll engraving setups (Manual 2701-A).
-          </p>
-        </div>
-
-        {/* Card 4: Speeds & Feeds */}
-        <div 
-          onClick={() => setActiveTab('speeds_feeds')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f4902c' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚡</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Speeds & Feeds
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find the correct spindle cutting speed (RPM), table feed rate (IPM/mm), and material removal rate (MRR).
-          </p>
-        </div>
-
-        {/* Card 5: Bolt Circle Layout */}
-        <div 
-          onClick={() => setActiveTab('bolt_circle_layout')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🟢</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Bolt Circle Layout
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find exact Cartesian (X, Y) coordinate positions of holes on a bolt circle (PCD) with visual SVG preview.
-          </p>
-        </div>
-
-        {/* Card 6: Bolt Circle Diameter */}
-        <div 
-          onClick={() => setActiveTab('bolt_circle_diameter')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📏</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Bolt Circle Diameter
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Reverse-engineer the diameter of an existing bolt circle using standard caliper measurements across holes.
-          </p>
-        </div>
-
-        {/* Card 7: Sine Bar & Sine Vise */}
-        <div 
-          onClick={() => setActiveTab('sine_bar_vise')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #a855f7' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📐</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Sine Bar & Sine Vise
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find precision gauge block stack heights to tilt sine bars and vises to exact angles (Decimal & D-M-S).
-          </p>
-        </div>
-
-        {/* Card 8: Tap, Drill & Die */}
-        <div 
-          onClick={() => setActiveTab('tap_drill_die')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f59e0b' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔩</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Tap, Drill & Die
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find tap drills, closest standard drills for custom engagement %, and die threading rod blank guidance.
-          </p>
-        </div>
-
-        {/* Card 9: Knurling Blank Diameter */}
-        <div 
-          onClick={() => setActiveTab('knurling')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ef4444' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⭕</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Knurling Blank Diameter
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find optimal turned workpiece blank diameters that synchronize with knurl pitch to avoid double-tracking.
-          </p>
-        </div>
-
-        {/* Card 10: Threading / Change Gears */}
-        <div 
-          onClick={() => setActiveTab('threading_change_gears')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #3b82f6' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚙️</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Threading / Change Gears
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find simple and compound gear train combinations for manual lathes to cut metric or custom thread pitches.
-          </p>
-        </div>
-
-        {/* Card 11: Sheet Metal Bending */}
-        <div 
-          onClick={() => setActiveTab('sheet_metal_bending')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ec4899' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📐</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Sheet Metal Bending
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find flat pattern cut lengths, bend allowances, deductions, and press brake bend line locations (SendCutSend Specs).
-          </p>
-        </div>
-
-        {/* Card 12: NEW Interactive Drill Size Index */}
-        <div 
-          onClick={() => setActiveTab('drill_size_index')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f4902c', background: 'linear-gradient(145deg, rgba(244, 144, 44, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🗂️</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-              Interactive Drill Size Index
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Searchable index of standard twist drills (#1-#107, A-Z, Fractional, Metric) with scaled interactive SVG bit visualizer.
-          </p>
-        </div>
-
-        {/* Card 13: NEW Interactive Tap & Thread Index */}
-        <div 
-          onClick={() => setActiveTab('tap_thread_index')}
-          className="glass-panel" 
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f59e0b', background: 'linear-gradient(145deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔩</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-              Interactive Tap & Thread Index
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Comprehensive ISO 724 Metric and USA screw tables with interactive SVG tooth profiles and recommended tap drill sizes.
-          </p>
-        </div>
-
-        {/* Card 14: NEW Geometric Die Head Chaser Selector */}
-        <div
-          onClick={() => setActiveTab('geometric_die_head')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #c084fc', background: 'linear-gradient(145deg, rgba(168, 85, 247, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔩</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-              Geometric Die Head Chasers
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Chaser index for 5/16" Geometric die heads (D, DS, DSA, DJ) with live thread section SVG, Class 2A/3A limits, 3-wire checks, and blank diameters.
-          </p>
-        </div>
-
-        {/* Card 15: NEW Spur Gear Cutting (Metric & Imperial) */}
-        <div
-          onClick={() => setActiveTab('spur_gears')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80', background: 'linear-gradient(145deg, rgba(0, 255, 128, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚙️</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-              Spur Gear Calculator
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Metric module & imperial spur gear dimensions with Hardinge pre-cut gear part numbers (M1–M6) and cutting depth data.
-          </p>
-        </div>
-
-        {/* Card 16: NEW Screw Head & Drive SVG Library */}
-        <div
-          onClick={() => setActiveTab('screw_head_index')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #fbbf24', background: 'linear-gradient(145deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%)' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🪛</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-              Screw Head & Drive Index
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            SVG library of drive recesses, head shapes, screw/bolt and nut types with hex key & wrench size charts.
-          </p>
-        </div>
-
-        {/* Card 17: Drill Point Length */}
-        <div
-          onClick={() => setActiveTab('drill_point_length')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔻</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Drill Point Length
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Find the extra depth added by a 118°/135° drill tip for full breakthrough or full-diameter blind hole depths.
-          </p>
-        </div>
-
-        {/* Card 18: Thread Milling */}
-        <div
-          onClick={() => setActiveTab('thread_milling')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #c084fc' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🌀</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Thread Milling
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Helical interpolation paths, centerline feed-rate corrections, and ready-to-paste G-code for CNC thread mills.
-          </p>
-        </div>
-
-        {/* Card 19: Right Triangle / Trig Solver */}
-        <div
-          onClick={() => setActiveTab('trig_solver')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📐</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Right Triangle / Trig Solver
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Solve any right triangle from two knowns — daily trig for chamfer depths, edge breaks, and hole offsets.
-          </p>
-        </div>
-
-        {/* Card 20: Polar ⇄ Rectangular */}
-        <div
-          onClick={() => setActiveTab('polar_rectangular')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #3b82f6' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🧭</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Polar ⇄ Rectangular
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Convert angles and radii to X/Y machine coordinates (and back) with a live four-quadrant plot.
-          </p>
-        </div>
-
-        {/* Card 21: Taper Angle */}
-        <div
-          onClick={() => setActiveTab('taper_angle')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #f59e0b' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>📏</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Taper Angle
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Convert between taper dimensions, taper-per-foot, ratios, and compound-rest angles with standard taper tables.
-          </p>
-        </div>
-
-        {/* Card 22: True Position (GD&T) */}
-        <div
-          onClick={() => setActiveTab('true_position')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ef4444' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🎯</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              True Position (GD&T)
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Positional deviation from X/Y measurements with MMC bonus tolerance and instant PASS/FAIL verdicts.
-          </p>
-        </div>
-
-        {/* Card 23: Fits & Tolerances */}
-        <div
-          onClick={() => setActiveTab('fits_tolerances')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #a855f7' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔧</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Fits & Tolerances
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            ISO 286 hole-basis shaft and hole limits for running, sliding, transition, press, and shrink fits.
-          </p>
-        </div>
-
-        {/* Card 24: Surface Finish */}
-        <div
-          onClick={() => setActiveTab('surface_finish')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #ec4899' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>✨</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Surface Finish Conversion
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Convert Ra, RMS, Rz, CLA, and ISO N grades with process capability charts and a visual roughness comparator.
-          </p>
-        </div>
-
-        {/* Card 25: Hardness Conversion */}
-        <div
-          onClick={() => setActiveTab('hardness_conversion')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #38bdf8' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>💎</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Hardness Conversion
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Translate HRC, HRB, Brinell, Vickers, and approximate tensile strength per ASTM E140 steel correlations.
-          </p>
-        </div>
-
-        {/* Card 26: Material Weight */}
-        <div
-          onClick={() => setActiveTab('material_weight')}
-          className="glass-panel"
-          style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: '4px solid #00ff80' }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚖️</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              Material Weight
-            </h3>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-            Estimate bar, plate, hex, and tube stock weight from material density for quoting, shipping, and hoist limits.
-          </p>
-        </div>
-
+        ))}
       </div>
     </div>
   );
@@ -791,6 +403,10 @@ export function App() {
           <HardnessConversion />
         ) : activeTab === 'material_weight' ? (
           <MaterialWeight />
+        ) : activeTab === 'metallurgy_suite' ? (
+          <Metallurgy />
+        ) : activeTab === 'welding_suite' ? (
+          <WeldingSuite />
         ) : (
           <div style={{ maxWidth: '800px', margin: '40px auto' }} className="glass-panel">
             <div style={{ padding: '40px' }}>
