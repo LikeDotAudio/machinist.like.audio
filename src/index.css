@@ -27,10 +27,15 @@
   
   --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(244, 144, 44, 0.1);
   --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+/* ZERO ROUND CORNERS EVERYWHERE: no round corners, no fluff */
+*, *::before, *::after {
+  border-radius: 0 !important;
 }
 
 * {
@@ -70,15 +75,50 @@ body {
   background: var(--accent-blue);
 }
 
-/* Glassmorphic utilities */
+/* Glassmorphic utilities - Compact industrial padding and no fluff */
 .glass-panel {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: 0 !important;
+  padding: 8px 10px !important; /* padding of 1 / compact industrial spacing */
   box-shadow: var(--shadow-card);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* COMPACT INDUSTRIAL OVERRIDES: Eliminate excessive padding and borders between widgets */
+[style*="gap: 30px"],
+[style*="gap: 25px"],
+[style*="gap: 20px"],
+[style*="gap: 16px"],
+[style*="gap: 15px"],
+[style*="gap: 12px"] {
+  gap: 4px !important; /* gap/padding between widgets set to spacing unit 1 (4px) */
+}
+
+[style*="padding: 30px"],
+[style*="padding: 25px"],
+[style*="padding: 20px"],
+[style*="padding: 18px 20px"],
+[style*="padding: 16px"] {
+  padding: 8px 10px !important; /* compact internal widget padding */
+}
+
+[style*="marginBottom: 30px"],
+[style*="marginBottom: 25px"],
+[style*="marginBottom: 20px"],
+[style*="marginBottom: 16px"] {
+  margin-bottom: 6px !important;
+}
+
+[style*="borderLeft: 4px"],
+[style*="borderLeft: 3px"],
+[style*="borderTop: 3px"],
+[style*="borderTop: 4px"],
+[style*="borderBottom: 3px"],
+[style*="borderBottom: 4px"] {
+  border-width: 1px !important; /* no thick fluff borders */
 }
 
 .glass-panel:hover {
