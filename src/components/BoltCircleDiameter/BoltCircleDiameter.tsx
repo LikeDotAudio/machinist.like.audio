@@ -81,8 +81,8 @@ export const BoltCircleDiameter: React.FC = () => {
   const verifChordal = bcd > 0 ? bcd * Math.sin(((180 / count) * Math.PI) / 180) : 0;
 
   return (
-    <div style={{ maxWidth: '1150px', margin: '0 auto', padding: '20px 0' }}>
-      <div style={{ marginBottom: '20px' }}>
+    <div style={{ maxWidth: '1150px', margin: '0 auto', padding: '0' }}>
+      <div style={{ marginBottom: '16px' }}>
         <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
           📏 Bolt Circle Diameter <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// BCD Finder</span>
         </h2>

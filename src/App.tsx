@@ -427,27 +427,6 @@ export function App() {
                 ← HUB
               </button>
             )}
-            <button
-              onClick={() => setShowSplash(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '5px 10px',
-                background: 'rgba(56, 189, 248, 0.15)',
-                color: 'var(--accent-cyan)',
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                border: '1px solid rgba(56, 189, 248, 0.4)',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                letterSpacing: '0.5px'
-              }}
-              title="Replay Math-to-Box conversion splash animation"
-            >
-              <span>🎬</span> SPLASH
-            </button>
             {!isAppInstalled && (
               <button
                 onClick={handleInstallClick}

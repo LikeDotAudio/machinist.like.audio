@@ -109,16 +109,16 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, isModal 
         <svg viewBox="0 0 500 500" width="100%" height="100%" style={{ overflow: 'visible' }}>
           <defs>
             <linearGradient id="splashBoxTop" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#0284c7" />
+              <stop offset="0%" stopColor="#ff9b2c" />
+              <stop offset="100%" stopColor="#ea580c" />
             </linearGradient>
             <linearGradient id="splashBoxLeft" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#0284c7" />
               <stop offset="100%" stopColor="#0369a1" />
             </linearGradient>
             <linearGradient id="splashBoxRight" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#00ff80" />
-              <stop offset="100%" stopColor="#047857" />
+              <stop offset="0%" stopColor="#ff9b2c" />
+              <stop offset="100%" stopColor="#b45309" />
             </linearGradient>
             <filter id="splashGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="10" result="blur" />
@@ -130,73 +130,73 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, isModal 
           </defs>
 
           {/* Rotating Energy Calibration Rings */}
-          <g className="anim-ring-1" opacity="0.35">
-            <circle cx="250" cy="250" r="190" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="12 16" />
-            <polygon points="250,50 423,150 423,350 250,450 77,350 77,150" fill="none" stroke="#a855f7" strokeWidth="1" strokeDasharray="8 8" />
+          <g className="anim-ring-1" opacity="0.4">
+            <circle cx="250" cy="250" r="190" fill="none" stroke="#ff9b2c" strokeWidth="1.5" strokeDasharray="12 16" />
+            <polygon points="250,50 423,150 423,350 250,450 77,350 77,150" fill="none" stroke="#ff9b2c" strokeWidth="1" strokeDasharray="8 8" />
           </g>
           <g className="anim-ring-2" opacity="0.25">
-            <circle cx="250" cy="250" r="145" fill="none" stroke="#00ff80" strokeWidth="2" strokeDasharray="20 10" />
+            <circle cx="250" cy="250" r="145" fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="20 10" />
           </g>
 
           {/* STREAM 1: Speeds & Feeds / RPM Formula (Left) */}
           <g className="anim-stream-1" style={{ transformOrigin: '250px 250px' }}>
             <text x="30" y="120" fill="#38bdf8" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">RPM = SFM×3.82 / D</text>
-            <text x="50" y="150" fill="#00ff80" fontFamily="'Fira Code', monospace" fontSize="18">IPM = RPM × Fz × Z</text>
-            <line x1="140" y1="135" x2="220" y2="210" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="6 4" />
+            <text x="50" y="150" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontSize="18">IPM = RPM × Fz × Z</text>
+            <line x1="140" y1="135" x2="220" y2="210" stroke="#ff9b2c" strokeWidth="2.5" strokeDasharray="6 4" />
             <circle cx="140" cy="135" r="5" fill="#38bdf8" filter="url(#splashGlow)" />
           </g>
 
           {/* STREAM 2: Bend Allowance / OSSB Formula (Right) */}
           <g className="anim-stream-2" style={{ transformOrigin: '250px 250px' }}>
-            <text x="290" y="110" fill="#00ff80" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">BA = π(R + K·T)θ / 180</text>
+            <text x="290" y="110" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">BA = π(R + K·T)θ / 180</text>
             <text x="320" y="140" fill="#c084fc" fontFamily="'Fira Code', monospace" fontSize="18">BD = 2·OSSB - BA</text>
-            <line x1="340" y1="130" x2="280" y2="210" stroke="#00ff80" strokeWidth="2.5" strokeDasharray="6 4" />
-            <circle cx="340" cy="130" r="5" fill="#00ff80" filter="url(#splashGlow)" />
+            <line x1="340" y1="130" x2="280" y2="210" stroke="#ff9b2c" strokeWidth="2.5" strokeDasharray="6 4" />
+            <circle cx="340" cy="130" r="5" fill="#ff9b2c" filter="url(#splashGlow)" />
           </g>
 
           {/* STREAM 3: True Position GD&T Formula (Bottom Left) */}
           <g className="anim-stream-3" style={{ transformOrigin: '250px 250px' }}>
-            <text x="20" y="380" fill="#c084fc" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">TP = 2·√(ΔX² + ΔY²)</text>
+            <text x="20" y="380" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">TP = 2·√(ΔX² + ΔY²)</text>
             <text x="40" y="410" fill="#38bdf8" fontFamily="'Fira Code', monospace" fontSize="18">MMC Bonus = ØM - ØAct</text>
-            <line x1="150" y1="375" x2="220" y2="290" stroke="#c084fc" strokeWidth="2.5" strokeDasharray="6 4" />
-            <circle cx="150" cy="375" r="5" fill="#c084fc" filter="url(#splashGlow)" />
+            <line x1="150" y1="375" x2="220" y2="290" stroke="#ff9b2c" strokeWidth="2.5" strokeDasharray="6 4" />
+            <circle cx="150" cy="375" r="5" fill="#ff9b2c" filter="url(#splashGlow)" />
           </g>
 
           {/* STREAM 4: Sine Bar & Sine Vise Formula (Bottom Right) */}
           <g className="anim-stream-4" style={{ transformOrigin: '250px 250px' }}>
-            <text x="310" y="390" fill="#f59e0b" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">H = L × sin(θ)</text>
-            <text x="330" y="420" fill="#00ff80" fontFamily="'Fira Code', monospace" fontSize="18">CE = C + Mn/6 + ...</text>
-            <line x1="350" y1="380" x2="280" y2="290" stroke="#f59e0b" strokeWidth="2.5" strokeDasharray="6 4" />
-            <circle cx="350" cy="380" r="5" fill="#f59e0b" filter="url(#splashGlow)" />
+            <text x="310" y="390" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="22">H = L × sin(θ)</text>
+            <text x="330" y="420" fill="#c084fc" fontFamily="'Fira Code', monospace" fontSize="18">CE = C + Mn/6 + ...</text>
+            <line x1="350" y1="380" x2="280" y2="290" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="6 4" />
+            <circle cx="350" cy="380" r="5" fill="#ff9b2c" filter="url(#splashGlow)" />
           </g>
 
           {/* STREAM 5: Thermal Expansion / Metallurgy (Top) */}
           <g className="anim-stream-5" style={{ transformOrigin: '250px 250px' }}>
-            <text x="180" y="50" fill="#38bdf8" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="24">ΔL = α·L₀·ΔT</text>
+            <text x="180" y="50" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="24">ΔL = α·L₀·ΔT</text>
             <text x="200" y="80" fill="#c084fc" fontFamily="'Fira Code', monospace" fontSize="20">T_superheat = T_liq + ΔT</text>
-            <line x1="250" y1="85" x2="250" y2="180" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="6 4" />
+            <line x1="250" y1="85" x2="250" y2="180" stroke="#ff9b2c" strokeWidth="2.5" strokeDasharray="6 4" />
           </g>
 
           {/* STREAM 6: Dividing Head & Tapers (Bottom) */}
           <g className="anim-stream-6" style={{ transformOrigin: '250px 250px' }}>
-            <text x="170" y="470" fill="#00ff80" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="24">T = 40 / N (Worm Ratio)</text>
+            <text x="170" y="470" fill="#ff9b2c" fontFamily="'Fira Code', monospace" fontWeight="800" fontSize="24">T = 40 / N (Worm Ratio)</text>
             <text x="190" y="445" fill="#38bdf8" fontFamily="'Fira Code', monospace" fontSize="20">TPF = 12 × (D - d) / L</text>
-            <line x1="250" y1="430" x2="250" y2="320" stroke="#00ff80" strokeWidth="2.5" strokeDasharray="6 4" />
+            <line x1="250" y1="430" x2="250" y2="320" stroke="#ff9b2c" strokeWidth="2.5" strokeDasharray="6 4" />
           </g>
 
           {/* CENTRAL 3D PRECISION MACHINED BOX / WORKPIECE BEING FORGED BY MATH */}
           <g className="anim-box" filter="url(#splashGlow)">
-            {/* Top Isometric Face */}
-            <polygon points="250,170 350,225 250,280 150,225" fill="url(#splashBoxTop)" stroke="#7dd3fc" strokeWidth="3" strokeLinejoin="round" />
+            {/* Top Isometric Face (Vibrant Orange / Amber) */}
+            <polygon points="250,170 350,225 250,280 150,225" fill="url(#splashBoxTop)" stroke="#fed7aa" strokeWidth="3" strokeLinejoin="round" />
             {/* Left Isometric Face */}
             <polygon points="150,225 250,280 250,390 150,335" fill="url(#splashBoxLeft)" stroke="#38bdf8" strokeWidth="3" strokeLinejoin="round" />
-            {/* Right Isometric Face */}
-            <polygon points="250,280 350,225 350,335 250,390" fill="url(#splashBoxRight)" stroke="#34d399" strokeWidth="3" strokeLinejoin="round" />
+            {/* Right Isometric Face (Rich Orange / Amber) */}
+            <polygon points="250,280 350,225 350,335 250,390" fill="url(#splashBoxRight)" stroke="#ff9b2c" strokeWidth="3" strokeLinejoin="round" />
             
             {/* CNC Machined Center Bore Feature */}
-            <ellipse cx="250" cy="225" rx="42" ry="22" fill="#050811" stroke="#38bdf8" strokeWidth="3" />
-            <ellipse cx="250" cy="232" rx="30" ry="15" fill="#0284c7" opacity="0.8" />
-            <circle cx="250" cy="232" r="7" fill="#00ff80" filter="url(#splashGlow)" />
+            <ellipse cx="250" cy="225" rx="42" ry="22" fill="#050811" stroke="#ff9b2c" strokeWidth="3" />
+            <ellipse cx="250" cy="232" rx="30" ry="15" fill="#d97706" opacity="0.8" />
+            <circle cx="250" cy="232" r="7" fill="#ff9b2c" filter="url(#splashGlow)" />
 
             {/* Edge Highlight / Precision Grinding Lines */}
             <line x1="250" y1="280" x2="250" y2="390" stroke="#fff" strokeWidth="2.5" opacity="0.9" />
@@ -204,14 +204,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, isModal 
             <line x1="350" y1="225" x2="250" y2="280" stroke="#fff" strokeWidth="2" opacity="0.7" />
 
             {/* Laser Scanning Horizontal Beam */}
-            <line x1="140" y1="280" x2="360" y2="280" stroke="#00ff80" strokeWidth="2" opacity="0.6" strokeDasharray="4 4" />
+            <line x1="140" y1="280" x2="360" y2="280" stroke="#ff9b2c" strokeWidth="2" opacity="0.6" strokeDasharray="4 4" />
           </g>
 
           {/* Impact Conversion Glow Dots where equations hit the box */}
           <circle cx="250" cy="170" r="7" fill="#fff" filter="url(#splashGlow)" />
           <circle cx="150" cy="225" r="6" fill="#38bdf8" filter="url(#splashGlow)" />
-          <circle cx="350" cy="225" r="6" fill="#00ff80" filter="url(#splashGlow)" />
-          <circle cx="250" cy="390" r="7" fill="#c084fc" filter="url(#splashGlow)" />
+          <circle cx="350" cy="225" r="6" fill="#ff9b2c" filter="url(#splashGlow)" />
+          <circle cx="250" cy="390" r="7" fill="#ff9b2c" filter="url(#splashGlow)" />
           <circle cx="250" cy="280" r="5" fill="#fff" />
         </svg>
       </div>

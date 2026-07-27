@@ -107,29 +107,11 @@ export const Knurling: React.FC = () => {
   const unitStr = unit === 'imperial' ? 'in' : 'mm';
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 0' }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '12px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Machinist Calculator #6
-        </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Knurling Workpiece Blank Calculator
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto', fontSize: '1.05rem' }}>
-          Eliminate double-tracking and ruined knurl patterns by calculating the exact turned blank diameters that synchronize with your knurl wheel pitch.
-        </p>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0' }}>
+      <div style={{ marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          ⚙️ Knurling Workpiece Blank Calculator <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Machinist Calculator #6</span>
+        </h2>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start' }}>
@@ -312,6 +294,16 @@ export const Knurling: React.FC = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Footer: tool description */}
+      <div className="glass-panel" style={{ marginTop: '25px', padding: '14px 20px' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '4px' }}>
+          Machinist Calculator #6 // Tool Guidance
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', margin: 0, lineHeight: 1.5 }}>
+          Eliminate double-tracking and ruined knurl patterns by calculating the exact turned blank diameters that synchronize with your knurl wheel pitch.
+        </p>
       </div>
     </div>
   );

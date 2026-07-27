@@ -180,9 +180,9 @@ export const HardingeDividingHead: React.FC = () => {
   }, [activeVizMatch]);
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 0' }} className="animate-fade-in">
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0' }} className="animate-fade-in">
       {/* Compact Title Bar */}
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px', margin: 0 }}>
           ⚙️ HARDINGE <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// DIVIDING HEAD</span>
         </h2>

@@ -76,29 +76,11 @@ export const BoltCircleLayout: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '20px 0' }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '12px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Machinist Calculator #2
-        </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Bolt Circle Layout Coordinates
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto', fontSize: '1.05rem' }}>
-          Calculate exact X and Y Cartesian coordinates for drilling hole patterns on rotary tables, mills, and CNC machines.
-        </p>
+    <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '0' }}>
+      <div style={{ marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          📍 Bolt Circle Layout Coordinates <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Machinist Calculator #2</span>
+        </h2>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start' }}>
@@ -308,6 +290,16 @@ export const BoltCircleLayout: React.FC = () => {
 
         </div>
 
+      </div>
+
+      {/* Footer: tool description */}
+      <div className="glass-panel" style={{ marginTop: '25px', padding: '14px 20px' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '4px' }}>
+          Machinist Calculator #2 // Tool Guidance
+        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', margin: 0, lineHeight: 1.5 }}>
+          Calculate exact X and Y Cartesian coordinates for drilling hole patterns on rotary tables, mills, and CNC machines.
+        </p>
       </div>
     </div>
   );
