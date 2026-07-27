@@ -417,6 +417,7 @@ export const DrillPointLength: React.FC = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
 
         {/* BOTTOM SECTION: 3. EXPLANATION & RESULTS */}
