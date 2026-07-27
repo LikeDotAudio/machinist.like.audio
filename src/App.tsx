@@ -38,6 +38,7 @@ import { HardnessConversion } from './components/HardnessConversion';
 import { MaterialWeight } from './components/MaterialWeight';
 import { Metallurgy } from './components/Metallurgy/Metallurgy';
 import { WeldingSuite } from './components/Welding/WeldingSuite';
+import { SplashScreen } from './components/SplashScreen/SplashScreen';
 import { useUnit } from './context/UnitContext';
 
 type TabType = 
@@ -133,6 +134,7 @@ export function App() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isAppInstalled, setIsAppInstalled] = useState<boolean>(false);
   const [showInstallGuide, setShowInstallGuide] = useState<boolean>(false);
+  const [showSplash, setShowSplash] = useState<boolean>(true);
 
   useEffect(() => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
@@ -368,6 +370,7 @@ export function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       {/* Top Navigation Bar */}
       <header style={{ 
         background: 'rgba(10, 13, 20, 0.85)', 
@@ -409,6 +412,35 @@ export function App() {
 
           {/* Global Measurement Unit Switcher & PWA Install Button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setShowSplash(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                background: 'rgba(56, 189, 248, 0.15)',
+                color: 'var(--accent-cyan)',
+                fontWeight: 700,
+                fontSize: '0.78rem',
+                border: '1px solid rgba(56, 189, 248, 0.4)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                letterSpacing: '0.5px'
+              }}
+              title="Replay Math-to-Box conversion splash animation"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--accent-cyan)';
+                e.currentTarget.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
+                e.currentTarget.style.color = 'var(--accent-cyan)';
+              }}
+            >
+              <span>🎬</span> SPLASH
+            </button>
             {!isAppInstalled && (
               <button
                 onClick={handleInstallClick}
@@ -655,7 +687,7 @@ export function App() {
             position: 'relative',
             animation: 'fadeIn 0.2s ease-out'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
               <div style={{ fontSize: '2.5rem' }}>📲</div>
               <div>
                 <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>
@@ -665,6 +697,11 @@ export function App() {
                   STANDALONE BROWSER-FREE MODE
                 </span>
               </div>
+            </div>
+
+            {/* Embedded Math-to-Box Conversion Animation */}
+            <div style={{ margin: '0 auto 15px auto', display: 'flex', justifyContent: 'center', background: 'rgba(5, 8, 17, 0.6)', borderRadius: '12px', padding: '10px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+              <SplashScreen isModal={true} />
             </div>
 
             <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>

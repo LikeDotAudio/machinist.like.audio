@@ -284,114 +284,17 @@ export const SheetMetalBending: React.FC = () => {
   const unitLabel = unit === 'in' ? 'in' : 'mm';
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '50px', color: 'var(--text-primary)' }}>
-      {/* Header Badge */}
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '10px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Sheet Metal & Plastic Forming // SendCutSend Standard
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>🏗️</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Sheet Metal Bending Calculator</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(56, 189, 248, 0.3)' }}>SendCutSend Standard</span>
         </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, marginBottom: '8px', background: 'linear-gradient(90deg, #fff, var(--accent-cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          Sheet Metal Bending Calculator
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', fontSize: '0.98rem', lineHeight: 1.5 }}>
-          Calculate exact flat pattern cut lengths, bend allowances, bend deductions, and bend line locations from outer part dimensions using verified industrial gauge tables.
-        </p>
-      </div>
-
-      {/* Navigation Sub-Tabs */}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '25px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-        <button
-          type="button"
-          onClick={() => setActiveTab('calculator')}
-          style={{
-            background: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'calculator' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>🧮</span> Interactive Calculator
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('diagram')}
-          style={{
-            background: activeTab === 'diagram' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'diagram' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>📐</span> Visual Flat Pattern & Profile
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('specs_table')}
-          style={{
-            background: activeTab === 'specs_table' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'specs_table' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>📋</span> Material Bending Specs (10 Alloys)
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('simulator')}
-          style={{
-            background: activeTab === 'simulator' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'simulator' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>🎮</span> Live Bend Simulator & Formulas
-        </button>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Exact flat patterns, allowances & K-factors
+        </div>
       </div>
 
       {/* TAB 1: INTERACTIVE CALCULATOR */}
@@ -1059,20 +962,9 @@ export const SheetMetalBending: React.FC = () => {
 
       {/* TAB 4: INTERACTIVE LIVE BEND SIMULATOR & FORMULAS */}
       {activeTab === 'simulator' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-          
-          {/* Top Explanatory Banner */}
-          <div className="glass-panel" style={{ padding: '25px', borderLeft: '4px solid var(--accent-cyan)' }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span>🎮</span> Real-Time Press Brake Bend Simulator & Metrology Engine
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem', margin: 0 }}>
-              Adjust the interactive sliders below to physically form the sheet metal in real time. Watch how the neutral axis shifts, corner setbacks expand, and flat pattern lengths dynamically grow and shrink across all 7 metrological relationships defined in industrial sheet metal forming standards.
-            </p>
-          </div>
-
-          {/* Interactive Workspace: Control Panel & Live Digital Dashboard */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '25px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Interactive Workspace: Control Panel & Live Digital Dashboard right at the top! */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '20px' }}>
             
             {/* LEFT PANEL: SLIDER CONTROLS */}
             <div className="glass-panel" style={{ padding: '25px', borderTop: '3px solid #38bdf8' }}>
@@ -1482,6 +1374,111 @@ export const SheetMetalBending: React.FC = () => {
 
         </div>
       )}
+
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(56, 189, 248, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('calculator')}
+          style={{
+            background: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'calculator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'calculator' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>🧮</span> Interactive Calculator
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('diagram')}
+          style={{
+            background: activeTab === 'diagram' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'diagram' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'diagram' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'diagram' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>📐</span> Visual Flat Pattern & Profile
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('specs_table')}
+          style={{
+            background: activeTab === 'specs_table' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'specs_table' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'specs_table' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'specs_table' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>📋</span> Material Bending Specs (10 Alloys)
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('simulator')}
+          style={{
+            background: activeTab === 'simulator' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'simulator' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'simulator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'simulator' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>🎮</span> Live Bend Simulator & Formulas
+        </button>
+      </footer>
     </div>
   );
 };
