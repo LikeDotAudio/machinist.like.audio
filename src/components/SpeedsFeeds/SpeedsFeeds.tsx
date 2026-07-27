@@ -791,7 +791,6 @@ export const SpeedsFeeds: React.FC = () => {
                 )}
               </div>
 
-            </div>
           </div>
         </div>
       ) : (
