@@ -1,5 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './index.css';
+
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: Array<string>;
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
 import { JoBlockCalculator } from './components/HeightGauge';
 import { HardingeDividingHead } from './components/HardingeDividingHead';
 import { SpeedsFeeds } from './components/SpeedsFeeds/SpeedsFeeds';
@@ -72,14 +82,14 @@ interface HubTool {
 }
 
 const HUB_CATEGORIES = [
-  { id: 'all', label: '🌟 All Tools' },
-  { id: 'metrology', label: '📐 Metrology & GD&T' },
-  { id: 'machining', label: '⚡ Machining & Milling' },
-  { id: 'threading', label: '🔩 Threading & Gears' },
-  { id: 'metallurgy', label: '🔥 Metallurgy & Materials' },
-  { id: 'welding', label: '🧑‍🏭 Welding & Fabrication' },
-  { id: 'forming', label: '🏗️ Sheet Metal Forming' },
-  { id: 'geometry', label: '🧭 Math & Geometry' }
+  { id: 'all', label: '🌟 All Tools', description: 'Complete precision engineering and metrology library.' },
+  { id: 'metrology', label: '📐 Metrology & GD&T', description: 'Precision measurement, gauge block stacks, geometric dimensioning & tolerancing (GD&T), and material surface inspection utilities.' },
+  { id: 'machining', label: '⚡ Machining & Milling', description: 'Spindle speeds, table feeds, material removal rates, hole pattern coordinate layouts, and specialized pantograph setups.' },
+  { id: 'threading', label: '🔩 Threading & Gears', description: 'Comprehensive thread indices, tap drill selection, change gear calculations, dividing head indexing, and spur gear geometry.' },
+  { id: 'metallurgy', label: '🔥 Metallurgy & Materials', description: 'Phase transition temperatures, forging heat colors, casting superheat ranges, thermal expansion, and stock weight estimation.' },
+  { id: 'welding', label: '🧑‍🏭 Welding & Fabrication', description: 'Arc energy heat input, filler deposition rates, hydrogen cracking preheat estimation, weld groove volume, cost analysis, and duty cycle limits.' },
+  { id: 'forming', label: '🏗️ Sheet Metal Forming', description: 'Press brake bend deductions, bend allowances, flat pattern development, OSSB, K-Factors, and turned knurling blank sizing.' },
+  { id: 'geometry', label: '🧭 Math & Geometry', description: 'Trigonometric triangle resolution, Cartesian-to-polar coordinate transformations, and machine taper angle conversions.' }
 ];
 
 const HUB_TOOLS: HubTool[] = [
@@ -118,6 +128,51 @@ export function App() {
   const [stackTargetHeight, setStackTargetHeight] = useState<string | undefined>(undefined);
   const [hubCategory, setHubCategory] = useState<string>('all');
   const { unit, setUnit } = useUnit();
+
+  // PWA Standalone & Install Prompt State
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState<boolean>(false);
+  const [showInstallGuide, setShowInstallGuide] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                         (window.navigator as any).standalone || 
+                         document.referrer.includes('android-app://');
+    if (isStandalone) {
+      setIsAppInstalled(true);
+    }
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setIsAppInstalled(true);
+      }
+      setDeferredPrompt(null);
+    } else {
+      setShowInstallGuide(true);
+    }
+  };
 
   const isMachinistTool = [
     'machinist_hub',
@@ -206,28 +261,107 @@ export function App() {
         </div>
       </div>
 
-      {/* Ultra-compact grid: halved vertical height, icon beside title, implied launch */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '15px' }}>
-        {HUB_TOOLS.filter((tool) => hubCategory === 'all' || tool.category === hubCategory).map((tool) => (
-          <div
-            key={tool.id}
-            onClick={() => setActiveTab(tool.id)}
-            className="glass-panel"
-            style={{ padding: '16px 20px', cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: `4px solid ${tool.borderColor}` }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{tool.icon}</span>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                {tool.title}
-              </h3>
+      {/* Categorized Tool Sections mapped from Edits.md Taxonomy */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
+        {HUB_CATEGORIES.filter((cat) => cat.id !== 'all' && (hubCategory === 'all' || hubCategory === cat.id)).map((cat, index) => {
+          const categoryTools = HUB_TOOLS.filter((tool) => tool.category === cat.id);
+          if (categoryTools.length === 0) return null;
+
+          return (
+            <div key={cat.id} style={{ animation: 'fadeIn 0.3s ease-out' }}>
+              {/* Section Header */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'flex-end', 
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px',
+                borderBottom: '2px solid rgba(56, 189, 248, 0.3)', 
+                paddingBottom: '12px', 
+                marginBottom: '20px' 
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                    <span style={{ 
+                      fontSize: '0.75rem', 
+                      background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))', 
+                      color: '#000', 
+                      padding: '2px 8px', 
+                      borderRadius: '10px', 
+                      fontWeight: 800 
+                    }}>
+                      CAT {index + 1}
+                    </span>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: 0 }}>
+                      {cat.label}
+                    </h2>
+                  </div>
+                  {cat.description && (
+                    <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '800px', lineHeight: 1.4 }}>
+                      {cat.description}
+                    </p>
+                  )}
+                </div>
+                <div style={{ 
+                  fontSize: '0.78rem', 
+                  background: 'var(--bg-primary)', 
+                  color: 'var(--accent-cyan)', 
+                  padding: '5px 12px', 
+                  borderRadius: '14px', 
+                  fontWeight: 700, 
+                  border: '1px solid var(--border-color)',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
+                }}>
+                  {categoryTools.length} {categoryTools.length === 1 ? 'Tool Module' : 'Tool Modules'}
+                </div>
+              </div>
+
+              {/* Grid of Tools for this Category */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+                {categoryTools.map((tool) => (
+                  <div
+                    key={tool.id}
+                    onClick={() => setActiveTab(tool.id)}
+                    className="glass-panel"
+                    style={{ 
+                      padding: '18px 22px', 
+                      cursor: 'pointer', 
+                      transition: 'all 0.2s ease', 
+                      borderLeft: `4px solid ${tool.borderColor}`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(56, 189, 248, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+                        <span style={{ fontSize: '1.7rem', lineHeight: 1 }}>{tool.icon}</span>
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                          {tool.title}
+                        </h3>
+                      </div>
+                      <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.45, margin: 0 }}>
+                        {tool.description}
+                      </p>
+                    </div>
+                    <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
+                      <span>Launch Module</span>
+                      <span>➔</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-              {tool.description}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -273,8 +407,32 @@ export function App() {
             </div>
           </div>
 
-          {/* Global Measurement Unit Switcher */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Global Measurement Unit Switcher & PWA Install Button */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {!isAppInstalled && (
+              <button
+                onClick={handleInstallClick}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  background: 'linear-gradient(135deg, var(--accent-cyan), #00ff80)',
+                  color: '#000',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  boxShadow: '0 0 15px rgba(56, 189, 248, 0.3)',
+                  transition: 'all 0.2s ease',
+                  letterSpacing: '0.5px'
+                }}
+                title="Install standalone app for browser-free shop floor use"
+              >
+                <span>📲</span> INSTALL APP
+              </button>
+            )}
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>UNITS:</span>
             <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)' }}>
               <button
@@ -471,6 +629,87 @@ export function App() {
           </div>
         </div>
       </footer>
+
+      {/* PWA Install Guide Modal */}
+      {showInstallGuide && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: '20px'
+        }}>
+          <div className="glass-panel" style={{
+            maxWidth: '550px',
+            width: '100%',
+            padding: '30px',
+            border: '1px solid var(--accent-cyan)',
+            boxShadow: '0 0 30px rgba(56, 189, 248, 0.25)',
+            position: 'relative',
+            animation: 'fadeIn 0.2s ease-out'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+              <div style={{ fontSize: '2.5rem' }}>📲</div>
+              <div>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>
+                  Install Machinist Hub
+                </h2>
+                <span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600, letterSpacing: '1px' }}>
+                  STANDALONE BROWSER-FREE MODE
+                </span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
+              Run Machinist Hub as a native app directly on your shop floor computer, tablet, or smartphone without address bars, tabs, or browser clutter.
+            </p>
+
+            <div style={{ background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid var(--accent-cyan)', marginBottom: '16px' }}>
+              <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>🖥️</span> Google Chrome / Edge (Desktop & Android)
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                Click the <strong>Install / App Available (⊕)</strong> icon on the right side of your browser address bar, or open the browser menu <strong>(⋮)</strong> and select <strong>"Install Machinist.like.audio"</strong> or <strong>"Add to Home screen"</strong>.
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', borderLeft: '4px solid #f59e0b', marginBottom: '25px' }}>
+              <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>📱</span> Apple iOS / iPadOS (Safari)
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                Tap the <strong>Share (⎋)</strong> button at the bottom of Safari, scroll down the options list, and tap <strong>"Add to Home Screen (➕)"</strong>.
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowInstallGuide(false)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))',
+                color: '#000',
+                fontWeight: 800,
+                fontSize: '1rem',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                boxShadow: '0 0 15px rgba(56, 189, 248, 0.4)',
+                letterSpacing: '1px'
+              }}
+            >
+              GOT IT, CLOSE GUIDE
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,126 +1,147 @@
-![alt text](image-1.png)
+# Sheet Metal Forming & Bending Reference Guide
+![Bend Formulas Reference](image-1.png) ![Sheet Metal Types Reference](image-2.png)
 
-# Comprehensive Sheet Metal Forming & Mathematical Metrology Guide
-## Technical Exposition of Press Brake Bending Formulas
+Here is a comprehensive breakdown of the sheet metal working formulas provided in **image-1.png**, along with pseudocode and their direct integration into the **Machinist.like.audio** interactive press brake suite ([SheetMetalBending.tsx](file:///home/anthony/Documents/GitProjects/Machinist.like.audio/src/components/SheetMetalBending/SheetMetalBending.tsx)). 
 
-This manual provides the theoretical derivations, empirical standards, and shop-floor applications for the 7 core sheet metal forming relationships illustrated in **image-1.png**. In precision sheet metal fabrication, plastic deformation causes the outer fibers of the metal bend to stretch in tension while the inner fibers compress. Understanding the migration of the neutral axis is essential for calculating exact flat pattern blank development lengths.
+Before diving into the formulas, let's establish the standard industrial variables used across these calculations:
+*   **$R$** = Inside Bend Radius
+*   **$T$** = Material Thickness
+*   **$K$** = K-Factor (Neutral axis displacement ratio)
+*   **$A$** or **$\theta$** = Bend Angle (in degrees)
+*   **$t$** = Distance from the inside face to the neutral axis ($t = K \times T$)
+*   **$L_1, L_2$** = Flange / Leg lengths
+*   **$\text{OSSB}$** = Outside Setback
 
 ---
 
-## 1. 📐 The Neutral Axis & K-Factor ($K$)
+### 1. Bend Allowance (BA)
+Bend allowance is the arc length of the bend measured along the neutral axis of the material. It tells you exactly how much material is required to form the curved section of the bend without stretching or compressing.
 
-### **The Concept**
-When sheet metal is bent in a press brake, the material on the inside of the bend radius undergoes compression, while the material on the outside undergoes tension. Between these two opposing stress zones lies a boundary layer where the metal neither stretches nor compresses: the **Neutral Axis**. 
+**Formula:**
+$$BA = \frac{\pi \cdot (R + K \cdot T) \cdot A}{180}$$
 
-In flat, unbent stock, the neutral axis sits exactly in the center of the material thickness ($50\%$ or $0.50$). However, as plastic bending deformation occurs, the compressive forces push the neutral axis inward toward the inner bend radius. The **K-Factor** quantifies this inward shift as a dimensionless ratio.
+**Pseudocode:**
+```text
+FUNCTION calculate_BA(radius, k_factor, thickness, angle):
+    CONSTANT PI = 3.141592653589793
+    neutral_axis_radius = radius + (k_factor * thickness)
+    RETURN (PI * neutral_axis_radius * angle) / 180
+```
 
-### **The Formula**
+---
+
+### 2. Bend Deduction (BD)
+Bend deduction is the amount of material that must be subtracted from the total outside dimensions of your flanges to get the correct flat pattern length. It accounts for material stretching and thinning during the plastic deformation of bending.
+
+**Formula:**
+$$BD = 2 \cdot (R + T) \cdot \tan\left(\frac{A}{2}\right) - BA = 2 \cdot \text{OSSB} - BA$$
+
+**Pseudocode:**
+```text
+FUNCTION calculate_BD(radius, thickness, angle, bend_allowance):
+    // Note: Standard trig functions in programming languages require radians
+    angle_rad = convert_degrees_to_radians(angle)
+    outside_setback = (radius + thickness) * TAN(angle_rad / 2)
+    RETURN (2 * outside_setback) - bend_allowance
+```
+
+---
+
+### 3. Flat Pattern Length (FL)
+Flat length is the total length of the raw sheet metal blank required before any bending occurs. The approach depends on how your leg lengths ($L_1$ and $L_2$) are dimensioned on the engineering drawing.
+
+**Formulas:**
+*   If $L_1$ and $L_2$ are **outside dimensions** (measured to the apex of the sharp outside corner): 
+    $$FL = L_1 + L_2 - BD$$
+*   If $L_1$ and $L_2$ are **straight leg dimensions** (measured only up to the tangent point where the bend arc starts): 
+    $$FL = L_1 + L_2 + BA$$
+
+**Pseudocode:**
+```text
+FUNCTION calculate_FL_from_outside_dims(L1, L2, bend_deduction):
+    RETURN L1 + L2 - bend_deduction
+
+FUNCTION calculate_FL_from_straight_legs(L1, L2, bend_allowance):
+    RETURN L1 + L2 + bend_allowance
+```
+
+---
+
+### 4. K-Factor ($K$)
+The K-Factor is a dimensionless ratio representing the location of the neutral axis with respect to material thickness. The neutral axis is the internal boundary layer inside the sheet metal that neither stretches in tension nor compresses in compression during bending. For most standard air bending in steel and aluminum, $K \approx 0.33 \text{ to } 0.50$.
+
+**Formula:**
 $$K = \frac{t}{T}$$
 
-| Variable | Symbol | Definition & Shop Impact |
+**Pseudocode:**
+```text
+FUNCTION calculate_k_factor(neutral_axis_distance, thickness):
+    RETURN neutral_axis_distance / thickness
+```
+
+---
+
+### 5. Y-Factor ($Y$)
+The Y-Factor is a mathematical variation of the K-Factor utilized by specialized CAD software systems (such as PTC Creo and Pro/ENGINEER) to compute developed lengths. It converts the K-Factor into a $\pi$-weighted radian modifier where $BA = (R + Y \cdot T) \cdot A$.
+
+**Formula:**
+$$Y = \frac{K \cdot \pi}{180} \approx K \cdot 0.0174533$$
+
+**Pseudocode:**
+```text
+FUNCTION calculate_y_factor(k_factor):
+    CONSTANT PI = 3.141592653589793
+    RETURN (k_factor * PI) / 180
+```
+
+---
+
+### 6. Outside Setback (OSSB)
+The Outside Setback is the distance from the bend tangent point (where the straight flange transitions into the curved radius) to the apex of the outside corner formed by the intersection of the two flange planes.
+
+**Formula:**
+$$\text{OSSB} = (R + T) \cdot \tan\left(\frac{A}{2}\right)$$
+
+**Pseudocode:**
+```text
+FUNCTION calculate_OSSB(radius, thickness, angle):
+    angle_rad = convert_degrees_to_radians(angle)
+    RETURN (radius + thickness) * TAN(angle_rad / 2)
+```
+
+---
+
+### 7. Developed Length (DL) of Arc
+This formula computes the flattened arc length of any arbitrary curved sheet metal section or roll-bent profile. Conceptually identical to Bend Allowance, it uses the subtended arc angle $\theta$ for the specific curved segment.
+
+**Formula:**
+$$DL = \theta \cdot \frac{\pi}{180} \cdot (R + K \cdot T)$$
+
+**Pseudocode:**
+```text
+FUNCTION calculate_DL(arc_angle, k_factor, radius, thickness):
+    CONSTANT PI = 3.141592653589793
+    neutral_axis_radius = radius + (k_factor * thickness)
+    RETURN arc_angle * (PI / 180) * neutral_axis_radius
+```
+
+---
+
+### 8. Industrial Sheet Metal Materials & Characteristics
+The following reference table synthesizes the industrial sheet metal properties, applications, and material characteristics from **image-2.png**:
+
+| Sheet Metal Name | Characteristics & Mechanical Properties | Typical Applications |
 | :--- | :--- | :--- |
-| **K-Factor** | **$K$** | **The Ratio.** Represents the location of the neutral axis relative to thickness ($0.25$ to $0.50$). |
-| **Neutral Axis Distance**| $t$ | Distance from the inner bend radius surface to the neutral axis (inches or mm). |
-| **Material Thickness** | $T$ | Total sheet metal thickness (inches or mm). |
-
-### **Empirical Shop K-Factor Constants:**
-* **Air Bending (Soft Copper / Soft Aluminum):** $K \approx 0.33$
-* **Air Bending (Mild Steel / 5052 / 6061 Aluminum):** $K \approx 0.42$ to $0.45$
-* **Air Bending (Stainless Steel / Spring Steel):** $K \approx 0.45$ to $0.48$
-* **Bottoming / Coin Bending:** $K \approx 0.50$ (High tonnage forces the neutral axis back toward the centerline).
-
----
-
-## 2. 🧮 Y-Factor ($Y$)
-
-### **The Concept**
-While K-Factor is the universal standard in North American and ISO sheet metal engineering, certain CAD/CAM software systems (such as older PTC Creo or specialized marine unfolding packages) utilize the **Y-Factor**. The Y-Factor is an alternative mathematical representation of the neutral axis shift scaled by a factor of $\frac{\pi}{2}$ (approx. $1.5708$).
-
-### **The Formula & Conversion**
-$$Y = K \times \frac{\pi}{2} = K \times 1.570796$$
-
-$$K = \frac{2 \times Y}{\pi} = Y \times 0.636620$$
-
-| Variable | Symbol | Typical Industrial Value |
-| :--- | :--- | :--- |
-| **Y-Factor** | **$Y$** | Typical range: **$0.50$ to $0.78$** (A K-Factor of $0.45$ equals a Y-Factor of $0.7068$). |
-| **K-Factor** | $K$ | Typical range: **$0.33$ to $0.50$**. |
+| **Aluminum** | Cold-rolled non-ferrous material ($0.2\text{ mm} \le T \le 6.0\text{ mm}$). Silver-colored, low-density metal with high ductility and moderate strength. Exhibits outstanding atmospheric corrosion resistance.<br><br>Can be dramatically strengthened via alloying elements (Cu, Mg, Mn, Si, Zn) and heat/work treatments (e.g., 6061-T6, 5052-H32). | Aerospace structures, automotive body panels, marine hardware, electronic enclosures, and lightweight transportation equipment. |
+| **Brass** | Non-ferrous copper-zinc alloy. Features low friction coefficients, excellent acoustic resonance, high electrical/thermal conductivity, and resistance to galvanic corrosion. | Decorative architectural trim, condenser and heat exchanger tubing, plumbing fittings, musical instruments, and precision gears/fasteners. |
+| **Cold Rolled Steel (CRS)** | Ferrous carbon steel processed at ambient temperatures below recrystallization ($<700^\circ\text{C}$). Cold reduction increases tensile strength and hardness while decreasing ductility.<br><br>Provides superior dimensional tolerances, sharp corners, and a smooth, scale-free surface finish compared to hot rolled steel. | Precision metal brackets, cabinetry, metal furniture, home appliances, automotive components, and stamped consumer goods. |
+| **Copper** | Non-ferrous pure copper or lightly alloyed copper. Exhibits exceptionally high thermal and electrical conductivity, excellent ductility for deep drawing, and superior resistance to biometallic corrosion. | Electrical busbars, architectural roofing/gutters, radiator cores, plumbing pipes, heat sinks, and coinage. |
+| **Expanded Sheet Metal** | Ferrous or non-ferrous sheet metal manufactured by shearing slits into a regular sheet and stretching it laterally to form a rigid diamond pattern.<br><br>Lighter, stronger per unit weight, and more economical than solid sheet metal while permitting free passage of light, air, liquids, and acoustic waves. | Safety guards, walkways, machine grates, architectural screening, fencing, and speaker grilles. |
+| **Galvanized Steel** | Ferrous steel coated with a sacrificial protective zinc layer via hot-dip galvanizing around $460^\circ\text{C}$ ($860^\circ\text{F}$). Atmospheric exposure forms zinc carbonate, a robust, dull grey patina that prevents substrate rust, identifiable by crystalline *spangles*.<br><br>⚠️ **CRITICAL WELDING WARNING:** *Welding or torch-cutting galvanized steel vaporizes the zinc coating, producing toxic zinc oxide fumes that cause metal fume fever. Proper respiratory protection and local fume extraction are mandatory.* | Outdoor structural framing, HVAC ductwork, roofing sheets, agricultural equipment, and marine/coastal infrastructure. |
+| **Hot Rolled Steel (HRS)** | Ferrous steel rolled from billets at temperatures above recrystallization ($>926^\circ\text{C}$ / $1700^\circ\text{F}$). The metal can be formed easily without work hardening.<br><br>Identifiable by its characteristic blue-grey mill scale (iron oxide) surface coating and slightly rounded corners/loose tolerances. | Heavy structural beams, frame rails, welding plates, construction machinery, and industrial piping where surface finish is secondary. |
+| **Stainless Steel** | Ferrous alloy steel formulated for exceptional corrosion and oxidation resistance. Must contain a minimum of $10.5\%$ to $11.0\%$ Chromium (Cr), often alloyed with Nickel (Ni) and Molybdenum (Mo) (e.g., 304, 316, 430 series). | Food processing equipment, medical/surgical instruments, chemical tanks, architectural cladding, and marine hardware. |
 
 ---
 
-## 3. 📍 Outside Setback (OSSB)
-
-### **The Concept**
-The **Outside Setback (OSSB)** is the linear distance measured along the outside flange surface from the start of the bend arc (the tangent point where flat metal transitions into curved metal) to the theoretical apex vertex (the intersection point where the two outside flange planes would meet if they were sharp corners).
-
-OSSB is a foundational geometric building block required to calculate Bend Deduction ($BD$).
-
-### **The Formula**
-$$\text{OSSB} = \left(R + T\right) \times \tan\left(\frac{\theta}{2}\right)$$
-
-| Variable | Symbol | Definition & Geometric Behavior |
-| :--- | :--- | :--- |
-| **Outside Setback** | **$\text{OSSB}$** | **Result.** The distance from bend line tangent to outer intersection apex. |
-| **Inside Radius** | $R$ | The inner bend radius formed by the press brake punch tip. As radius increases, OSSB grows linearly. |
-| **Material Thickness**| $T$ | Sheet thickness. Thicker material pushes the outer apex further out, increasing OSSB. |
-| **Bend Angle** | $\theta$ | The included bend angle (for a standard $90^\circ$ bend, $\tan(45^\circ) = 1.000$, so $\text{OSSB} = R + T$). For acute bends ($>90^\circ$ deformation), $\text{OSSB}$ expands rapidly! |
-
----
-
-## 4. 🌙 Bend Allowance (BA) & Developed Length of Arc (DL)
-
-### **The Concept**
-The **Bend Allowance (BA)**—also called the **Developed Length of Arc (DL)**—is the exact physical arc length of the metal along the neutral axis between the two tangent bend lines. Because the neutral axis neither stretches nor compresses, calculating the circumference of this arc yields the true metal length required to form the curved corner.
-
-### **The Formula**
-$$\text{BA} = \text{DL} = \frac{\pi}{180} \times \left(R + K \cdot T\right) \times \theta$$
-
-$$(\text{For a standard } 90^\circ \text{ bend: } \text{BA} = 1.5708 \times (R + K \cdot T))$$
-
-| Variable | Symbol | Physical Meaning |
-| :--- | :--- | :--- |
-| **Bend Allowance / DL**| **$\text{BA}$ / $\text{DL}$** | **Result.** True neutral arc length through the bend zone. |
-| **Inside Radius** | $R$ | Larger punch tip radii create broader arcs, increasing Bend Allowance. |
-| **K-Factor $\times$ Thickness**| $K \cdot T$ | Determines the exact radius of the neutral axis circle ($r_{\text{neutral}} = R + K \cdot T$). |
-| **Bend Angle** | $\theta$ | The angle of bending deformation in degrees ($1^\circ$ to $179^\circ$). |
-
----
-
-## 5. ✂️ Bend Deduction (BD)
-
-### **The Concept**
-When a machinist measures a sheet metal drawing, dimensions are almost always given to the outside mold lines (apex vertices). If you simply added the two outside flange dimensions together ($L_1 + L_2$), the resulting blank would be too long because the metal in the corner is counted twice (once in each flange square)! 
-
-The **Bend Deduction (BD)** is the total amount of metal length that must be **subtracted** from the sum of the outer flange dimensions to account for corner stretching and geometry duplication.
-
-### **The Formula**
-$$\text{BD} = \left(2 \times \text{OSSB}\right) - \text{BA}$$
-
-| Variable | Symbol | Relationship |
-| :--- | :--- | :--- |
-| **Bend Deduction** | **$\text{BD}$** | **Result.** The exact value to subtract per bend from total outer dimensions. |
-| **Outside Setback** | $\text{OSSB}$| Two setbacks ($2 \times \text{OSSB}$) represent the sharp corner box that encloses the bend. |
-| **Bend Allowance** | $\text{BA}$ | Subtracting the true arc length ($\text{BA}$) from the corner box ($2 \cdot \text{OSSB}$) leaves the deduction amount. |
-
----
-
-## 6. 📏 Flat Pattern Length (FL)
-
-### **The Concept**
-The **Flat Pattern Length (FL)**—or **Developed Blank Length**—is the final actionable dimension required by the laser cutting, waterjet, or CNC punching operator. It represents the exact total length of flat sheet metal stock that must be cut so that after press brake bending, all finished outside flange dimensions hit their print tolerances to within $\pm0.005\text{ in}$ ($\pm0.12\text{ mm}$).
-
-### **The Formula (For $N$ Bends)**
-$$\text{FL} = \sum_{i=1}^{n+1} L_i - \sum_{j=1}^{n} \text{BD}_j$$
-
-*(For a single 2-flange bend: $\text{FL} = L_1 + L_2 - \text{BD}$)*
-*(Alternatively, using inside dimensions and Bend Allowance: $\text{FL} = L_{\text{in},1} + L_{\text{in},2} + \text{BA}$)*
-
----
-
-## 7. 🎮 Interactive Live Bend Simulator Engine
-Within the **Machinist.like.audio** web application, these 7 metrological formulas power the **Interactive Bend Simulator**. As the user drags the live sliders for Bend Angle ($\theta$), Inside Radius ($R$), Thickness ($T$), and K-Factor ($K$):
-1. The mathematical solver recalculates $\text{BA}$, $\text{BD}$, $\text{OSSB}$, $\text{FL}$, $\text{K}$, and $\text{Y}$ at 60 frames per second.
-2. The real-time SVG vector display dynamically morphs from a flat horizontal strip into a formed 2D profile, showing the exact migration of the tangent bend lines, neutral axis arc, and apex setback vertices in real time!
-
----
-*Verified by Like.Audio Sheet Metal Metrology Standards // Reference 2026.*
+### System Integration Note
+All 7 bending algorithms detailed above ($BA$, $BD$, $FL$, $K$-Factor, $Y$-Factor, $\text{OSSB}$, and $DL$) are programmatically implemented in real time within the **Machinist Hub** under Category 6 (**Sheet Metal Forming & Bending**). You can test these mathematical models interactively using the **Sheet Metal Bending Simulator** tool in the web application.
