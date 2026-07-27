@@ -289,20 +289,16 @@ export function App() {
                       e.currentTarget.style.boxShadow = 'none';
                       e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
                     }}
-                  >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '1.25rem' }}>{tool.icon}</span>
                           <span>{tool.title}</span>
                         </h3>
                       </div>
                       <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.45 }}>
                         {tool.description}
                       </p>
-                    </div>
-                    <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
-                      <span>Launch Module</span>
-                      <span>➔</span>
                     </div>
                   </div>
                 ))}

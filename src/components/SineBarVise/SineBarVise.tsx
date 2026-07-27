@@ -82,12 +82,6 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
 
   return (
     <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '0' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          📐 Sine Bar & Sine Vise Calculator <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Machinist Calculator #4</span>
-        </h2>
-      </div>
-
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start' }}>
         
         {/* Left Card: Input & Mode */}

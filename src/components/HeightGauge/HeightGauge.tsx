@@ -189,12 +189,6 @@ export const HeightGauge: React.FC<HeightGaugeProps> = ({ initialTargetValue }) 
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          🧱 Johansson Gage Block Stack Calculator <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Side-By-Side Precision Metrology</span>
-        </h2>
-      </div>
-
       <div className="glass-panel" style={{ padding: '20px 25px', marginBottom: '25px', maxWidth: '850px', margin: '0 auto 25px auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '25px', alignItems: 'center' }}>
 

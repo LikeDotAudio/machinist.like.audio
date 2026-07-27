@@ -82,12 +82,6 @@ export const BoltCircleDiameter: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1150px', margin: '0 auto', padding: '0' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          📏 Bolt Circle Diameter <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// BCD Finder</span>
-        </h2>
-      </div>
-
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px', alignItems: 'start' }}>
         
         {/* Left Card: Input Method & Controls */}
