@@ -222,10 +222,10 @@ export function App() {
           marginBottom: '10px',
           border: '1px solid rgba(244, 144, 44, 0.3)'
         }}>
-          Precision Engineering Suite
+          MACHINIST // LIKE.AUDIO
         </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
-          Machinist Calculators Hub
+        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', letterSpacing: '1px' }}>
+          PRECISION METROLOGY & INDUSTRIAL CALCULATORS
         </h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto 20px auto', fontSize: '0.95rem' }}>
           Helpful precision calculators, metrology formulas, and setup utilities for toolroom milling, turning, and drilling projects.
@@ -402,7 +402,7 @@ export function App() {
                 MACHINIST <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// LIKE.AUDIO</span>
               </div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
-                PRECISION METROLOGY & INDUSTRIAL AUDIO LAB
+                PRECISION METROLOGY & INDUSTRIAL CALCULATORS
               </div>
             </div>
           </div>
