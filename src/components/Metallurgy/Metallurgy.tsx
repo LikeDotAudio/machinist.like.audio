@@ -689,11 +689,10 @@ export const Metallurgy: React.FC = () => {
                 +{shrinkCalc.expansion.toFixed(4)} <span style={{ fontSize: '1.5rem', color: 'var(--accent-cyan)' }}>{shrinkCalc.unitLabel}</span>
               </div>
 
-              <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', margin: '20px 0' }} />
-
               <div style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
                 Final Hot Dimension: <strong style={{ color: '#00ff80', fontFamily: 'var(--font-mono)', fontSize: '1.3rem' }}>{shrinkCalc.finalLength.toFixed(4)} {shrinkCalc.unitLabel}</strong>
               </div>
+            </div>
           </div>
         </div>
       )}

@@ -209,112 +209,56 @@ export function App() {
   ].includes(activeTab);
 
   const renderMachinistHub = () => (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '15px 0' }}>
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <div style={{ 
-          display: 'inline-block', 
-          background: 'rgba(244, 144, 44, 0.1)', 
-          color: 'var(--accent-cyan)', 
-          padding: '4px 14px', 
-          borderRadius: '20px', 
-          fontSize: '0.8rem', 
-          fontWeight: 600, 
-          letterSpacing: '1px', 
-          textTransform: 'uppercase', 
-          marginBottom: '10px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          MACHINIST // LIKE.AUDIO
-        </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', letterSpacing: '1px' }}>
-          PRECISION METROLOGY & INDUSTRIAL CALCULATORS
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto 20px auto', fontSize: '0.95rem' }}>
-          Helpful precision calculators, metrology formulas, and setup utilities for toolroom milling, turning, and drilling projects.
-        </p>
-
-        {/* Taxonomy Category Filter Tabs */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
-          {HUB_CATEGORIES.map((cat) => {
-            const isActive = hubCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setHubCategory(cat.id)}
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: '20px',
-                  border: isActive ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                  background: isActive ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                  fontSize: '0.82rem',
-                  fontWeight: isActive ? 700 : 500,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px' }}>
       {/* Categorized Tool Sections mapped from Edits.md Taxonomy */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
         {HUB_CATEGORIES.filter((cat) => cat.id !== 'all' && (hubCategory === 'all' || hubCategory === cat.id)).map((cat, index) => {
           const categoryTools = HUB_TOOLS.filter((tool) => tool.category === cat.id);
           if (categoryTools.length === 0) return null;
 
           return (
             <div key={cat.id} style={{ animation: 'fadeIn 0.3s ease-out' }}>
-              {/* Section Header */}
+              {/* Ultra-Compact Section Header: Zero vertical waste */}
               <div style={{ 
                 display: 'flex', 
-                alignItems: 'flex-end', 
+                alignItems: 'center', 
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: '12px',
-                borderBottom: '2px solid rgba(56, 189, 248, 0.3)', 
-                paddingBottom: '12px', 
-                marginBottom: '20px' 
+                gap: '10px',
+                borderBottom: '1px solid rgba(56, 189, 248, 0.3)', 
+                paddingBottom: '8px', 
+                marginBottom: '14px' 
               }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                    <span style={{ 
-                      fontSize: '0.75rem', 
-                      background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))', 
-                      color: '#000', 
-                      padding: '2px 8px', 
-                      borderRadius: '10px', 
-                      fontWeight: 800 
-                    }}>
-                      CAT {index + 1}
-                    </span>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: 0 }}>
-                      {cat.label}
-                    </h2>
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ 
+                    fontSize: '0.72rem', 
+                    background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))', 
+                    color: '#000', 
+                    padding: '2px 8px', 
+                    borderRadius: '10px', 
+                    fontWeight: 800 
+                  }}>
+                    CAT {index + 1}
+                  </span>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', margin: 0 }}>
+                    {cat.label}
+                  </h2>
                   {cat.description && (
-                    <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '800px', lineHeight: 1.4 }}>
-                      {cat.description}
-                    </p>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                      — {cat.description}
+                    </span>
                   )}
                 </div>
                 <div style={{ 
-                  fontSize: '0.78rem', 
+                  fontSize: '0.72rem', 
                   background: 'var(--bg-primary)', 
                   color: 'var(--accent-cyan)', 
-                  padding: '5px 12px', 
-                  borderRadius: '14px', 
+                  padding: '3px 10px', 
+                  borderRadius: '12px', 
                   fontWeight: 700, 
-                  border: '1px solid var(--border-color)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
+                  border: '1px solid var(--border-color)'
                 }}>
-                  {categoryTools.length} {categoryTools.length === 1 ? 'Tool Module' : 'Tool Modules'}
+                  {categoryTools.length} {categoryTools.length === 1 ? 'Module' : 'Modules'}
                 </div>
               </div>
 
@@ -325,32 +269,34 @@ export function App() {
                     key={tool.id}
                     onClick={() => setActiveTab(tool.id)}
                     className="glass-panel"
-                    style={{ 
-                      padding: '18px 22px', 
-                      cursor: 'pointer', 
-                      transition: 'all 0.2s ease', 
+                    style={{
+                      padding: '18px 20px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
                       borderLeft: `4px solid ${tool.borderColor}`,
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'space-between'
+                      justifyContent: 'space-between',
+                      background: 'rgba(255, 255, 255, 0.02)'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-3px)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(56, 189, 248, 0.15)';
+                      e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.5)';
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
                     }}
                   >
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
-                        <span style={{ fontSize: '1.7rem', lineHeight: 1 }}>{tool.icon}</span>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                          {tool.title}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>{tool.title}</span>
                         </h3>
                       </div>
-                      <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.45, margin: 0 }}>
+                      <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.45 }}>
                         {tool.description}
                       </p>
                     </div>
@@ -365,6 +311,54 @@ export function App() {
           );
         })}
       </div>
+
+      {/* Sticky South Footer for Hub Categories */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(56, 189, 248, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>HUB CATEGORIES:</span>
+        {HUB_CATEGORIES.map((cat) => {
+          const isActive = hubCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setHubCategory(cat.id)}
+              style={{
+                background: isActive ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+                color: isActive ? '#000' : 'var(--text-secondary)',
+                border: isActive ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: isActive ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+              }}
+            >
+              <span>{cat.label}</span>
+            </button>
+          );
+        })}
+      </footer>
     </div>
   );
 
@@ -379,15 +373,15 @@ export function App() {
         position: 'sticky', 
         top: 0, 
         zIndex: 1000,
-        padding: '15px 24px'
+        padding: '8px 24px'
       }}>
-        <div style={{ maxWidth: '1350px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           
           {/* Logo & Brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('machinist_hub')}>
             <div style={{ 
-              width: '38px', 
-              height: '38px', 
+              width: '36px', 
+              height: '36px', 
               borderRadius: '8px', 
               background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))',
               display: 'flex',
@@ -395,34 +389,55 @@ export function App() {
               justifyContent: 'center',
               fontWeight: 800,
               color: '#000',
-              fontSize: '1.2rem',
+              fontSize: '1.15rem',
               boxShadow: '0 0 15px rgba(244, 144, 44, 0.3)'
             }}>
               M
             </div>
             <div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '1.5px', color: '#fff' }}>
+              <div style={{ fontSize: '1.15rem', fontWeight: 700, letterSpacing: '1.5px', color: '#fff' }}>
                 MACHINIST <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// LIKE.AUDIO</span>
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
                 PRECISION METROLOGY & INDUSTRIAL CALCULATORS
               </div>
             </div>
           </div>
 
-          {/* Global Measurement Unit Switcher & PWA Install Button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {/* Global Measurement Unit Switcher, Back to Hub button & PWA Install Button */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {isMachinistTool && activeTab !== 'machinist_hub' && (
+              <button
+                onClick={() => setActiveTab('machinist_hub')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 12px',
+                  background: 'rgba(244, 144, 44, 0.15)',
+                  color: '#f59e0b',
+                  fontWeight: 800,
+                  fontSize: '0.78rem',
+                  border: '1px solid rgba(244, 144, 44, 0.4)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                ← HUB
+              </button>
+            )}
             <button
               onClick={() => setShowSplash(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '6px 12px',
+                padding: '5px 10px',
                 background: 'rgba(56, 189, 248, 0.15)',
                 color: 'var(--accent-cyan)',
                 fontWeight: 700,
-                fontSize: '0.78rem',
+                fontSize: '0.75rem',
                 border: '1px solid rgba(56, 189, 248, 0.4)',
                 borderRadius: '6px',
                 cursor: 'pointer',
@@ -430,14 +445,6 @@ export function App() {
                 letterSpacing: '0.5px'
               }}
               title="Replay Math-to-Box conversion splash animation"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--accent-cyan)';
-                e.currentTarget.style.color = '#000';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
-                e.currentTarget.style.color = 'var(--accent-cyan)';
-              }}
             >
               <span>🎬</span> SPLASH
             </button>
@@ -448,11 +455,11 @@ export function App() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '6px 14px',
+                  padding: '5px 12px',
                   background: 'linear-gradient(135deg, var(--accent-cyan), #00ff80)',
                   color: '#000',
                   fontWeight: 800,
-                  fontSize: '0.8rem',
+                  fontSize: '0.78rem',
                   border: 'none',
                   borderRadius: '6px',
                   cursor: 'pointer',
@@ -465,18 +472,19 @@ export function App() {
                 <span>📲</span> INSTALL APP
               </button>
             )}
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>UNITS:</span>
-            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)' }}>
+            
+            {/* Unit Toggle */}
+            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '3px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
               <button
                 onClick={() => setUnit('imperial')}
                 style={{
-                  padding: '6px 14px',
+                  padding: '4px 10px',
                   border: 'none',
                   borderRadius: '6px',
                   background: unit === 'imperial' ? '#f59e0b' : 'transparent',
                   color: unit === 'imperial' ? '#000' : 'var(--text-secondary)',
                   fontWeight: 700,
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   boxShadow: unit === 'imperial' ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none'
@@ -487,13 +495,13 @@ export function App() {
               <button
                 onClick={() => setUnit('metric')}
                 style={{
-                  padding: '6px 14px',
+                  padding: '4px 10px',
                   border: 'none',
                   borderRadius: '6px',
                   background: unit === 'metric' ? '#f59e0b' : 'transparent',
                   color: unit === 'metric' ? '#000' : 'var(--text-secondary)',
                   fontWeight: 700,
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   boxShadow: unit === 'metric' ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none'
@@ -507,35 +515,7 @@ export function App() {
         </div>
       </header>
 
-      {/* Sub-header navigation breadcrumb when inside a specific machinist tool */}
-      {isMachinistTool && activeTab !== 'machinist_hub' && (
-        <div style={{ background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border-color)', padding: '10px 24px' }}>
-          <div style={{ maxWidth: '1250px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-            <button
-              onClick={() => setActiveTab('machinist_hub')}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--accent-cyan)',
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              ← Back to Machinist Calculators Hub
-            </button>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Precision Metrology Suite // Lab Utility
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '40px 20px' }}>
+      <main style={{ flex: 1, padding: '12px 20px 80px 20px' }}>
         {activeTab === 'calculator' ? (
           <JoBlockCalculator initialTargetValue={stackTargetHeight} />
         ) : activeTab === 'dividing_head' ? (
