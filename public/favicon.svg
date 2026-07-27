@@ -7,8 +7,8 @@
     </linearGradient>
     
     <linearGradient id="boxTop" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#0284c7" />
+      <stop offset="0%" stop-color="#ff9b2c" />
+      <stop offset="100%" stop-color="#ea580c" />
     </linearGradient>
     
     <linearGradient id="boxLeft" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -17,8 +17,8 @@
     </linearGradient>
     
     <linearGradient id="boxRight" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00ff80" />
-      <stop offset="100%" stop-color="#047857" />
+      <stop offset="0%" stop-color="#ff9b2c" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
 
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -40,8 +40,8 @@
 
   <style>
     @keyframes pulseBox {
-      0%, 100% { transform: scale(1) translateY(0px); filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4)); }
-      50% { transform: scale(1.04) translateY(-6px); filter: drop-shadow(0 0 35px rgba(0, 255, 128, 0.7)); }
+      0%, 100% { transform: scale(1) translateY(0px); filter: drop-shadow(0 0 20px rgba(255, 155, 44, 0.45)); }
+      50% { transform: scale(1.04) translateY(-6px); filter: drop-shadow(0 0 35px rgba(255, 155, 44, 0.8)); }
     }
     
     @keyframes streamLeft {
@@ -106,6 +106,10 @@
     .math-accent {
       fill: #00ff80;
     }
+    .math-orange {
+      fill: #ff9b2c;
+      filter: url(#glowSmall);
+    }
     .math-purple {
       fill: #c084fc;
     }
@@ -116,70 +120,70 @@
   <rect width="504" height="504" x="4" y="4" rx="96" fill="none" stroke="#1e293b" stroke-width="4" />
 
   <!-- Outer Energy / Convergence Grid Ring -->
-  <g class="ring" opacity="0.3">
-    <circle cx="256" cy="270" r="170" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="8 12" />
-    <circle cx="256" cy="270" r="130" fill="none" stroke="#00ff80" stroke-width="1" stroke-dasharray="15 5" />
-    <polygon points="256,90 412,360 100,360" fill="none" stroke="#a855f7" stroke-width="1" stroke-dasharray="6 6" />
+  <g class="ring" opacity="0.4">
+    <circle cx="256" cy="270" r="170" fill="none" stroke="#ff9b2c" stroke-width="1.5" stroke-dasharray="8 12" />
+    <circle cx="256" cy="270" r="130" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="15 5" />
+    <polygon points="256,90 412,360 100,360" fill="none" stroke="#ff9b2c" stroke-width="1" stroke-dasharray="6 6" />
   </g>
 
   <!-- STREAMING MATH FORMULAS CONVERGING INTO THE BOX -->
   <g class="math-1">
     <text x="80" y="140" class="math-text" font-size="28">∫ f(x)dx</text>
-    <text x="60" y="180" class="math-text math-accent" font-size="22">π(R+KT)θ</text>
-    <line x1="140" y1="150" x2="220" y2="220" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
+    <text x="60" y="180" class="math-text math-orange" font-size="22">π(R+KT)θ</text>
+    <line x1="140" y1="150" x2="220" y2="220" stroke="#ff9b2c" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
   </g>
 
   <g class="math-2">
     <text x="360" y="150" class="math-text math-purple" font-size="26">√[ΔX²+ΔY²]</text>
-    <text x="390" y="190" class="math-text" font-size="22">SFM×3.82/D</text>
-    <line x1="370" y1="160" x2="290" y2="220" stroke="#c084fc" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
+    <text x="390" y="190" class="math-text math-orange" font-size="22">SFM×3.82/D</text>
+    <line x1="370" y1="160" x2="290" y2="220" stroke="#ff9b2c" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
   </g>
 
   <g class="math-3">
-    <text x="70" y="380" class="math-text math-accent" font-size="26">H=L·sin(θ)</text>
+    <text x="70" y="380" class="math-text math-orange" font-size="26">H=L·sin(θ)</text>
     <text x="90" y="420" class="math-text" font-size="20">CE=C+Mn/6</text>
-    <line x1="150" y1="370" x2="220" y2="300" stroke="#00ff80" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
+    <line x1="150" y1="370" x2="220" y2="300" stroke="#ff9b2c" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
   </g>
 
   <g class="math-4">
-    <text x="370" y="380" class="math-text" font-size="28">K = t / T</text>
+    <text x="370" y="380" class="math-text math-orange" font-size="28">K = t / T</text>
     <text x="350" y="420" class="math-text math-purple" font-size="22">2·OSSB-BA</text>
     <line x1="360" y1="370" x2="290" y2="300" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
   </g>
 
   <g class="math-5">
-    <text x="220" y="80" class="math-text math-accent" font-size="30">ΔL = α·L₀·ΔT</text>
+    <text x="220" y="80" class="math-text math-orange" font-size="30">ΔL = α·L₀·ΔT</text>
     <text x="235" y="115" class="math-text math-purple" font-size="22">V = πr²h</text>
-    <line x1="256" y1="120" x2="256" y2="200" stroke="#00ff80" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
+    <line x1="256" y1="120" x2="256" y2="200" stroke="#ff9b2c" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
   </g>
 
   <g class="math-6">
     <text x="50" y="270" class="math-text math-purple" font-size="32">θ</text>
-    <text x="100" y="250" class="math-text" font-size="24">α</text>
+    <text x="100" y="250" class="math-text math-orange" font-size="24">α</text>
     <text x="80" y="300" class="math-text math-accent" font-size="28">Σ</text>
   </g>
 
   <g class="math-7">
-    <text x="440" y="270" class="math-text math-accent" font-size="32">π</text>
+    <text x="440" y="270" class="math-text math-orange" font-size="32">π</text>
     <text x="410" y="240" class="math-text math-purple" font-size="28">λ</text>
     <text x="420" y="310" class="math-text" font-size="26">μ</text>
   </g>
 
   <!-- CENTRAL 3D PRECISION MACHINED BOX / WORKPIECE -->
   <g class="box-group" filter="url(#glow)">
-    <!-- Top Face (Isometric Cyan) -->
-    <polygon points="256,180 346,230 256,280 166,230" fill="url(#boxTop)" stroke="#7dd3fc" stroke-width="3" stroke-linejoin="round" />
+    <!-- Top Face (Isometric Vibrant Orange / Amber) -->
+    <polygon points="256,180 346,230 256,280 166,230" fill="url(#boxTop)" stroke="#fed7aa" stroke-width="3" stroke-linejoin="round" />
     
     <!-- Left Face (Isometric Dark Blue/Cyan) -->
     <polygon points="166,230 256,280 256,380 166,330" fill="url(#boxLeft)" stroke="#38bdf8" stroke-width="3" stroke-linejoin="round" />
     
-    <!-- Right Face (Isometric Neon Green/Cyan) -->
-    <polygon points="256,280 346,230 346,330 256,380" fill="url(#boxRight)" stroke="#34d399" stroke-width="3" stroke-linejoin="round" />
+    <!-- Right Face (Isometric Rich Orange / Amber) -->
+    <polygon points="256,280 346,230 346,330 256,380" fill="url(#boxRight)" stroke="#ff9b2c" stroke-width="3" stroke-linejoin="round" />
     
     <!-- Inner Precision Bore / Pocket (CNC Machined Feature) -->
-    <ellipse cx="256" cy="230" rx="35" ry="18" fill="#060911" stroke="#38bdf8" stroke-width="2.5" />
-    <ellipse cx="256" cy="235" rx="25" ry="12" fill="#0284c7" opacity="0.7" />
-    <circle cx="256" cy="235" r="5" fill="#00ff80" filter="url(#glowSmall)" />
+    <ellipse cx="256" cy="230" rx="35" ry="18" fill="#060911" stroke="#ff9b2c" stroke-width="2.5" />
+    <ellipse cx="256" cy="235" rx="25" ry="12" fill="#d97706" opacity="0.7" />
+    <circle cx="256" cy="235" r="5" fill="#ff9b2c" filter="url(#glowSmall)" />
 
     <!-- Corner Chamfers / Laser Grid lines on the Box -->
     <line x1="256" y1="280" x2="256" y2="380" stroke="#fff" stroke-width="2" opacity="0.8" />
@@ -189,7 +193,7 @@
     <!-- Glowing Impact Sparks at vertices where math hits the box -->
     <circle cx="256" cy="180" r="6" fill="#fff" filter="url(#glowSmall)" />
     <circle cx="166" cy="230" r="5" fill="#38bdf8" filter="url(#glowSmall)" />
-    <circle cx="346" cy="230" r="5" fill="#00ff80" filter="url(#glowSmall)" />
-    <circle cx="256" cy="380" r="6" fill="#c084fc" filter="url(#glowSmall)" />
+    <circle cx="346" cy="230" r="5" fill="#ff9b2c" filter="url(#glowSmall)" />
+    <circle cx="256" cy="380" r="6" fill="#ff9b2c" filter="url(#glowSmall)" />
   </g>
 </svg>
