@@ -285,18 +285,6 @@ export const SheetMetalBending: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
-      {/* Ultra-compact inline header: zero vertical waste */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '1.4rem' }}>🏗️</span>
-          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Sheet Metal Bending Calculator</h1>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(56, 189, 248, 0.3)' }}>SendCutSend Standard</span>
-        </div>
-        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          Exact flat patterns, allowances & K-factors
-        </div>
-      </div>
-
       {/* TAB 1: INTERACTIVE CALCULATOR */}
       {activeTab === 'calculator' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '25px' }}>
@@ -655,7 +643,7 @@ export const SheetMetalBending: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  const summary = `SENDCUTSEND BENDING REPORT (${activeParams.specName})\n` +
+                  const summary = `PRECISION BENDING REPORT (${activeParams.specName})\n` +
                     `Flat Pattern Length: ${calculations.flatLength.toFixed(3)} ${unitLabel}\n` +
                     `Bend Deduction (BD): ${calculations.BD.toFixed(4)} ${unitLabel}\n` +
                     `Bend Allowance (BA): ${calculations.BA.toFixed(4)} ${unitLabel}\n` +
@@ -858,8 +846,8 @@ export const SheetMetalBending: React.FC = () => {
         <div className="glass-panel" style={{ padding: '30px', borderTop: '3px solid #f59e0b' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
             <div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
-                📋 SendCutSend Sheet Metal & Plastic Bending Specifications
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                📋 Industrial Sheet Metal & Plastic Bending Specifications
               </h3>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                 Complete lookup table of K-Factors, Bend Deductions, Effective Radii, and Die Widths for precision press brake tooling.

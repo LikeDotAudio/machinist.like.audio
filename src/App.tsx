@@ -104,7 +104,7 @@ const HUB_TOOLS: HubTool[] = [
   { id: 'tap_drill_die', category: 'threading', icon: '🔩', title: 'Tap, Drill & Die Reference', description: 'Find standard tap drill sizes, custom thread percentage engagement bit selection, and die rod blank turning diameters.', borderColor: '#f59e0b' },
   { id: 'knurling', category: 'forming', icon: '💎', title: 'Knurling Blank Diameter', description: 'Calculate optimal turned blank diameters that synchronize with knurl wheel pitch teeth to prevent tool chatter and double-tracking.', borderColor: '#00ff80' },
   { id: 'threading_change_gears', category: 'threading', icon: '⚙️', title: 'Lathe Threading Change Gears', description: 'Calculate simple and compound gear train combinations for manual lathes to cut metric, imperial, or custom module thread pitches.', borderColor: '#ec4899' },
-  { id: 'sheet_metal_bending', category: 'forming', icon: '🏗️', title: 'Sheet Metal Bending Simulator', description: 'Develop exact flat pattern cut blanks using SendCutSend empirical tables, featuring a live interactive bend angle animation simulator.', borderColor: '#38bdf8' },
+  { id: 'sheet_metal_bending', category: 'forming', icon: '🏗️', title: 'Sheet Metal Bending Simulator', description: 'Develop exact flat pattern cut blanks using industry standard bending tables, featuring a live interactive bend angle animation simulator.', borderColor: '#38bdf8' },
   { id: 'drill_size_index', category: 'threading', icon: '🔢', title: 'Interactive Drill Size Index', description: 'Search standard twist bit diameters (#1–#107, A–Z, Fractional, Metric) with live scaled SVG drill point visualizers.', borderColor: '#a855f7' },
   { id: 'tap_thread_index', category: 'threading', icon: '📐', title: 'Interactive Tap & Thread Index', description: 'Explore ISO Metric & ASME UNC/UNF thread pitch diameters, root depths, and Class 2A/3A fit limits with interactive SVG previews.', borderColor: '#f59e0b' },
   { id: 'geometric_die_head', category: 'threading', icon: '🔩', title: 'Geometric Die Head Chasers', description: 'Select chaser part numbers, pitch diameters, 3-wire over-wire measurements, and rod blank tolerances for automatic die heads.', borderColor: '#00ff80' },
@@ -571,7 +571,7 @@ export function App() {
                 <ul style={{ color: 'var(--text-primary)', fontSize: '0.88rem', paddingLeft: '20px', lineHeight: '1.7' }}>
                   <li><strong>Core Engine:</strong> React 18 with TypeScript for type-safe metrology math and zero server latency.</li>
                   <li><strong>Visualization:</strong> Scaled interactive vector graphics (SVG) for real-time bolt patterns, gear trains, and press brake profiles.</li>
-                  <li><strong>Standards Compliance:</strong> Formulas calibrated to industrial handbook standards (SendCutSend, ASME, Machinery's Handbook).</li>
+                  <li><strong>Standards Compliance:</strong> Formulas calibrated to industrial handbook standards (ASME, Machinery's Handbook).</li>
                 </ul>
               </div>
 
