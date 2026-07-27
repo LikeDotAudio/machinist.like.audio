@@ -167,13 +167,17 @@ export const MetricSpurGears: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1350px', margin: '0 auto', padding: '10px 0' }}>
-      
-      {/* Compact Title Bar */}
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          ⚙️ Spur Gears <span style={{ color: 'var(--accent-cyan)', fontWeight: 400 }}>// Metric Module & Imperial Diametral Pitch</span>
-        </h2>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>⚙️</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Spur Gears Suite</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(56, 189, 248, 0.3)' }}>Metric Module & DP</span>
+        </div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Exact tooth profiles, center distances & Hardinge catalog
+        </div>
       </div>
 
       {/* Main Grid: Visualizer Top-Left (order: -1), Settings/Results Right */}
@@ -330,47 +334,8 @@ export const MetricSpurGears: React.FC = () => {
           </div>
         </div>
 
-        {/* RIGHT/BOTTOM PANEL: Tabs and Calculations / Catalog Table */}
+        {/* RIGHT/BOTTOM PANEL: Calculations / Catalog Table */}
         <div className="glass-panel" style={{ padding: '25px' }}>
-          
-          {/* Tab Navigation */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
-            <button
-              onClick={() => setActiveTab('calculator')}
-              style={{
-                flex: 1,
-                padding: '10px',
-                borderRadius: '6px',
-                border: 'none',
-                background: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              ⚙️ Gear Calculator & Machining
-            </button>
-            <button
-              onClick={() => setActiveTab('catalog')}
-              style={{
-                flex: 1,
-                padding: '10px',
-                borderRadius: '6px',
-                border: 'none',
-                background: activeTab === 'catalog' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                color: activeTab === 'catalog' ? '#000' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              📖 Hardinge Pre-Cut Catalog ({catalogData.length})
-            </button>
-          </div>
-
           {activeTab === 'calculator' ? (
             /* TAB 1: Calculator Inputs and Machining Outputs */
             <div>
@@ -773,6 +738,69 @@ export const MetricSpurGears: React.FC = () => {
           DP = 25.4 / MOD), or browse 2,800+ Hardinge pre-cut gear part numbers (Modules 1 to 6).
         </p>
       </div>
+
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(56, 189, 248, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('calculator')}
+          style={{
+            background: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'calculator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'calculator' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>⚙️ Gear Calculator & Machining</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('catalog')}
+          style={{
+            background: activeTab === 'catalog' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'catalog' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'catalog' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'catalog' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>📖 Hardinge Pre-Cut Catalog ({catalogData.length})</span>
+        </button>
+      </footer>
     </div>
   );
 };

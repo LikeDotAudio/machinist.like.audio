@@ -194,62 +194,17 @@ export const WeldingSuite: React.FC = () => {
   }, [dcRatedAmps, dcRatedPct, dcDesiredAmps]);
 
   return (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', paddingBottom: '50px', color: 'var(--text-primary)' }}>
-      {/* Header Badge */}
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '10px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Welding & Fabrication Engineering Suite // 6 Modular Sub-Pages
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>🔥</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Welding Mathematics Suite</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(244, 144, 44, 0.3)' }}>6 Modular Sub-Pages</span>
         </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, marginBottom: '8px', background: 'linear-gradient(90deg, #fff, var(--accent-cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          Welding Mathematics Suite
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', fontSize: '0.98rem', lineHeight: 1.5 }}>
-          Explore 6 specialized sub-page calculators for arc heat input, deposition productivity, carbon equivalent preheat cracking prevention, weld groove consumable volume, bidding cost analysis, and machine duty cycle protection.
-        </p>
-      </div>
-
-      {/* 6 Modular Sub-Tabs Navigation */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '30px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px', flexWrap: 'wrap' }}>
-        {[
-          { id: 'heat_input', label: '🔥 1. Heat Input / Arc Energy' },
-          { id: 'deposition_rate', label: '⚖️ 2. Deposition Rate' },
-          { id: 'preheat_ce', label: '🌡️ 3. Preheat & CE IIW' },
-          { id: 'weld_volume', label: '🔩 4. Weld Volume & Weight' },
-          { id: 'welding_cost', label: '💰 5. Cost Analysis' },
-          { id: 'duty_cycle', label: '⏱️ 6. Machine Duty Cycle' }
-        ].map(tab => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id as any)}
-            style={{
-              background: activeTab === tab.id ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-              color: activeTab === tab.id ? '#000' : 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              padding: '10px 18px',
-              borderRadius: '6px',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeTab === tab.id ? '0 4px 12px rgba(244, 144, 44, 0.3)' : 'none'
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Arc energy, deposition, CE preheat, volume & cost
+        </div>
       </div>
 
       {/* SUB-PAGE 1: HEAT INPUT */}
@@ -651,6 +606,58 @@ export const WeldingSuite: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(244, 144, 44, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        {[
+          { id: 'heat_input', label: '🔥 1. Heat Input' },
+          { id: 'deposition_rate', label: '⚖️ 2. Deposition' },
+          { id: 'preheat_ce', label: '🌡️ 3. Preheat & CE' },
+          { id: 'weld_volume', label: '🔩 4. Weld Volume' },
+          { id: 'welding_cost', label: '💰 5. Cost Analysis' },
+          { id: 'duty_cycle', label: '⏱️ 6. Duty Cycle' }
+        ].map(tab => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id as any)}
+            style={{
+              background: activeTab === tab.id ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+              color: activeTab === tab.id ? '#000' : 'var(--text-secondary)',
+              border: activeTab === tab.id ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+              padding: '7px 14px',
+              borderRadius: '20px',
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: activeTab === tab.id ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </footer>
     </div>
   );
 };

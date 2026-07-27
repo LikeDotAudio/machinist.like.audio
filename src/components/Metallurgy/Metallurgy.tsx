@@ -179,94 +179,17 @@ export const Metallurgy: React.FC = () => {
   }, [shrinkLength, shrinkStartTemp, shrinkTargetTemp, activeMetal, unit]);
 
   return (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', paddingBottom: '50px', color: 'var(--text-primary)' }}>
-      {/* Header Badge */}
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <div style={{
-          display: 'inline-block',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '10px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          Industrial Metrology & Foundry Science // Phase Transitions
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>🔥</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Metallurgy & Thermal Properties Suite</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(244, 144, 44, 0.3)' }}>Phase Transitions</span>
         </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 700, marginBottom: '8px', background: 'linear-gradient(90deg, #fff, var(--accent-cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          Metallurgy & Thermal Properties Suite
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', fontSize: '0.98rem', lineHeight: 1.5 }}>
-          Explore heating, forging, melting (solidus/liquidus), and casting superheat temperatures for industrial alloys. Compute raw stock weights and thermal shrink-fit expansion tolerances.
-        </p>
-      </div>
-
-      {/* Navigation Sub-Tabs */}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '30px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px', flexWrap: 'wrap' }}>
-        <button
-          type="button"
-          onClick={() => setActiveTab('thermal_explorer')}
-          style={{
-            background: activeTab === 'thermal_explorer' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'thermal_explorer' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>🔥</span> Thermal Phase & Casting Explorer
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('stock_weight')}
-          style={{
-            background: activeTab === 'stock_weight' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'stock_weight' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>⚖️</span> Stock Volume & Weight Calculator
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('shrink_fitting')}
-          style={{
-            background: activeTab === 'shrink_fitting' ? 'var(--accent-cyan)' : 'var(--bg-secondary)',
-            color: activeTab === 'shrink_fitting' ? '#000' : 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            padding: '10px 22px',
-            borderRadius: '6px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>🔧</span> Thermal Expansion & Shrink-Fitting
-        </button>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Heating, melting, casting superheat & shrink-fitting
+        </div>
       </div>
 
       {/* TAB 1: THERMAL PHASE & CASTING EXPLORER */}
@@ -771,10 +694,93 @@ export const Metallurgy: React.FC = () => {
               <div style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
                 Final Hot Dimension: <strong style={{ color: '#00ff80', fontFamily: 'var(--font-mono)', fontSize: '1.3rem' }}>{shrinkCalc.finalLength.toFixed(4)} {shrinkCalc.unitLabel}</strong>
               </div>
-            </div>
           </div>
         </div>
       )}
+
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(244, 144, 44, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('thermal_explorer')}
+          style={{
+            background: activeTab === 'thermal_explorer' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'thermal_explorer' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'thermal_explorer' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'thermal_explorer' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>🔥</span> Thermal Phase & Casting Explorer
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('stock_weight')}
+          style={{
+            background: activeTab === 'stock_weight' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'stock_weight' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'stock_weight' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'stock_weight' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>⚖️</span> Stock Volume & Weight Calculator
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('shrink_fitting')}
+          style={{
+            background: activeTab === 'shrink_fitting' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'shrink_fitting' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'shrink_fitting' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'shrink_fitting' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>🔧</span> Thermal Expansion & Shrink-Fitting
+        </button>
+      </footer>
     </div>
   );
 };

@@ -237,105 +237,16 @@ export const SpeedsFeeds: React.FC = () => {
   const contactAngleDeg = contactAngleRad * (180 / Math.PI);
 
   return (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '20px 0' }}>
-      
-      {/* Header Banner */}
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'rgba(244, 144, 44, 0.1)',
-          color: 'var(--accent-cyan)',
-          padding: '5px 16px',
-          borderRadius: '20px',
-          fontSize: '0.82rem',
-          fontWeight: 600,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '12px',
-          border: '1px solid rgba(244, 144, 44, 0.3)'
-        }}>
-          <span>⚡ High-Velocity Toolroom Suite</span>
-          <span style={{ color: '#fff', opacity: 0.6 }}>|</span>
-          <span style={{ color: 'var(--text-secondary)' }}>HEM & Dynamic Milling Enabled</span>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>⚡</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Speeds & Feeds & Chip Thinning Suite</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(244, 144, 44, 0.15)', color: 'var(--accent-cyan)', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(244, 144, 44, 0.3)' }}>HEM Enabled</span>
         </div>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Speeds & Feeds & Chip Thinning Suite
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.6 }}>
-          Calculate optimal spindle RPM, table feed rates, High Efficiency Machining (HEM) chip thinning compensation, and live cutter engagement telemetry.
-        </p>
-      </div>
-
-      {/* Navigation Tabs & Unit Selector */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '30px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-        
-        {/* Mode Tabs */}
-        <div style={{ display: 'flex', gap: '10px', background: 'var(--bg-primary)', padding: '5px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <button
-            onClick={() => setActiveTab('speeds_feeds')}
-            style={{
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'speeds_feeds' ? 'var(--accent-cyan)' : 'transparent',
-              color: activeTab === 'speeds_feeds' ? '#000' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <span>⚙️ Standard Speeds & Feeds</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('chip_thinning')}
-            style={{
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'chip_thinning' ? 'linear-gradient(135deg, #a855f7, #3b82f6)' : 'transparent',
-              color: activeTab === 'chip_thinning' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: activeTab === 'chip_thinning' ? '0 4px 15px rgba(168, 85, 247, 0.3)' : 'none'
-            }}
-          >
-            <span>🌀 HEM Chip Thinning</span>
-            {isChipThinningActive && (
-              <span style={{ background: '#22c55e', color: '#000', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 800 }}>ACTIVE</span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('formulas')}
-            style={{
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'formulas' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: activeTab === 'formulas' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <span>📐 Formulas Reference</span>
-          </button>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Spindle RPM, table feed rates & dynamic milling telemetry
         </div>
       </div>
 
@@ -1023,6 +934,92 @@ export const SpeedsFeeds: React.FC = () => {
         </div>
       )}
 
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(244, 144, 44, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('speeds_feeds')}
+          style={{
+            background: activeTab === 'speeds_feeds' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'speeds_feeds' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'speeds_feeds' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'speeds_feeds' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>⚙️ Standard Speeds & Feeds</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('chip_thinning')}
+          style={{
+            background: activeTab === 'chip_thinning' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'chip_thinning' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'chip_thinning' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'chip_thinning' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>🌀 HEM Chip Thinning</span>
+          {isChipThinningActive && (
+            <span style={{ background: '#22c55e', color: '#000', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 800 }}>ACTIVE</span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('formulas')}
+          style={{
+            background: activeTab === 'formulas' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'formulas' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'formulas' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'formulas' ? '0 0 12px rgba(244, 144, 44, 0.5)' : 'none'
+          }}
+        >
+          <span>📐 Formulas Reference</span>
+        </button>
+      </footer>
     </div>
   );
 };

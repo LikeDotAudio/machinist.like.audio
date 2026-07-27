@@ -266,113 +266,16 @@ export const GortonP12: React.FC = () => {
   const spindleY = anchorY + (stylusY - anchorY) * (1 / ratio);
 
   return (
-    <div style={{ maxWidth: '1250px', margin: '0 auto', padding: '20px 0' }}>
-      
-      {/* Compact Title Bar */}
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          📜 Gorton P1-2 Pantomill <span style={{ color: '#f59e0b', fontWeight: 400 }}>// Reduction & Setup Suite</span>
-        </h2>
-      </div>
-
-      {/* Mode Navigation & Unit Toggle */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '30px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-        
-        {/* Navigation Tabs */}
-        <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-primary)', padding: '5px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setActiveTab('calculator')}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'calculator' ? '#f59e0b' : 'transparent',
-              color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.86rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span>⚙️ Bar Setting Calculator</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('roll_sync')}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'roll_sync' ? 'linear-gradient(135deg, #38bdf8, #3b82f6)' : 'transparent',
-              color: activeTab === 'roll_sync' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.86rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span>⭕ Tracing Stylus & Roll Engraving</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('speeds_materials')}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'speeds_materials' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
-              color: activeTab === 'speeds_materials' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.86rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span>⚡ Speeds & Cutting Chart (P. 34-35)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('table')}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'table' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: activeTab === 'table' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.86rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <span>📊 Reduction Table</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('guide')}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: activeTab === 'guide' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: activeTab === 'guide' ? '#fff' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.86rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <span>📖 Manual Guide</span>
-          </button>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px', color: 'var(--text-primary)' }}>
+      {/* Ultra-compact inline header: zero vertical waste */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.4rem' }}>📜</span>
+          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Gorton P1-2 Pantomill Suite</h1>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', padding: '2px 10px', borderRadius: '12px', fontWeight: 700, border: '1px solid rgba(245, 158, 11, 0.3)' }}>Reduction & Setup</span>
+        </div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          Pantograph ratio settings, tracing stylus, speeds & roll engraving
         </div>
       </div>
 
@@ -1346,6 +1249,131 @@ export const GortonP12: React.FC = () => {
         </p>
       </div>
 
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '2px solid rgba(245, 158, 11, 0.4)',
+        boxShadow: '0 -6px 25px rgba(0, 0, 0, 0.7)',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        flexWrap: 'wrap',
+        zIndex: 1000
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>MODULE TOPICS:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('calculator')}
+          style={{
+            background: activeTab === 'calculator' ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'calculator' ? '1px solid #f59e0b' : '1px solid var(--border-color)',
+            padding: '7px 14px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'calculator' ? '0 0 12px rgba(245, 158, 11, 0.5)' : 'none'
+          }}
+        >
+          <span>⚙️ Bar Setting</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('roll_sync')}
+          style={{
+            background: activeTab === 'roll_sync' ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'roll_sync' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'roll_sync' ? '1px solid #f59e0b' : '1px solid var(--border-color)',
+            padding: '7px 14px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'roll_sync' ? '0 0 12px rgba(245, 158, 11, 0.5)' : 'none'
+          }}
+        >
+          <span>⭕ Tracing & Roll Engraving</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('speeds_materials')}
+          style={{
+            background: activeTab === 'speeds_materials' ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'speeds_materials' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'speeds_materials' ? '1px solid #f59e0b' : '1px solid var(--border-color)',
+            padding: '7px 14px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'speeds_materials' ? '0 0 12px rgba(245, 158, 11, 0.5)' : 'none'
+          }}
+        >
+          <span>⚡ Speeds Chart</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('table')}
+          style={{
+            background: activeTab === 'table' ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'table' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'table' ? '1px solid #f59e0b' : '1px solid var(--border-color)',
+            padding: '7px 14px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'table' ? '0 0 12px rgba(245, 158, 11, 0.5)' : 'none'
+          }}
+        >
+          <span>📊 Reduction Table</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('guide')}
+          style={{
+            background: activeTab === 'guide' ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'guide' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'guide' ? '1px solid #f59e0b' : '1px solid var(--border-color)',
+            padding: '7px 14px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'guide' ? '0 0 12px rgba(245, 158, 11, 0.5)' : 'none'
+          }}
+        >
+          <span>📖 Manual Guide</span>
+        </button>
+      </footer>
     </div>
   );
 };
