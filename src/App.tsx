@@ -212,7 +212,7 @@ export function App() {
     <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '90px' }}>
       {/* Categorized Tool Sections mapped from Edits.md Taxonomy */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        {HUB_CATEGORIES.filter((cat) => cat.id !== 'all' && (hubCategory === 'all' || hubCategory === cat.id)).map((cat, index) => {
+        {HUB_CATEGORIES.filter((cat) => cat.id !== 'all' && (hubCategory === 'all' || hubCategory === cat.id)).map((cat) => {
           const categoryTools = HUB_TOOLS.filter((tool) => tool.category === cat.id);
           if (categoryTools.length === 0) return null;
 
@@ -230,16 +230,6 @@ export function App() {
                 marginBottom: '14px' 
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                  <span style={{ 
-                    fontSize: '0.72rem', 
-                    background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))', 
-                    color: '#000', 
-                    padding: '2px 8px', 
-                    borderRadius: '10px', 
-                    fontWeight: 800 
-                  }}>
-                    CAT {index + 1}
-                  </span>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', margin: 0 }}>
                     {cat.label}
                   </h2>
