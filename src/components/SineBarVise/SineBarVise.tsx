@@ -38,6 +38,27 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
     }
   }, [unit]);
 
+  // Keep the decimal-degree box and the D/M/S boxes mirrored, whichever the machinist types into
+  const handleDecimalChange = (val: string) => {
+    setAngleInputType('decimal');
+    setTargetAngleDeg(val);
+    const v = parseFloat(val) || 0;
+    const d = Math.floor(v);
+    const mRemainder = (v - d) * 60;
+    const m = Math.floor(mRemainder);
+    setDegPart(d);
+    setMinPart(m);
+    setSecPart(parseFloat(((mRemainder - m) * 60).toFixed(2)));
+  };
+
+  const handleDMSChange = (d: number, m: number, s: number) => {
+    setAngleInputType('dms');
+    setDegPart(d);
+    setMinPart(m);
+    setSecPart(s);
+    setTargetAngleDeg((d + m / 60 + s / 3600).toFixed(4));
+  };
+
   const len = parseFloat(barLength) || 0.0001;
   const decPlaces = unit === 'imperial' ? 4 : 3;
   const unitStr = unit === 'imperial' ? 'in' : 'mm';
@@ -75,9 +96,6 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
   const tanVal = Math.tan((activeAngleDeg * Math.PI) / 180);
   const taperPerInchOrMm = tanVal; // taper per unit length
   const taperPerFoot = tanVal * 12; // TPF (only relevant in imperial, but good to know)
-
-  const taperPerInchOrMm = tanVal;
-  const taperPerFoot = tanVal * 12;
 
   const imperialBarPresets = ['3.0000', '5.0000', '10.0000'];
   const metricBarPresets = ['50.000', '100.000', '200.000'];
@@ -181,16 +199,16 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
               <div>
                 <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Target Angle — Decimal Degrees (θ)</label>
                 <div style={{ position: 'relative' }}>
-                  <input type="number" value={targetAngle} step="0.0001" min="0" max="60" onChange={(e) => setTargetAngle(e.target.value)} className="input-precision" />
+                  <input type="number" value={targetAngleDeg} step="0.0001" min="0" max="60" onChange={(e) => handleDecimalChange(e.target.value)} className="input-precision" />
                   <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#00ff80', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>° DEG</span>
                 </div>
               </div>
               <div style={{ background: 'var(--bg-tertiary)', padding: '10px 12px', border: '1px solid var(--border-color)' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Or Enter Degrees / Minutes / Seconds:</span>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
-                  <input type="number" value={degVal} placeholder="Deg" onChange={(e) => handleDMSChange(e.target.value, minVal, secVal)} className="input-precision" />
-                  <input type="number" value={minVal} placeholder="Min '" onChange={(e) => handleDMSChange(degVal, e.target.value, secVal)} className="input-precision" />
-                  <input type="number" value={secVal} placeholder='Sec "' onChange={(e) => handleDMSChange(degVal, minVal, e.target.value)} className="input-precision" />
+                  <input type="number" value={degPart} placeholder="Deg" onChange={(e) => handleDMSChange(parseFloat(e.target.value) || 0, minPart, secPart)} className="input-precision" />
+                  <input type="number" value={minPart} placeholder="Min '" onChange={(e) => handleDMSChange(degPart, parseFloat(e.target.value) || 0, secPart)} className="input-precision" />
+                  <input type="number" value={secPart} placeholder='Sec "' onChange={(e) => handleDMSChange(degPart, minPart, parseFloat(e.target.value) || 0)} className="input-precision" />
                 </div>
               </div>
             </div>
@@ -198,7 +216,7 @@ export const SineBarVise: React.FC<SineBarViseProps> = ({ onNavigateToStack }) =
             <div className="animate-fade-in">
               <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Known Gage Block Stack Height (H)</label>
               <div style={{ position: 'relative' }}>
-                <input type="number" value={knownHeight} step={unit === 'imperial' ? '0.0001' : '0.001'} min="0" onChange={(e) => setKnownHeight(e.target.value)} className="input-precision" />
+                <input type="number" value={blockHeight} step={unit === 'imperial' ? '0.0001' : '0.001'} min="0" onChange={(e) => setBlockHeight(e.target.value)} className="input-precision" />
                 <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{unitStr}</span>
               </div>
             </div>
