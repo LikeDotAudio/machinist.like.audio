@@ -43,6 +43,7 @@ const HARDINGE_PLATES: Plate[] = [
 const QUICK_PICKS = [10, 12, 15, 16, 18, 20, 22, 24, 25, 30, 36, 40, 48, 50, 60, 72, 100, 120, 127];
 
 export const HardingeDividingHead: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'calculator' | 'reference' | 'formulas'>('calculator');
   const [divisionsStr, setDivisionsStr] = useState<string>('24');
   const [ratio, setRatio] = useState<number>(4);
   const [checkedPlates, setCheckedPlates] = useState<string[]>(
@@ -180,16 +181,11 @@ export const HardingeDividingHead: React.FC = () => {
   }, [activeVizMatch]);
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0' }} className="animate-fade-in">
-      {/* Compact Title Bar */}
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px', margin: 0 }}>
-          ⚙️ HARDINGE <span style={{ color: 'var(--accent-cyan)', fontWeight: 300 }}>// DIVIDING HEAD</span>
-        </h2>
-      </div>
-
-      {/* Top Layout Grid: Visualizer Top-Left Priority */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start', marginBottom: '40px' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0', paddingBottom: '90px' }} className="animate-fade-in">
+      {activeTab === 'calculator' && (
+        <>
+          {/* Top Layout Grid: Visualizer Top-Left Priority */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px', alignItems: 'start', marginBottom: '40px' }}>
         
         {/* Right Column: Control Panel & Summary Bar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -642,9 +638,12 @@ export const HardingeDividingHead: React.FC = () => {
           </div>
         )}
       </div>
+        </>
+      )}
 
       {/* Reference Chart Section */}
-      <div className="glass-panel" style={{ padding: '30px', marginTop: '50px' }}>
+      {activeTab === 'reference' && (
+      <div className="glass-panel" style={{ padding: '30px', marginTop: '10px' }}>
         <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           📖 Hardinge Index Plate Reference Chart
         </h3>
@@ -695,8 +694,10 @@ export const HardingeDividingHead: React.FC = () => {
           ))}
         </div>
       </div>
+      )}
 
       {/* Illustrated formula lesson — live numbers so results can be validated against the chart */}
+      {activeTab === 'formulas' && (
       <FormulaSheet
         title={`Indexing Arithmetic — worked for ${D} divisions on a ${ratio}:1 head`}
         intro={`A dividing head turns the crank through a worm gear: ${ratio} crank turns rotate the work exactly once (${ratio}:1). To cut D equal divisions, each index step must rotate the work 1/D of a revolution — so the crank moves ${ratio}/D of a turn. When that fraction isn't a whole number of turns, the index plate's hole circles provide the exact fractional turn. Follow each step below to verify the recommendation table.`}
@@ -746,16 +747,91 @@ export const HardingeDividingHead: React.FC = () => {
           },
         ]}
       />
+      )}
 
-      {/* Footer: tool description (kept out of the header per site convention) */}
-      <div className="glass-panel" style={{ marginTop: '30px', padding: '16px 22px' }}>
-        <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '6px' }}>
-          Precision Indexing Lab
-        </div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
-          Instant lookup and calculation engine for Hardinge dividing head index plates, hole circles, and crank handle turns required for cutting metric spur gears and precise angular divisions.
-        </p>
-      </div>
+      {/* Sticky South Footer for Module Navigation */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(10, 13, 20, 0.95)',
+        backdropFilter: 'blur(12px)',
+        borderTop: '1px solid var(--border-color)',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        zIndex: 100,
+        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.6)',
+        flexWrap: 'wrap'
+      }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px', marginRight: '5px' }}>DIVIDING HEAD MODULES:</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('calculator')}
+          style={{
+            background: activeTab === 'calculator' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'calculator' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'calculator' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'calculator' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>⚙️ Indexing Calculator</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('reference')}
+          style={{
+            background: activeTab === 'reference' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'reference' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'reference' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'reference' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>📖 Hardinge Reference Chart</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('formulas')}
+          style={{
+            background: activeTab === 'formulas' ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.05)',
+            color: activeTab === 'formulas' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'formulas' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+            padding: '7px 16px',
+            borderRadius: '20px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: activeTab === 'formulas' ? '0 0 12px rgba(56, 189, 248, 0.5)' : 'none'
+          }}
+        >
+          <span>📐 Formulas & Worked Examples</span>
+        </button>
+      </footer>
     </div>
   );
 };

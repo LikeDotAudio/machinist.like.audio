@@ -289,6 +289,7 @@ export function App() {
                       e.currentTarget.style.boxShadow = 'none';
                       e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
                     }}
+                  >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
