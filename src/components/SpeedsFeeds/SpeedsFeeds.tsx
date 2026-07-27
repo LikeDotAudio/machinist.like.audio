@@ -583,19 +583,18 @@ export const SpeedsFeeds: React.FC = () => {
 
           {/* BOTTOM SECTION: 3. EXPLANATION & RESULTS */}
           <div className="glass-panel" style={{ padding: '25px', background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%)', borderTop: activeTab === 'chip_thinning' ? '3px solid #a855f7' : '3px solid var(--accent-cyan)' }}>
-            <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '18px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '18px' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: activeTab === 'chip_thinning' ? '#c084fc' : 'var(--accent-cyan)', margin: 0 }}>
                 📐 EXPLANATION // {activeTab === 'chip_thinning' ? 'HEM CHIP THINNING DASHBOARD' : 'OPTIMAL MACHINING PARAMETERS'} — {MATERIALS[selectedMat].name}
               </h3>
-            </div>
 
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>ESTIMATED CUT TIME</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: '#38bdf8' }}>
-                    {cutMinutes}m {cutSeconds}s
-                  </span>
-                </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>ESTIMATED CUT TIME</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: '#38bdf8' }}>
+                  {cutMinutes}m {cutSeconds}s
+                </span>
               </div>
+            </div>
 
               {/* Primary Gauge Cards (4-Grid: RPM, Feed, Power, Torque) */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '20px' }}>
